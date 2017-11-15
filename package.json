@@ -1,0 +1,30 @@
+{
+  "name": "flex",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "knex": "knex",
+    "nodemon": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/genacatharine/Flex.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/genacatharine/Flex/issues"
+  },
+  "homepage": "https://github.com/genacatharine/Flex#readme",
+  "dependencies": {
+    "bcrypt": "^1.0.3",
+    "body-parser": "^1.18.2",
+    "cors": "^2.8.4",
+    "ejs": "^2.5.7",
+    "humps": "^2.0.1",
+    "knex": "^0.14.0",
+    "morgan": "^1.9.0",
+    "path": "^0.12.7"
+  }
+}
