@@ -9,6 +9,7 @@ const cors = require('cors')
 const path = require('path');
 
 const users = require('./routes/users');
+const gyms = require('./routes/gyms');
 
 app.use(bodyParser.json()); //keep before routes
 app.use(cors());
@@ -16,6 +17,7 @@ app.use(morgan('dev'))
 app.use(cookieParser());
 
 app.use('/', users);
+app.use('/', gyms)
 
 // app.use(bodyParser.urlencoded({ extended: false }));
 
