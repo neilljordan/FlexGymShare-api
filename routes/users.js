@@ -58,52 +58,52 @@ router.post('/users', (req, res, next) => {
   .catch((err)=>next(err))
 });
 
-// router.patch('/users/:id', function(req, res, next) {
-//
-//   const id = req.params.id
-//   const { title, author, genre, description, coverUrl } = req.body
-//
-//   let newBook = {}
-//
-//   if (title) {
-//     newBook.title = title
-//   }
-//   if (author) {
-//     newBook.author = author
-//   }
-//   if (genre) {
-//     newBook.genre = genre
-//   }
-//   if (description) {
-//     newBook.description = description
-//   }
-//   if (coverUrl) {
-//     newBook.cover_url = coverUrl
-//   }
-//
-//   knex('books')
-//   .where('id', id)
-//
-//   .then((books)=>{
-//     knex('books')
-//     .update(newBook)
-//     .where('id',id)
-//     .returning('*')
-//
-//     .then((books)=>{
-//       let book = {
-//         id: books[0].id,
-//         title: books[0].title,
-//         author: books[0].author,
-//         genre: books[0].genre,
-//         description: books[0].description,
-//         coverUrl: books[0].cover_url
-//       }
-//       res.json(book)
-//     })
-//     .catch((err)=>next(err))
-//   })
-// })
+router.patch('/users/:id', function(req, res, next) {
+
+  const id = req.params.id
+  const { first_name, last_name, email, password } = req.body
+
+  let newBook = {}
+
+  if (title) {
+    newBook.title = title
+  }
+  if (author) {
+    newBook.author = author
+  }
+  if (genre) {
+    newBook.genre = genre
+  }
+  if (description) {
+    newBook.description = description
+  }
+  if (coverUrl) {
+    newBook.cover_url = coverUrl
+  }
+
+  knex('books')
+  .where('id', id)
+
+  .then((books)=>{
+    knex('books')
+    .update(newBook)
+    .where('id',id)
+    .returning('*')
+
+    .then((books)=>{
+      let book = {
+        id: books[0].id,
+        title: books[0].title,
+        author: books[0].author,
+        genre: books[0].genre,
+        description: books[0].description,
+        coverUrl: books[0].cover_url
+      }
+      res.json(book)
+    })
+    .catch((err)=>next(err))
+  })
+})
 
 // router.delete('/books/:id', function(req, res, next) {
 //   const id = req.params.id
