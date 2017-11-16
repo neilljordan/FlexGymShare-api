@@ -28,12 +28,12 @@ router.get('/users/:id', (req, res, next) =>{
 });
 
 router.post('/users', (req, res, next) => {
-  console.log('was good')
-  console.log(req.body)
+  // console.log('was good')
+  // console.log(req.body)
   const { first_name, last_name, email, password } = req.body
-  console.log(req.body)
-  console.log(bcrypt)
-  console.log(salt)
+  // console.log(req.body)
+  // console.log(bcrypt)
+  // console.log(salt)
   knex('users')
   .insert({
     first_name: first_name,
@@ -59,74 +59,78 @@ router.post('/users', (req, res, next) => {
 });
 
 router.patch('/users/:id', function(req, res, next) {
-
+// console.log('hit patch')
   const id = req.params.id
-  const { first_name, last_name, email, password } = req.body
+  // console.log(id)
+  let password = req.body.password
+  let hashed_password = bcrypt.hashSync(password, salt)
+  // console.log(hashed_password)
+  // console.log(id)
+  const { first_name, last_name, email } = req.body
 
-  let newBook = {}
+  let patchUser = {}
 
-  if (title) {
-    newBook.title = title
+  if (first_name) {
+    patchUser.first_name = first_name
   }
-  if (author) {
-    newBook.author = author
+  if (last_name) {
+    patchUser.last_name = last_name
   }
-  if (genre) {
-    newBook.genre = genre
+  if (email) {
+    patchUser.email = email
   }
-  if (description) {
-    newBook.description = description
+  if (password) {
+    patchUser.hashed_password = hashed_password
   }
-  if (coverUrl) {
-    newBook.cover_url = coverUrl
-  }
-
-  knex('books')
+  console.log(id)
+  console.log(patchUser)
+  knex('users')
   .where('id', id)
 
-  .then((books)=>{
-    knex('books')
-    .update(newBook)
-    .where('id',id)
+  .then((users)=>{
+    console.log(users)
+    knex('users')
+    .update(patchUser)
+    .where('id', id)
     .returning('*')
 
-    .then((books)=>{
-      let book = {
-        id: books[0].id,
-        title: books[0].title,
-        author: books[0].author,
-        genre: books[0].genre,
-        description: books[0].description,
-        coverUrl: books[0].cover_url
+    .then((users)=>{
+      console.log(users)
+      let patchUser = {
+        // id: users[0].id,
+        first_name: users[0].first_name,
+        last_name: users[0].last_name,
+        email: users[0].email,
+        hashed_password: users[0].hashed_password
       }
-      res.json(book)
+      res.json(patchUser)
     })
     .catch((err)=>next(err))
   })
 })
 
-// router.delete('/books/:id', function(req, res, next) {
-//   const id = req.params.id
-//   knex('books')
-//
-//   .then((books)=>{
-//     knex('books')
-//     .del()
-//     .where('id', id)
-//     .returning('*')
-//
-//       .then((books)=>{
-//         let book = {
-//           title: books[0].title,
-//           author: books[0].author,
-//           genre: books[0].genre,
-//           description: books[0].description,
-//           coverUrl: books[0].cover_url
-//         }
-//         res.json(book)
-//       })
-//     .catch((err)=>next(err))
-//   })
-// });
+router.delete('/users/:id', function(req, res, next) {
+  const id = req.params.id
+  knex('users')
+
+  .then((users)=>{
+    knex('users')
+    .del()
+    .where('id', id)
+    .returning('*')
+
+      .then((users)=>{
+        let user = {
+          title: users[0].title,
+          author: users[0].author,
+          genre: users[0].genre,
+          description: users[0].description,
+          coverUrl: users[0].cover_url
+        }
+        res.json(user)
+      })
+    .catch((err)=>next(err))
+  })
+});
 
 module.exports = router;
