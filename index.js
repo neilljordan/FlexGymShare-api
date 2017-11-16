@@ -10,6 +10,7 @@ const path = require('path');
 
 const users = require('./routes/users');
 const gyms = require('./routes/gyms');
+const memberships = require('./routes/memberships');
 
 app.use(bodyParser.json()); //keep before routes
 app.use(cors());
@@ -17,7 +18,8 @@ app.use(morgan('dev'))
 app.use(cookieParser());
 
 app.use('/', users);
-app.use('/', gyms)
+app.use('/', gyms);
+app.use('/', memberships);
 
 // app.use(bodyParser.urlencoded({ extended: false }));
 
