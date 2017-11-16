@@ -11,6 +11,7 @@ const path = require('path');
 const users = require('./routes/users');
 const gyms = require('./routes/gyms');
 const memberships = require('./routes/memberships');
+const dates = require('./routes/dates');
 
 app.use(bodyParser.json()); //keep before routes
 app.use(cors());
@@ -20,6 +21,7 @@ app.use(cookieParser());
 app.use('/', users);
 app.use('/', gyms);
 app.use('/', memberships);
+app.use('/', dates);
 
 // app.use(bodyParser.urlencoded({ extended: false }));
 

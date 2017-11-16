@@ -7,6 +7,7 @@ var bcrypt = require('bcrypt');
 var salt = bcrypt.genSaltSync(10);
 
 router.get('/dates', (req, res, next) => {
+  console.log('get hit')
   knex('dates')
   .orderBy('id')
   .then((dates) => {
@@ -17,104 +18,101 @@ router.get('/dates', (req, res, next) => {
   })
 });
 
-// router.get('/gyms/:id', (req, res, next) =>{
-//   const id = req.params.id;
-//   knex('gyms')
-//   .where('id', id)
-//   .then((gyms) => {
-//     res.json(gyms)
-//   })
-//   .catch((err) => next(err))
-// });
-//
-// router.post('/gyms', (req, res, next) => {
-//   console.log('hitting post')
-//   // console.log(req.body)
-//   const { name, address, price } = req.body
-//   // console.log(req.body)
-//   // console.log(bcrypt)
-//   // console.log(salt)
-//   knex('gyms')
-//   .insert({
-//     name: name,
-//     address: address,
-//     price: price,
-//   })
-//   .returning('*')
-//   .then((gyms)=>{
-//     let gym = {
-//       id: gyms[0].id,
-//       first_name: gyms[0].first_name,
-//       last_name: gyms[0].last_name,
-//       email: gyms[0].email,
-//     }
-//     res.json(gym)
-//   })
-//   .catch((err)=>next(err))
-// });
-//
-// router.patch('/gyms/:id', function(req, res, next) {
-// // console.log('hit patch')
-//   const id = req.params.id
-//   // console.log(id)
-//   const { name, address, price } = req.body
-//
-//   let patchGym = {}
-//
-//   if (name) {
-//     patchGym.name = name
-//   }
-//   if (address) {
-//     patchGym.address = address
-//   }
-//   if (price) {
-//     patchGym.price = price
-//   }
-//   // console.log(id)
-//   // console.log(patchGym)
-//   knex('gyms')
-//   .where('id', id)
-//
-//   .then((gyms)=>{
-//     console.log(gyms)
-//     knex('gyms')
-//     .update(patchGym)
-//     .where('id', id)
-//     .returning('*')
-//
-//     .then((gyms)=>{
-//       console.log(gyms)
-//       let patchGym = {
-//         name: gyms[0].name,
-//         address: gyms[0].address,
-//         price: gyms[0].price,
-//       }
-//       res.json(patchGym)
-//     })
-//     .catch((err)=>next(err))
-//   })
-// });
-//
-// router.delete('/gyms/:id', function(req, res, next) {
-//   const id = req.params.id
-//   knex('gyms')
-//
-//   .then((gyms)=>{
-//     knex('gyms')
-//     .del()
-//     .where('id', id)
-//     .returning('*')
-//
-//       .then((gyms)=>{
-//         let gym = {
-//           name: gyms[0].name,
-//           address: gyms[0].address,
-//           price: gyms[0].price
-//         }
-//         res.json(gym)
-//       })
-//     .catch((err)=>next(err))
-//   })
-// });
+router.get('/dates/:id', (req, res, next) =>{
+  const id = req.params.id;
+  knex('dates')
+  .where('id', id)
+  .then((dates) => {
+    res.json(dates)
+  })
+  .catch((err) => next(err))
+});
+
+router.post('/dates', (req, res, next) => {
+  console.log('hitting post')
+  const { membership_id, date_available, booked } = req.body
+  knex('dates')
+  .insert({
+    membership_id: membership_id,
+    date_available: date_available,
+    booked: booked,
+  })
+  .returning('*')
+  .then((dates)=>{
+    let date = {
+      id: dates[0].id,
+      membership_id: dates[0].first_membership_id,
+      date_available: dates[0].date_available,
+      booked: dates[0].booked,
+    }
+    res.json(date)
+  })
+  .catch((err)=>next(err))
+});
+
+router.patch('/dates/:id', function(req, res, next) {
+// console.log('hit patch')
+  const id = req.params.id
+  // console.log(id)
+  const { membership_id, date_available, booked } = req.body
+
+  let patchDate = {}
+
+  if (membership_id) {
+    patchDate.membership_id = membership_id
+  }
+  if (date_available) {
+    patchDate.date_available = date_available
+  }
+  if (booked) {
+    patchDate.booked = booked
+  }
+  console.log(membership_id)
+  // console.log(patchDate)
+  knex('dates')
+  .where('id', id)
+
+  .then((dates)=>{
+    console.log(dates)
+    knex('dates')
+    .update(patchDate)
+    .where('id', id)
+    .returning('*')
+
+    .then((dates)=>{
+      console.log(dates)
+      let patchDate = {
+        membership_id: dates[0].membership_id,
+        date_available: dates[0].date_available,
+        booked: dates[0].booked
+      }
+      console.log(patchDate.membership_id)
+      res.json(patchDate)
+    })
+    .catch((err)=>next(err))
+  })
+});
+
+router.delete('/dates/:id', function(req, res, next) {
+  const id = req.params.id
+  knex('dates')
+
+  .then((dates)=>{
+    knex('dates')
+    .del()
+    .where('id', id)
+    .returning('*')
+
+      .then((dates)=>{
+        let date = {
+          membership_id: dates[0].membership_id,
+          date_available: dates[0].date_available,
+          booked: dates[0].booked
+        }
+        res.json(date)
+      })
+    .catch((err)=>next(err))
+  })
+});
 
 module.exports = router;
