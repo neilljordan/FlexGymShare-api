@@ -12,6 +12,7 @@ const users = require('./routes/users');
 const gyms = require('./routes/gyms');
 const memberships = require('./routes/memberships');
 const dates = require('./routes/dates');
+const token = require('./routes/token');
 
 app.use(bodyParser.json()); //keep before routes
 app.use(cors());
@@ -22,9 +23,7 @@ app.use('/', users);
 app.use('/', gyms);
 app.use('/', memberships);
 app.use('/', dates);
-
-// app.use(bodyParser.urlencoded({ extended: false }));
-
+app.use('/', token)
 
 
 app.use(express.static(path.join(__dirname, 'public')));

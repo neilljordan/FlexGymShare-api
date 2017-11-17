@@ -28,12 +28,18 @@ router.get('/users/:id', (req, res, next) =>{
 });
 
 router.post('/users', (req, res, next) => {
-  // console.log('was good')
-  // console.log(req.body)
+
   const { first_name, last_name, email, password } = req.body
-  // console.log(req.body)
-  // console.log(bcrypt)
-  // console.log(salt)
+
+  // router.get('/users', (req, res, next)=>{
+  //   const email = req.body.email
+  //   knex('users')
+  //   .where('email', email)
+  //   .then((email)=>{
+  //     console.error('sorry bro, same email')
+  //   })
+  // })
+
   knex('users')
   .insert({
     first_name: first_name,
