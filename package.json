@@ -9,16 +9,8 @@
     "heroku-postbuild": "knex migrate:rollback; knex migrate:latest; knex seed:run;",
     "nodemon": "node server.js"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/genacatharine/Flex.git"
-  },
   "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/genacatharine/Flex/issues"
-  },
-  "homepage": "https://github.com/genacatharine/Flex#readme",
   "dependencies": {
     "bcrypt": "^1.0.3",
     "body-parser": "^1.18.2",
