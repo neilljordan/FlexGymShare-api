@@ -6,8 +6,7 @@
   "scripts": {
     "knex": "knex",
     "start": "nodemon index.js",
-    "heroku-postbuild": "knex migrate:rollback; knex migrate:latest; knex seed:run;",
-    "nodemon": "node index.js"
+    "heroku-postbuild": "knex migrate:rollback; knex migrate:latest; knex seed:run;"
   },
   "author": "",
   "license": "ISC",
