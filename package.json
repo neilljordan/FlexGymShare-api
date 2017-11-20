@@ -4,8 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "nodemon": "index.js",
-    "knex": "knex"
+    "knex": "knex",
+    "start": "nodemon server.js",
+    "heroku-postbuild": "knex migrate:rollback; knex migrate:latest; knex seed:run;",
+    "nodemon": "node server.js"
   },
   "repository": {
     "type": "git",
