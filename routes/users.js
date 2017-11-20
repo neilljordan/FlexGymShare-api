@@ -31,15 +31,6 @@ router.post('/users', (req, res, next) => {
 
   const { first_name, last_name, email, password } = req.body
 
-  // router.get('/users', (req, res, next)=>{
-  //   const email = req.body.email
-  //   knex('users')
-  //   .where('email', email)
-  //   .then((email)=>{
-  //     console.error('sorry bro, same email')
-  //   })
-  // })
-
   knex('users')
   .insert({
     first_name: first_name,
