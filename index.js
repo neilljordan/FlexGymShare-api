@@ -37,7 +37,7 @@ passport.use(new FacebookStrategy (
   {
     clientID: '125954554766866',
     clientSecret: 'f539c416641d2c4c4fa8fbecfc819355',
-    callbackURL:'http://localhost:3000/auth/facebook/callback',
+    callbackURL:'https://flex-routes.herokuapp.com/auth/facebook/callback',
     profileFields: ['id', 'displayName', 'photos', 'email'],
     enableProof: true
   },
