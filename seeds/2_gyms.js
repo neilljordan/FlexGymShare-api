@@ -4,9 +4,10 @@ exports.seed = function(knex, Promise) {
       return knex('gyms').insert([
         {
         	id:1,
-          	name: 'Colorado Athletic Club',
-            address: '2136 19th Street, Boulder CO 80302',
-            price : 100.32
+          	name: 'One Boulder Fitness',
+            address: '1800 Broadway Suite 190, Boulder CO, 80302',
+            price : 100.32,
+            image: 'http://96bda424cfcc34d9dd1a-0a7f10f87519dba22d2dbc6233a731e5.r41.cf2.rackcdn.com/oneboulderfitness/logo/ONE-Logo-Tagline-NoRibbon/ONE-Logo-Tagline-NoRibbon_gallery.png'
         }
       ])
       .then(()=>{

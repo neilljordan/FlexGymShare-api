@@ -42,6 +42,7 @@ router.post('/memberships', (req, res, next) => {
   .returning('*')
   .then((memberships)=>{
     let membership = {
+      id: memberships[0].id,
       user_id: memberships[0].user_id,
       gym_id: memberships[0].gym_id
     }

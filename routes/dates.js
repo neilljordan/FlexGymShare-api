@@ -29,23 +29,15 @@ router.get('/dates/:id', (req, res, next) =>{
 });
 
 router.post('/dates', (req, res, next) => {
-  console.log('hitting post')
-  const { membership_id, date_available, booked } = req.body
+  // console.log('hitting post')
+  const { arr } = req.body
+  // console.log(req.body.arr)
   knex('dates')
-  .insert({
-    membership_id: membership_id,
-    date_available: date_available,
-    booked: booked,
-  })
+  .insert(arr)
   .returning('*')
   .then((dates)=>{
-    let date = {
-      id: dates[0].id,
-      membership_id: dates[0].first_membership_id,
-      date_available: dates[0].date_available,
-      booked: dates[0].booked,
-    }
-    res.json(date)
+    console.log(dates)
+    res.json(dates)
   })
   .catch((err)=>next(err))
 });
@@ -92,6 +84,29 @@ router.patch('/dates/:id', function(req, res, next) {
     .catch((err)=>next(err))
   })
 });
+
+router.delete('/dates/', function(req, res, next) {
+  const id = req.params.id
+  knex('dates')
+
+  .then((dates)=>{
+    knex('dates')
+    .del()
+    // .where('id', id)
+    .returning('*')
+
+      .then((dates)=>{
+        let date = {
+          membership_id: dates[0].membership_id,
+          date_available: dates[0].date_available,
+          booked: dates[0].booked
+        }
+        res.json(date)
+      })
+    .catch((err)=>next(err))
+  })
+});
+
 
 router.delete('/dates/:id', function(req, res, next) {
   const id = req.params.id

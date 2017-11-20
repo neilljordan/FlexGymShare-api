@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "knex": "knex",
-    "nodemon": "nodemon index.js"
+    "nodemon": "index.js",
+    "knex": "knex"
   },
   "repository": {
     "type": "git",
@@ -28,5 +28,8 @@
     "knex": "^0.14.0",
     "morgan": "^1.9.0",
     "path": "^0.12.7"
+  },
+  "engines": {
+    "node": "^8.9.1"
   }
 }

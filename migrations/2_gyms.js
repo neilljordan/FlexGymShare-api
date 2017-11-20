@@ -4,6 +4,7 @@ exports.up = function(knex, Promise) {
     table.string('name').notNullable()
     table.string('address').notNullable()
     table.decimal('price').notNullable()
+    table.string('image')
     table.timestamps(true, true)
   })
 };
