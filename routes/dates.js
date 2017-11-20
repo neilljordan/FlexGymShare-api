@@ -6,6 +6,7 @@ const router = express.Router();
 var bcrypt = require('bcrypt');
 var salt = bcrypt.genSaltSync(10);
 
+
 router.get('/dates', (req, res, next) => {
   console.log('get hit')
   knex('dates')
