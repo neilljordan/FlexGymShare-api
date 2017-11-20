@@ -5,9 +5,9 @@
   "main": "index.js",
   "scripts": {
     "knex": "knex",
-    "start": "nodemon server.js",
+    "start": "nodemon index.js",
     "heroku-postbuild": "knex migrate:rollback; knex migrate:latest; knex seed:run;",
-    "nodemon": "node server.js"
+    "nodemon": "node index.js"
   },
   "author": "",
   "license": "ISC",
