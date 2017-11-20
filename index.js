@@ -14,6 +14,10 @@ const memberships = require('./routes/memberships');
 const dates = require('./routes/dates');
 const token = require('./routes/token');
 
+var bcrypt = require('bcrypt');
+const knex = require('./knex');
+var salt = bcrypt.genSaltSync(10);
+
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "http://localhost:3131")//for deployment
   // res.header("Access-Control-Allow-Origin", "http://localhost:3001")//for running locally
@@ -23,6 +27,86 @@ app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
   next()
 })
+
+app.use(cookieSession({ secret: 'keyboard cat' }));
+
+const passport = require('passport')
+const FacebookStrategy = require('passport-facebook').Strategy
+
+passport.use(new FacebookStrategy (
+  {
+    clientID: '125954554766866',
+    clientSecret: 'f539c416641d2c4c4fa8fbecfc819355',
+    callbackURL:'http://localhost:3000/auth/facebook/callback',
+    profileFields: ['id', 'displayName', 'photos', 'email'],
+    enableProof: true
+  },
+
+  function onSuccessfulLogin(token, refreshToken, profile, done) {
+    done(null, {token, profile});
+  }
+));
+app.use(passport.initialize())
+app.use(passport.session())
+passport.serializeUser((object, done) => {
+  done(null, {token: object.token})
+})
+passport.deserializeUser((object, done) => {
+    done(null, object)
+})
+
+app.get('/auth/facebook', passport.authenticate('facebook', { scope: ['email']}));
+
+// Step 2: Setting up the callback route
+// makes 2 api calls to github
+app.get('/auth/facebook/callback',
+passport.authenticate('facebook', { failureRedirect: '/login' }),
+function(req, res) {
+  // console.log(req)
+  console.log(req.user.profile.emails[0].value)
+  let displayName = req.user.profile.displayName
+  let firstAndLast = displayName.split(' ')
+  let first_name = firstAndLast[0]
+  let last_name = firstAndLast[1]
+  let email = req.user.profile.emails[0].value
+  let password = "facebook_user_password"
+  // Successful authentication, redirect home.
+  // Add new user to knex
+  // let newUser = {
+  //   first_name: first_name,
+  //   last_name: last_name,
+  //   email: email,
+  //   password: password
+  // }
+
+  knex('users')
+  .insert({
+    first_name: first_name,
+    last_name: last_name,
+    email: email,
+    // stars,
+    // comments,
+    hashed_password: bcrypt.hashSync(password, salt)
+    // token,
+    // fb_user
+  })
+  .returning('*')
+  .then((users)=>{
+    let user = {
+      id: users[0].id,
+      first_name: users[0].first_name,
+      last_name: users[0].last_name,
+      email: users[0].email,
+    }
+  })
+  .catch((err) => {
+    console.log(err.detail)
+    res.status(400)
+    res.send(err.detail)
+  })
+  var string = encodeURIComponent('something that would break');
+  res.redirect('http://localhost:3131');
+});
 
 app.use(bodyParser.json()); //keep before routes
 // app.use(cors());
