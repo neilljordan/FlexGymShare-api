@@ -29,7 +29,7 @@ router.get('/memberships/:id', (req, res, next) =>{
 
 router.post('/memberships', (req, res, next) => {
   console.log('hitting post')
-  // console.log(req.body)
+  console.log(req.body)
   const { user_id, gym_id } = req.body
   // console.log(req.body)
   // console.log(bcrypt)
