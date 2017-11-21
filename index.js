@@ -20,7 +20,7 @@ var salt = bcrypt.genSaltSync(10);
 const cookieSession = require('cookie-session')
 
 app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*")//for deployment
+  res.header("Access-Control-Allow-Origin", "https://youflex.herokuapp.com/")//for deployment
   // res.header("Access-Control-Allow-Origin", "http://localhost:3001")//for running locally
 
   res.header("Access-Control-Allow-Credentials", "true")
@@ -110,7 +110,7 @@ function(req, res) {
     res.send(err.detail)
   })
   var string = encodeURIComponent('something that would break');
-  res.redirect(`http://localhost:3131?id=${userIdQuery}`);
+  res.redirect(`https://youflex.herokuapp.com?id=${userIdQuery}`);
 });
 
 app.use(bodyParser.json()); //keep before routes
