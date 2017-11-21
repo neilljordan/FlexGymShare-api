@@ -13,14 +13,14 @@ exports.seed = function(knex, Promise) {
             id:2,
               name: 'Colorado Athletic Club',
             address: '1821 30th St, Boulder, CO 80301',
-            price : 155.19
+            price : 155.19,
             image: 'http://www.centennialgunclub.com/wp-content/uploads/2016/01/colorado-athletic-club.png'
         },
         {
         id:3,
               name: '24 Hour Fitness',
             address: '2900 Iris Ave, Boulder, CO 80301',
-            price : 54.19
+            price : 54.19,
             image: 'http://www.bsideblog.com/images/2008/06/24HourFitness.jpg'
           }
       ])
