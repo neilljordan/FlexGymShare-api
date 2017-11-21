@@ -65,12 +65,12 @@ app.get('/auth/facebook', passport.authenticate('facebook', { scope: ['email']})
 app.get('/auth/facebook/callback',
 passport.authenticate('facebook', { failureRedirect: '/login' }),
 function(req, res) {
-  // console.log(req)
+  console.log(req)
   let displayName = req.user.profile.displayName
   let firstAndLast = displayName.split(' ')
   let first_name = firstAndLast[0]
   let last_name = firstAndLast[1]
-  let email = req.user.profile.emails[0].value
+  // let email = req.user.profile.emails[0].value
   let password = "facebook_user_password"
   // Successful authentication, redirect home.
   // Add new user to knex
