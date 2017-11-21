@@ -40,7 +40,7 @@ passport.use(new FacebookStrategy (
   {
     clientID: '330999457376434',
     clientSecret: 'f151705ecfcd3296876fb791d66eaeb6',
-    callbackURL:'https://flex-routes.herokuapp.com/auth/facebook/callback/',
+    callbackURL:'https://flex-routes.herokuapp.com/auth/facebook/callback',
     profileFields: ['id', 'displayName', 'photos', 'email'],
     enableProof: true
   },
@@ -65,7 +65,7 @@ app.get('/auth/facebook', passport.authenticate('facebook', { scope: ['email']})
 app.get('/auth/facebook/callback',
 passport.authenticate('facebook', { failureRedirect: '/login' }),
 function(req, res) {
-  console.log(req)
+  console.log(req.profile)
   let displayName = req.user.profile.displayName
   let firstAndLast = displayName.split(' ')
   let first_name = firstAndLast[0]
@@ -107,7 +107,7 @@ function(req, res) {
     res.send(err.detail)
   })
   var string = encodeURIComponent('something that would break');
-  res.redirect('http://localhost:3131/');
+  res.redirect('http://localhost:3131');
 });
 
 app.use(bodyParser.json()); //keep before routes
