@@ -73,6 +73,7 @@ function(req, res) {
   let last_name = firstAndLast[1]
   let email = req.user.profile.emails[0].value
   let password = "facebook_user_password"
+  let userIdQuery
   // Successful authentication, redirect home.
   // Add new user to knex
   // let newUser = {
@@ -95,6 +96,7 @@ function(req, res) {
   })
   .returning('*')
   .then((users)=>{
+    userIdQuery = users[0].id
     let user = {
       id: users[0].id,
       first_name: users[0].first_name,
@@ -108,7 +110,7 @@ function(req, res) {
     res.send(err.detail)
   })
   var string = encodeURIComponent('something that would break');
-  res.redirect('http://localhost:3131');
+  res.redirect(`http://localhost:3131?id=${userIdQuery}`);
 });
 
 app.use(bodyParser.json()); //keep before routes
