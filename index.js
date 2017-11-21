@@ -17,6 +17,7 @@ const token = require('./routes/token');
 var bcrypt = require('bcrypt');
 const knex = require('./knex');
 var salt = bcrypt.genSaltSync(10);
+const cookieSession = require('cookie-session')
 
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*")//for deployment
