@@ -38,8 +38,8 @@ const FacebookStrategy = require('passport-facebook').Strategy
 
 passport.use(new FacebookStrategy (
   {
-    clientID: '125954554766866',
-    clientSecret: 'f539c416641d2c4c4fa8fbecfc819355',
+    clientID: '330999457376434',
+    clientSecret: 'f151705ecfcd3296876fb791d66eaeb6',
     callbackURL:'https://flex-routes.herokuapp.com/auth/facebook/callback',
     profileFields: ['id', 'displayName', 'photos', 'email'],
     enableProof: true
