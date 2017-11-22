@@ -40,7 +40,7 @@ passport.use(new FacebookStrategy (
   {
     clientID: '330999457376434',
     clientSecret: 'f151705ecfcd3296876fb791d66eaeb6',
-    callbackURL:'http://localhost:3131/auth/facebook/callback',
+    callbackURL:'https://flex-routes.herokuapp.com/auth/facebook/callback',
     profileFields: ['id', 'displayName', 'photos', 'email'],
     enableProof: true
   },
@@ -90,7 +90,7 @@ function(req, res) {
       console.log('email already exists')
       userIdQuery = user.id
       console.log(userIdQuery)
-      res.redirect(`http://localhost:3132/?id=${userIdQuery}`);
+      res.redirect(`http://assorted-yard.surge.sh/?id=${userIdQuery}`);
     }
 
     return bcrypt.hashSync(password, salt)
@@ -111,7 +111,7 @@ function(req, res) {
       last_name: users[0].last_name,
       email: users[0].email,
     }
-    res.redirect(`http://localhost:3132/?id=${userIdQuery}`);
+    res.redirect(`http://assorted-yard.surge.sh/?id=${userIdQuery}`);
 
   })
   .catch((err) => {
