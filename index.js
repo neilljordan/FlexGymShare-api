@@ -40,7 +40,7 @@ passport.use(new FacebookStrategy (
   {
     clientID: '330999457376434',
     clientSecret: 'f151705ecfcd3296876fb791d66eaeb6',
-    callbackURL:'https://flex-routes.herokuapp.com/auth/facebook/callback',
+    callbackURL:'http://localhost:3131/auth/facebook/callback',
     profileFields: ['id', 'displayName', 'photos', 'email'],
     enableProof: true
   },
@@ -65,7 +65,6 @@ app.get('/auth/facebook', passport.authenticate('facebook', { scope: ['email']})
 app.get('/auth/facebook/callback',
 passport.authenticate('facebook', { failureRedirect: '/login' }),
 function(req, res) {
-  console.log(req.user.profile)
   // console.log(req.user.profile.emails[0].value)
   let displayName = req.user.profile.displayName
   let firstAndLast = displayName.split(' ')
@@ -84,35 +83,44 @@ function(req, res) {
   // }
 
   knex('users')
-  .insert({
-    first_name: first_name,
-    last_name: last_name,
-    email: email,
-    // stars,
-    // comments,
-    hashed_password: bcrypt.hashSync(password, salt)
-    // token,
-    // fb_user
+  .where('email', email)
+  .first()
+  .then((user) => {
+    if (user) {
+      console.log('email already exists')
+      userIdQuery = user.id
+      console.log(userIdQuery)
+      res.redirect(`http://localhost:3132/?id=${userIdQuery}`);
+    }
+
+    return bcrypt.hashSync(password, salt)
+
   })
-  .returning('*')
+  .then((hashedPassword) => {
+    const insertUser = {fist_Name, last_name, email, hashed_password}
+
+    return knex('users').insert((insertUser), ('*'))
+  })
   .then((users)=>{
+    console.log(users)
     userIdQuery = users[0].id
+    console.log('hi')
     let user = {
       id: users[0].id,
       first_name: users[0].first_name,
       last_name: users[0].last_name,
       email: users[0].email,
     }
+    res.redirect(`http://localhost:3132/?id=${userIdQuery}`);
+
   })
   .catch((err) => {
     console.log(err.detail)
-    res.status(400)
-    res.send(err.detail)
   })
   var string = encodeURIComponent('something that would break');
   // res.redirect(`http://assorted-yard.surge.sh?id=${userIdQuery}`);
-  res.redirect(`http:localhost:3131?id=${userIdQuery}`);
-
+  console.log('hello')
+  console.log(userIdQuery)
 });
 
 app.use(bodyParser.json()); //keep before routes
