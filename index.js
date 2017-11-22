@@ -65,6 +65,7 @@ app.get('/auth/facebook', passport.authenticate('facebook', { scope: ['email']})
 app.get('/auth/facebook/callback',
 passport.authenticate('facebook', { failureRedirect: '/login' }),
 function(req, res) {
+  console.log(req.user)
   // console.log(req.user.profile.emails[0].value)
   let displayName = req.user.profile.displayName
   let firstAndLast = displayName.split(' ')
@@ -114,7 +115,6 @@ function(req, res) {
   })
   .catch((err) => {
     console.log('error')
-    console.log(err.detail)
   })
 
   console.log('hello')
