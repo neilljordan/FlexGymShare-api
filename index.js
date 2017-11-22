@@ -92,10 +92,14 @@ function(req, res) {
       userIdQuery = user.id
       res.redirect(`http://assorted-yard.surge.sh/?id=${userIdQuery}`);
     }
+    console.log('password: ')
+    console.log(password)
+    console.log('salt')
+    console.log(salt)
     console.log('bcrypting')
     return bcrypt.hashSync(password, salt)
   })
-  .then((hashedPassword) => {
+  .then((hashed_password) => {
     console.log('inserting user')
     const insertUser = {fist_Name, last_name, email, hashed_password}
     console.log(insertUser)
