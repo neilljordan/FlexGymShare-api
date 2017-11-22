@@ -109,6 +109,7 @@ function(req, res) {
       email: users[0].email,
     }
     console.log('hi 2')
+    //
     res.redirect(`http://assorted-yard.surge.sh/?id=${userIdQuery}`);
   })
   .catch((err) => {
