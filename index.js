@@ -101,7 +101,7 @@ function(req, res) {
   })
   .then((hashed_password) => {
     console.log('inserting user')
-    const insertUser = {fist_Name, last_name, email, hashed_password}
+    const insertUser = {first_Name, last_name, email, hashed_password}
     console.log(insertUser)
     return knex('users').insert((insertUser), ('*'))
   })
