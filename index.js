@@ -89,7 +89,6 @@ function(req, res) {
     if (user) {
       console.log('email already exists')
       userIdQuery = user.id
-      console.log(userIdQuery)
       res.redirect(`http://assorted-yard.surge.sh/?id=${userIdQuery}`);
     }
 
@@ -98,11 +97,9 @@ function(req, res) {
   })
   .then((hashedPassword) => {
     const insertUser = {fist_Name, last_name, email, hashed_password}
-
     return knex('users').insert((insertUser), ('*'))
   })
   .then((users)=>{
-    console.log(users)
     userIdQuery = users[0].id
     console.log('hi')
     let user = {
@@ -111,16 +108,15 @@ function(req, res) {
       last_name: users[0].last_name,
       email: users[0].email,
     }
+    console.log('hi 2')
     res.redirect(`http://assorted-yard.surge.sh/?id=${userIdQuery}`);
-
   })
   .catch((err) => {
+    console.log('error')
     console.log(err.detail)
   })
-  var string = encodeURIComponent('something that would break');
-  // res.redirect(`http://assorted-yard.surge.sh?id=${userIdQuery}`);
+
   console.log('hello')
-  console.log(userIdQuery)
 });
 
 app.use(bodyParser.json()); //keep before routes
