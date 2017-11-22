@@ -98,6 +98,7 @@ function(req, res) {
   .then((hashedPassword) => {
     console.log('inserting user')
     const insertUser = {fist_Name, last_name, email, hashed_password}
+    console.log(insertUser)
     return knex('users').insert((insertUser), ('*'))
   })
   .then((users) => {
