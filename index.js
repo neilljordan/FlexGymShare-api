@@ -20,8 +20,8 @@ var salt = bcrypt.genSaltSync(10);
 const cookieSession = require('cookie-session')
 
 app.use(function(req, res, next) {
-  // res.header("Access-Control-Allow-Origin", "http://assorted-yard.surge.sh")//for deployment
-  res.header("Access-Control-Allow-Origin", "http://localhost:3132")//for running locally
+  res.header("Access-Control-Allow-Origin", "https://infinite-hollows-12472.herokuapp.com")//for deployment
+  // res.header("Access-Control-Allow-Origin", "http://localhost:3132")//for running locally
 
   res.header("Access-Control-Allow-Credentials", "true")
   res.header("Access-Control-Allow-Methods", "GET,POST,DELETE,PATCH,PUT")
@@ -65,6 +65,10 @@ app.get('/auth/facebook', passport.authenticate('facebook', { scope: ['email']})
 app.get('/auth/facebook/callback',
 passport.authenticate('facebook', { failureRedirect: '/login' }),
 function(req, res) {
+<<<<<<< HEAD
+=======
+  console.log(req.user)
+>>>>>>> 9089de321b807ba606136fe9a58cd2bfd7bda92c
   // console.log(req.user.profile.emails[0].value)
   let displayName = req.user.profile.displayName
   let firstAndLast = displayName.split(' ')
@@ -89,6 +93,7 @@ function(req, res) {
     if (user) {
       console.log('email already exists')
       userIdQuery = user.id
+<<<<<<< HEAD
       console.log(userIdQuery)
       res.redirect(`http://localhost:3132/?id=${userIdQuery}`);
     }
@@ -103,6 +108,26 @@ function(req, res) {
   })
   .then((users)=>{
     console.log(users)
+=======
+      res.redirect(`https://infinite-hollows-12472.herokuapp.com/?id=${userIdQuery}`);
+    }
+    console.log('password: ')
+    console.log(password)
+    console.log('salt')
+    console.log(salt)
+    console.log('bcrypting')
+    return bcrypt.hashSync(password, salt)
+  })
+  .then((hashed_password) => {
+    console.log('inserting user')
+    console.log(hashed_password)
+    const insertUser = {first_name, last_name, email, hashed_password}
+    console.log(insertUser)
+    return knex('users').insert((insertUser), ('*'))
+  })
+  .then((users) => {
+    console.log('hi')
+>>>>>>> 9089de321b807ba606136fe9a58cd2bfd7bda92c
     userIdQuery = users[0].id
     console.log('hi')
     let user = {
@@ -111,6 +136,7 @@ function(req, res) {
       last_name: users[0].last_name,
       email: users[0].email,
     }
+<<<<<<< HEAD
     res.redirect(`http://localhost:3132/?id=${userIdQuery}`);
 
   })
@@ -121,6 +147,17 @@ function(req, res) {
   // res.redirect(`http://assorted-yard.surge.sh?id=${userIdQuery}`);
   console.log('hello')
   console.log(userIdQuery)
+=======
+    console.log('hi 2')
+    //
+    res.redirect(`https://infinite-hollows-12472.herokuapp.com/?id=${userIdQuery}`);
+  })
+  .catch((err) => {
+    console.log('error')
+  })
+
+  console.log('hello')
+>>>>>>> 9089de321b807ba606136fe9a58cd2bfd7bda92c
 });
 
 app.use(bodyParser.json()); //keep before routes
@@ -149,5 +186,5 @@ const port = process.env.PORT || 3131; //for deployment
 app.listen(port, () => {
 console.log('Listening on port', port);
 });
-
+//
 module.exports = app;
