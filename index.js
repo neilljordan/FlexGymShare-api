@@ -91,7 +91,7 @@ function(req, res) {
     if (user) {
       console.log('email already exists')
       userIdQuery = user.id
-      res.redirect(`http://infinite-hollows-12472.herokuapp.com/?id=${userIdQuery}`);
+      res.redirect(`http://http://localhost:3132/?id=${userIdQuery}`);
     }
     console.log('password: ')
     console.log(password)
@@ -118,7 +118,8 @@ function(req, res) {
     }
     console.log('hi 2')
     //
-    res.redirect(`http://infinite-hollows-12472.herokuapp.com/?id=${userIdQuery}`);
+    res.redirect(`http://localhost:3132/?id=${userIdQuery}`); //developement
+    // res.redirect(`http://infinite-hollows-12472.herokuapp.com/?id=${userIdQuery}`); //deployment
   })
   .catch((err) => {
     console.log('error')
