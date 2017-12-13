@@ -91,7 +91,7 @@ function(req, res) {
     if (user) {
       console.log('email already exists')
       userIdQuery = user.id
-      res.redirect(`http://http://localhost:3132/?id=${userIdQuery}`);//development
+      res.redirect(`http://localhost:3132/?id=${userIdQuery}`);//development
       // res.redirect(`http://infinite-hollows-12472.herokuapp.com/?id=${userIdQuery}`); //deployment
 
     }
