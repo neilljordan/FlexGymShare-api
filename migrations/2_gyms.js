@@ -7,7 +7,7 @@ exports.up = function(knex, Promise) {
     table.varchar('telephone').notNullable()
     table.string('address').notNullable()
     table.varchar('blackout')
-    table.text('ammenities')
+    // table.enu('ammenities', ['weights', 'cardio', 'sports facilities', 'yoga', 'personal training', 'fitness classes', 'spa', 'pool', 'pilates', 'day care', 'locker rooms', 'parking'])
     table.decimal('price').notNullable()
     table.string('image')
     table.timestamps(true, true)
