@@ -13,6 +13,7 @@ const gyms = require('./routes/gyms');
 const memberships = require('./routes/memberships');
 const dates = require('./routes/dates');
 const token = require('./routes/token');
+const ammenities = require('./routes/ammenities')
 
 var bcrypt = require('bcrypt');
 const knex = require('./knex');
@@ -135,7 +136,8 @@ app.use('/', users);
 app.use('/', gyms);
 app.use('/', memberships);
 app.use('/', dates);
-app.use('/', token)
+app.use('/', token);
+app.use('/', ammenities)
 
 
 app.use(express.static(path.join(__dirname, 'public')));
