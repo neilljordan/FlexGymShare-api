@@ -6,7 +6,7 @@ exports.seed = function(knex, Promise) {
         	id:1,
           	first_name:'That',
           	last_name:'Oneguy',
-            email: "genacatherine@gmail.com",
+            email: "jacktbader5@gmail.com",
             stars: 5,
             comments: '',
             hashed_password:'asdf',
