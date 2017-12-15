@@ -21,8 +21,8 @@ var salt = bcrypt.genSaltSync(10);
 const cookieSession = require('cookie-session')
 
 app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "https://infinite-hollows-12472.herokuapp.com")//for heroku
-  // res.header("Access-Control-Allow-Origin", "http://localhost:3132")//for running locally
+  // res.header("Access-Control-Allow-Origin", "https://infinite-hollows-12472.herokuapp.com")//for heroku
+  res.header("Access-Control-Allow-Origin", "http://localhost:3132")//for running locally
   res.header("Access-Control-Allow-Credentials", "true")
   res.header("Access-Control-Allow-Methods", "GET,POST,DELETE,PATCH,PUT")
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
@@ -90,8 +90,8 @@ function(req, res) {
     if (user) {
       console.log('email already exists')
       userIdQuery = user.id
-      // res.redirect(`http://localhost:3132/?id=${userIdQuery}`);//development
-      res.redirect(`https://infinite-hollows-12472.herokuapp.com/?id=${userIdQuery}`); //deployment
+      res.redirect(`http://localhost:3132/?id=${userIdQuery}`);//development
+      // res.redirect(`https://infinite-hollows-12472.herokuapp.com/?id=${userIdQuery}`); //deployment
 
     }
     console.log('password: ')
@@ -119,8 +119,8 @@ function(req, res) {
     }
     console.log('hi 2')
     //
-    // res.redirect(`http://localhost:3132/?id=${userIdQuery}`); //developement
-    res.redirect(`https://infinite-hollows-12472.herokuapp.com/?id=${userIdQuery}`); //deployment
+    res.redirect(`http://localhost:3132/?id=${userIdQuery}`); //developement
+    // res.redirect(`https://infinite-hollows-12472.herokuapp.com/?id=${userIdQuery}`); //deployment
   })
   .catch((err) => {
     console.log('error')
