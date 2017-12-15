@@ -33,6 +33,7 @@ app.use(function(req, res, next) {
 
 app.use(cookieSession({ secret: 'keyboard cat' }));
 
+
 app.use(bodyParser.json()); //keep before routes
 // app.use(cors());
 app.use(morgan('dev'))
