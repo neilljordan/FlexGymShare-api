@@ -33,12 +33,6 @@ app.use(function(req, res, next) {
 
 app.use(cookieSession({ secret: 'keyboard cat' }));
 
-// app.use(cors)
-
-//
-// // Step 2: Setting up the callback route
-// // makes 2 api calls to github
-
 app.use(bodyParser.json()); //keep before routes
 // app.use(cors());
 app.use(morgan('dev'))
