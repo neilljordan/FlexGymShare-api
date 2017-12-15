@@ -17,6 +17,41 @@ router.get('/users', (req, res, next) => {
   })
 });
 
+router.get('/users/:email/:displayName', (req, res, next) => {
+  let email = req.params.email
+  let displayName = req.params.displayName
+  console.log(email)
+  console.log(displayName)
+  let displayNameArray = displayName.split(' ')
+  console.log(displayNameArray)
+  let first_name = displayNameArray[0]
+  let last_name = displayNameArray[1]
+
+  knex('users')
+  .where('email', email)
+  .first()
+  .then((user) => {
+    console.log(user)
+    if (user) {
+       console.log(user[0].id)
+       console.log('email already exists')
+       let id = user[0].id
+       console.log(id)
+       return res.send(JSON.stringify(id))
+
+    } else {
+      console.log('email doesnt exisit')
+      let password = 'facebook_user_password'
+      let hashed_password = bcrypt.hashSync(password, salt)
+      const insertUser = {first_name, last_name, email, hashed_password}
+      console.log(insertUser)
+      knex('users').insert((insertUser), ('*'))
+      return res.send(JSON.stringify(insertUser))
+    }
+  })
+  .catch((err) => next(err))
+})
+
 router.get('/users/:id', (req, res, next) =>{
   const id = req.params.id;
   knex('users')
