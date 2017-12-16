@@ -31,22 +31,25 @@ router.get('/users/:email/:displayName', (req, res, next) => {
   .where('email', email)
   .first()
   .then((user) => {
-    console.log(user)
+     console.log(user)
+     console.log('typeof' + typeof(user))
     if (user) {
-       console.log(user[0].id)
-       console.log('email already exists')
-       let id = user[0].id
-       console.log(id)
-       return res.send(JSON.stringify(id))
-
+     console.log('email already exists')
+     console.log(user.id)
+     let id = user.id
+     console.log(id)
+     return res.send(JSON.stringify(id))
     } else {
       console.log('email doesnt exisit')
       let password = 'facebook_user_password'
       let hashed_password = bcrypt.hashSync(password, salt)
       const insertUser = {first_name, last_name, email, hashed_password}
       console.log(insertUser)
-      knex('users').insert((insertUser), ('*'))
-      return res.send(JSON.stringify(insertUser))
+      return knex('users')
+      .insert((insertUser), ('*'))
+      .then((user) => {
+        res.send(JSON.stringify(user.id))
+      })
     }
   })
   .catch((err) => next(err))
