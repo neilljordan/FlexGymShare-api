@@ -22,7 +22,7 @@ const cookieSession = require('cookie-session')
 
 app.use(function(req, res, next) {
   // res.header("Access-Control-Allow-Origin", "https://infinite-hollows-12472.herokuapp.com")//for heroku
-  res.header("Access-Control-Allow-Origin", "http://localhost:3132")//for running locally
+  res.header("Access-Control-Allow-Origin", "https://flexgymshare.herokuapp.com/")//for running locally
   res.header("Access-Control-Allow-Credentials", "true")
   res.header("Access-Control-Allow-Methods", "GET,POST,DELETE,PATCH,PUT")
   res.header("Access-Control-Allow-Headers", "Content-Type, Accept")
