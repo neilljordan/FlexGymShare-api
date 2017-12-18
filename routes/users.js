@@ -44,8 +44,9 @@ router.get('/users/:email/:displayName', (req, res, next) => {
       console.log(insertUser)
       return knex('users')
       .insert((insertUser), ('*'))
-      .then((user) => {
-        res.send(JSON.stringify(insertUser.id))
+      .then((userFound) => {
+        console.log(userFound[0])
+        res.send(JSON.stringify(userFound[0].id))
       })
     }
   })
