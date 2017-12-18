@@ -20,10 +20,7 @@ router.get('/users', (req, res, next) => {
 router.get('/users/:email/:displayName', (req, res, next) => {
   let email = req.params.email
   let displayName = req.params.displayName
-  console.log(email)
-  console.log(displayName)
   let displayNameArray = displayName.split(' ')
-  console.log(displayNameArray)
   let first_name = displayNameArray[0]
   let last_name = displayNameArray[1]
 
