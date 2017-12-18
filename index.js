@@ -22,8 +22,8 @@ const cookieSession = require('cookie-session')
 
 
 app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", `https://flexgymshare.herokuapp.com`)//for running locally
-  // res.header("Access-Control-Allow-Origin", `http://localhost:3001`)//for running locally
+  // res.header("Access-Control-Allow-Origin", `https://flexgymshare.herokuapp.com`)//for production
+  res.header("Access-Control-Allow-Origin", `http://localhost:3000`)//for development
   res.header("Access-Control-Allow-Credentials", "true")
   res.header("Access-Control-Allow-Methods", "GET,POST,DELETE,PATCH,PUT")
   res.header("Access-Control-Allow-Headers", "Content-Type, Accept")
