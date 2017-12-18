@@ -20,8 +20,11 @@ const knex = require('./knex');
 var salt = bcrypt.genSaltSync(10);
 const cookieSession = require('cookie-session')
 
+//test hi LOL
+
 app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "https://flexgymshare.herokuapp.com")//for running locally
+  res.header("Access-Control-Allow-Origin", `https://flexgymshare.herokuapp.com`)//for running locally
+  // res.header("Access-Control-Allow-Origin", `http://localhost:3001`)//for running locally
   res.header("Access-Control-Allow-Credentials", "true")
   res.header("Access-Control-Allow-Methods", "GET,POST,DELETE,PATCH,PUT")
   res.header("Access-Control-Allow-Headers", "Content-Type, Accept")
