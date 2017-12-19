@@ -17,12 +17,15 @@ router.get('/users', (req, res, next) => {
   })
 });
 
-router.get('/users/:email/:displayName', (req, res, next) => {
+router.get('/users/:email/:displayName/:profileImage', (req, res, next) => {
+  console.log('hi')
   let email = req.params.email
   let displayName = req.params.displayName
   let displayNameArray = displayName.split(' ')
   let first_name = displayNameArray[0]
   let last_name = displayNameArray[1]
+  let profile_image = decodeURIComponent(req.params.profileImage)
+  // profile_image = profile_image.replace(/%/g, '?')
 
   knex('users')
   .where('email', email)
@@ -40,13 +43,12 @@ router.get('/users/:email/:displayName', (req, res, next) => {
       console.log('email doesnt exisit')
       let password = 'facebook_user_password'
       let hashed_password = bcrypt.hashSync(password, salt)
-      const insertUser = {first_name, last_name, email, hashed_password}
+      const insertUser = {first_name, last_name, email, hashed_password, profile_image}
       console.log(insertUser)
       return knex('users')
       .insert((insertUser), ('*'))
-      .then((userFound) => {
-        console.log(userFound[0])
-        res.send(JSON.stringify(userFound[0].id))
+      .then((newUser) => {
+        res.send(JSON.stringify(newUser[0]))
       })
     }
   })
@@ -65,7 +67,7 @@ router.get('/users/:id', (req, res, next) =>{
 
 router.post('/users', (req, res, next) => {
 
-  const { first_name, last_name, email, password } = req.body
+  const { first_name, last_name, email, password, profile_image } = req.body
 
   knex('users')
   .insert({
@@ -74,7 +76,8 @@ router.post('/users', (req, res, next) => {
     email: email,
     // stars,
     // comments,
-    hashed_password: bcrypt.hashSync(password, salt)
+    hashed_password: bcrypt.hashSync(password, salt),
+    profile_image: profile_image
     // token,
     // fb_user
   })

@@ -6,10 +6,11 @@ exports.seed = function(knex, Promise) {
         	id:1,
           	first_name:'That',
           	last_name:'Oneguy',
-            email: "jacktbader5@gmail.com",
+            email: "jesus@gmail.com",
             stars: 5,
             comments: '',
             hashed_password:'asdf',
+            profile_image: ''
             // token:'',
             // fb_user: ''
         }
