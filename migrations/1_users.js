@@ -7,6 +7,7 @@ exports.up = function(knex, Promise) {
     table.integer('stars').notNullable().defaultTo(5)
     table.string('comments').defaultTo('')
     table.specificType('hashed_password', 'char(60)').notNullable()
+    table.string('profile_image').defaultTo('')
     // table.string('token').notNullable().unique()
     // table.string('fb_user').notNullable().unique()
     table.timestamps(true, true)
