@@ -17,7 +17,41 @@ router.get('/users', (req, res, next) => {
   })
 });
 
-router.get('/users/:email/:displayName/:profileImage', (req, res, next) => {
+router.get('/users/:email', (req, res, next) => {
+  let email = req.params.email
+
+  knex('users')
+  .where('email', email)
+  .first()
+  .then((user) => {
+    if (user) {
+      res.send(JSON.stringify(true))
+    } else {
+      res.send(JSON.stringify(false))
+    }
+  })
+  .catch((err) => next(err))
+
+})
+
+router.get('/users/uid/:uid', (req, res, next) => {
+  let uid = req.params.uid
+
+  knex('users')
+  .where('facebookUID', uid)
+  .first()
+  .then((user) => {
+    if (user) {
+      res.send(JSON.stringify(true))
+    } else {
+      res.send(JSON.stringify(false))
+    }
+  })
+  .catch((err) => next(err))
+
+})
+
+router.get('/users/:email/:displayName/:profileImage/:uid', (req, res, next) => {
   console.log('hi')
   let email = req.params.email
   let displayName = req.params.displayName
@@ -25,6 +59,7 @@ router.get('/users/:email/:displayName/:profileImage', (req, res, next) => {
   let first_name = displayNameArray[0]
   let last_name = displayNameArray[1]
   let profile_image = decodeURIComponent(req.params.profileImage)
+  let facebookUID = req.params.uid
   // profile_image = profile_image.replace(/%/g, '?')
 
   knex('users')
@@ -43,7 +78,7 @@ router.get('/users/:email/:displayName/:profileImage', (req, res, next) => {
       console.log('email doesnt exisit')
       let password = 'facebook_user_password'
       let hashed_password = bcrypt.hashSync(password, salt)
-      const insertUser = {first_name, last_name, email, hashed_password, profile_image}
+      const insertUser = {first_name, last_name, email, hashed_password, profile_image, facebookUID}
       console.log(insertUser)
       return knex('users')
       .insert((insertUser), ('*'))
