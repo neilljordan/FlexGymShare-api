@@ -42,7 +42,7 @@ router.get('/users/uid/:uid', (req, res, next) => {
   .first()
   .then((user) => {
     if (user) {
-      res.send(JSON.stringify(true))
+      res.send(JSON.stringify(user))
     } else {
       res.send(JSON.stringify(false))
     }
@@ -73,7 +73,7 @@ router.get('/users/:email/:displayName/:profileImage/:uid', (req, res, next) => 
      console.log(user.id)
      let id = user.id
      console.log(id)
-     return res.send(JSON.stringify(id))
+     return res.send(JSON.stringify(user))
     } else {
       console.log('email doesnt exisit')
       let password = 'facebook_user_password'
