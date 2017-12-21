@@ -59,6 +59,9 @@ router.get('/users/:email/:displayName/:profileImage/:uid', (req, res, next) => 
   let first_name = displayNameArray[0]
   let last_name = displayNameArray[1]
   let profile_image = decodeURIComponent(req.params.profileImage)
+  let createdAt = req.body
+  console.log(createdAt)
+
   let facebookUID = req.params.uid
   // profile_image = profile_image.replace(/%/g, '?')
 
