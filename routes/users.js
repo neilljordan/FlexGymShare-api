@@ -17,7 +17,7 @@ router.get('/users', (req, res, next) => {
   })
 });
 
-router.get('/users/:email', (req, res, next) => {
+router.get('/users/email/:email', (req, res, next) => {
   let email = req.params.email
 
   knex('users')
