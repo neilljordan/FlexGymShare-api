@@ -42,11 +42,19 @@ router.get('/daypasses/:id', (req, res, next) =>{
 });
 
 router.post('/daypasses', (req, res, next) => {
-  // console.log('hitting post')
-  const { arr } = req.body
+
+  console.log(req.body)
+
+  let { gym_id, user_id, date } = req.body
+
+
   // console.log(req.body.arr)
   knex('daypasses')
-  .insert(arr)
+  .insert({
+    gym_id: gym_id,
+    user_id: user_id,
+    date: date
+  })
   .returning('*')
   .then((daypass)=>{
     res.json(daypass)
