@@ -14,6 +14,7 @@ const memberships = require('./routes/memberships');
 const dates = require('./routes/dates');
 const token = require('./routes/token');
 const ammenities = require('./routes/ammenities')
+const daypasses = require('./routes/daypasses')
 
 var bcrypt = require('bcrypt');
 const knex = require('./knex');
@@ -44,6 +45,7 @@ app.use('/', memberships);
 app.use('/', dates);
 app.use('/', token);
 app.use('/', ammenities)
+app.use('/', daypasses)
 
 
 app.use(express.static(path.join(__dirname, 'public')));
