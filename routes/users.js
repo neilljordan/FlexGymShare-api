@@ -136,11 +136,12 @@ router.patch('/users/:id', function(req, res, next) {
 // console.log('hit patch')
   const id = req.params.id
   // console.log(id)
-  let password = req.body.password
-  let hashed_password = bcrypt.hashSync(password, salt)
+  let password = ''
+  let hashed_password = ''
   // console.log(hashed_password)
   // console.log(id)
-  const { first_name, last_name, email } = req.body
+  console.log(req.body)
+  const { first_name, last_name, email, gym_id } = req.body
 
   let patchUser = {}
 
@@ -156,6 +157,7 @@ router.patch('/users/:id', function(req, res, next) {
   if (password) {
     patchUser.hashed_password = hashed_password
   }
+
   console.log(id)
   console.log(patchUser)
   knex('users')
