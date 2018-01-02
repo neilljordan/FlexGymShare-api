@@ -9,7 +9,7 @@ exports.up = function(knex, Promise) {
     table.specificType('hashed_password', 'char(60)').notNullable()
     table.string('profile_image').defaultTo('')
     table.string('facebookUID').defaultTo('')
-    // table.integer('gym_id').references('gyms.id').onDelete('CASCADE').index()
+    table.integer('gym_id').references('gyms.id').onDelete('CASCADE').index()
     // table.string('token').notNullable().unique()
     // table.string('fb_user').notNullable().unique()
     table.timestamps(true, true)
