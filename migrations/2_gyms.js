@@ -1,6 +1,6 @@
 exports.up = function(knex, Promise) {
   return knex.schema.createTable('gyms', (table)=>{
-    table.increments('id').notNullable()
+    table.increments('id').primary().notNullable()
     table.string('name').notNullable()
     table.text('description').notNullable()
     table.varchar('hours').notNullable()
