@@ -15,6 +15,7 @@ const dates = require('./routes/dates');
 const token = require('./routes/token');
 const ammenities = require('./routes/ammenities')
 const daypasses = require('./routes/daypasses')
+const listings = require('./routes/listings')
 
 var bcrypt = require('bcrypt');
 const knex = require('./knex');
@@ -23,8 +24,8 @@ const cookieSession = require('cookie-session')
 
 
 app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", `https://test.flexgymshare.com`)//for running locally
-  // res.header("Access-Control-Allow-Origin", `http://localhost:3000`)//for running locally
+  // res.header("Access-Control-Allow-Origin", `https://test.flexgymshare.com`)//for running locally
+  res.header("Access-Control-Allow-Origin", `http://localhost:3000`)//for running locally
   res.header("Access-Control-Allow-Credentials", "true")
   res.header("Access-Control-Allow-Methods", "GET,POST,DELETE,PATCH,PUT")
   res.header("Access-Control-Allow-Headers", "Content-Type, Accept")
@@ -46,6 +47,7 @@ app.use('/', dates);
 app.use('/', token);
 app.use('/', ammenities)
 app.use('/', daypasses)
+app.use('/', listings)
 
 
 app.use(express.static(path.join(__dirname, 'public')));
