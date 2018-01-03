@@ -66,11 +66,11 @@ router.patch('/ledger/:id', function(req, res, next) {
   }
   // console.log(id)
   // console.log(patchGym)
-  knex('listings')
+  knex('ledger')
   .where('id', id)
 
   .then((ledger)=>{
-    knex('listings')
+    knex('ledger')
     .update(patchLedger)
     .where('id', id)
     .returning('*')
