@@ -112,6 +112,7 @@ router.post('/users', (req, res, next) => {
     first_name: first_name,
     last_name: last_name,
     email: email,
+    gym_id: null,
     // stars,
     // comments,
     hashed_password: bcrypt.hashSync(password, salt),
