@@ -140,8 +140,8 @@ router.patch('/users/:id', function(req, res, next) {
   let hashed_password = ''
   // console.log(hashed_password)
   // console.log(id)
+  const { first_name, last_name, email, gymId } = req.body
   console.log(req.body)
-  const { first_name, last_name, email, gym_id } = req.body
 
   let patchUser = {}
 
@@ -157,8 +157,11 @@ router.patch('/users/:id', function(req, res, next) {
   if (password) {
     patchUser.hashed_password = hashed_password
   }
+  if (gymId) {
+    patchUser.gym_id = gymId
+  }
 
-  console.log(id)
+  console.log("this is gymId " +gymId)
   console.log(patchUser)
   knex('users')
   .where('id', id)
@@ -173,11 +176,12 @@ router.patch('/users/:id', function(req, res, next) {
     .then((users)=>{
       console.log(users)
       let patchUser = {
-        // id: users[0].id,
+        id: users[0].id,
         first_name: users[0].first_name,
         last_name: users[0].last_name,
         email: users[0].email,
-        hashed_password: users[0].hashed_password
+        hashed_password: users[0].hashed_password,
+        gymId: users[0].gym_id
       }
       res.json(patchUser)
     })
