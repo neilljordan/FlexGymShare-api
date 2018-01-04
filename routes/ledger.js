@@ -30,7 +30,7 @@ router.get('/ledgers/:id', (req, res, next) =>{
 router.post('/ledger', (req, res, next) => {
   console.log('hitting post')
   // console.log(req.body)
-  const { user_id, listing_id, ledger_hash } = req.body
+  const { user_id, listing_id, ledger_hash, gym_id } = req.body
   // console.log(req.body)
   // console.log(bcrypt)
   // console.log(salt)
@@ -38,7 +38,8 @@ router.post('/ledger', (req, res, next) => {
   .insert({
     user_id: user_id,
     listing_id: listing_id,
-    ledger_hash: ledger_hash
+    ledger_hash: ledger_hash,
+    gym_id: gym_id
   })
   .returning('*')
   .then((ledger)=>{
