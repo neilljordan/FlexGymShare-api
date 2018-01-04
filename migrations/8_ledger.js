@@ -3,7 +3,7 @@ exports.up = function(knex, Promise) {
     table.increments('id').primary()
     table.integer('user_id').notNullable().references('users.id').onDelete('CASCADE').index()
     table.integer('listing_id').references('listings.id').onDelete('CASCADE').index()
-    table.integer('gym_id').references('gym.id').onDelete('CASCADE').index()
+    table.integer('gym_id').references('gyms.id').onDelete('CASCADE').index()
     table.string('ledger_hash')
     table.timestamps(true, true)
   })
