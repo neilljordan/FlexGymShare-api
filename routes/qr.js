@@ -12,9 +12,9 @@ router.get('/qrCodes/:id', function(req, res){
   id.replace(new RegExp('>', 'g'), '/')
   let crypted = bcrypt.hashSync(id, salt)
   console.log(crypted)
-  var qr_png = qr.image(`http://localhost:3000/verification/${id}`, { type: 'png' });
+  var qr_png = qr.image(`https://test.flexgymshare.com/verification/${id}`, { type: 'png' });
   qr_png.pipe(require('fs').createWriteStream('validate_session.png'));
-  var png_string = qr.imageSync(`http://localhost:3000/verification/${id}`, { type: 'png' });
+  var png_string = qr.imageSync(`https://test.flexgymshare.com/verification/${id}`, { type: 'png' });
   res.send(png_string)
 })
 
