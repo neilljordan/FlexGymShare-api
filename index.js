@@ -26,10 +26,10 @@ const knex = require('./knex');
 const salt = bcrypt.genSaltSync(10);
 const cookieSession = require('cookie-session')
 
+console.log(process.env.NODE_ENV)
 
 app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", `https://test.flexgymshare.com`)//for running locally
-  // res.header("Access-Control-Allow-Origin", `http://localhost:3000`)//for running locally
+  res.header("Access-Control-Allow-Origin", `${process.env.REACT_APP_API_URL}`)//for running locally
   res.header("Access-Control-Allow-Credentials", "true")
   res.header("Access-Control-Allow-Methods", "GET,POST,DELETE,PATCH,PUT")
   res.header("Access-Control-Allow-Headers", "Content-Type, Accept")
@@ -76,5 +76,7 @@ const svg_string = qr.imageSync('I love QR!', { type: 'svg' });
 app.listen(port, () => {
 console.log('Listening on port', port);
 });
+
+console.log(process.env.NODE_ENV)
 //
 module.exports = app;
