@@ -64,22 +64,21 @@ router.patch('/listings/:id', function(req, res, next) {
     patchListing.gym_id = gym_id
   }
   if (purchased) {
-    patchListing.price = price
+    patchListing.purchased = purchased
   }
   if (date) {
     patchListing.date = date
   }
   // console.log(id)
   // console.log(patchGym)
+  console.log(patchListing)
   knex('listings')
   .where('id', id)
-
   .then((listing)=>{
     knex('listings')
     .update(patchListing)
     .where('id', id)
     .returning('*')
-
     .then((newListing)=>{
       res.json(newListing)
     })

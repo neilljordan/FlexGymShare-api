@@ -16,10 +16,14 @@ const token = require('./routes/token');
 const ammenities = require('./routes/ammenities')
 const daypasses = require('./routes/daypasses')
 const listings = require('./routes/listings')
+const ledger = require('./routes/ledger')
+const qrCodes = require('./routes/qr')
 
-var bcrypt = require('bcrypt');
+const qr = require('qr-image');
+const fs = require('fs');
+const bcrypt = require('bcrypt');
 const knex = require('./knex');
-var salt = bcrypt.genSaltSync(10);
+const salt = bcrypt.genSaltSync(10);
 const cookieSession = require('cookie-session')
 
 
@@ -48,7 +52,8 @@ app.use('/', token);
 app.use('/', ammenities)
 app.use('/', daypasses)
 app.use('/', listings)
-
+app.use('/', ledger)
+app.use('/', qrCodes)
 
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -59,6 +64,13 @@ res.sendStatus(404);
 
 const port = process.env.PORT || 3131; //for deployment
 // const port = process.env.PORT || 3000; //for running locally
+
+// for qr codes
+const qr_svg = qr.image('I love QR!', { type: 'svg' });
+
+qr_svg.pipe(require('fs').createWriteStream('i_love_qr.svg'));
+
+const svg_string = qr.imageSync('I love QR!', { type: 'svg' });
 
 
 app.listen(port, () => {
