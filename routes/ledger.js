@@ -27,6 +27,7 @@ router.get('/ledger/:id', (req, res, next) =>{
   .catch((err) => next(err))
 });
 
+//
 router.post('/ledger', (req, res, next) => {
   const { gym_date, user_id, listing_id, ledger_hash, gym_id, currentTime } = req.body
   let pass = currentTime+gym_date+user_id+listing_id+gym_id
@@ -36,6 +37,7 @@ router.post('/ledger', (req, res, next) => {
     user_id: user_id,
     listing_id: listing_id,
     ledger_hash: bcrypt.hashSync(pass, salt),
+
     gym_id: gym_id
   })
   .returning('*')
