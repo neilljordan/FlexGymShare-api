@@ -17,34 +17,30 @@ router.get('/ledger', (req, res, next) => {
   })
 });
 
-router.get('/ledgers/:id', (req, res, next) =>{
+router.get('/ledger/:id', (req, res, next) =>{
   const id = req.params.id;
-  knex('ledgers')
+  knex('ledger')
   .where('id', id)
   .then((ledger) => {
-    res.json(ledger)
+    res.json(ledger[0])
   })
   .catch((err) => next(err))
 });
 
-//
 router.post('/ledger', (req, res, next) => {
-  console.log('hitting post')
-  // console.log(req.body)
-  const { user_id, listing_id, ledger_hash, gym_id } = req.body
-  // console.log(req.body)
-  // console.log(bcrypt)
-  // console.log(salt)
+  const { gym_date, user_id, listing_id, ledger_hash, gym_id, currentTime } = req.body
+  let pass = currentTime+gym_date+user_id+listing_id+gym_id
   knex('ledger')
   .insert({
+    gym_date: gym_date,
     user_id: user_id,
     listing_id: listing_id,
-    ledger_hash: ledger_hash,
+    ledger_hash: bcrypt.hashSync(pass, salt),
     gym_id: gym_id
   })
   .returning('*')
   .then((ledger)=>{
-    res.json(ledger)
+    res.json(ledger[0])
   })
   .catch((err)=>next(err))
 });

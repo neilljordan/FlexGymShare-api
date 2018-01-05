@@ -29,8 +29,9 @@ router.get('/listings/:id', (req, res, next) =>{
 
 router.post('/listings', (req, res, next) => {
   console.log('hitting post')
-  // console.log(req.body)
   const { user_id, gym_id, purchased, date } = req.body
+  console.log(req.body)
+  console.log(typeof req.body)
   // console.log(req.body)
   // console.log(bcrypt)
   // console.log(salt)
@@ -38,7 +39,7 @@ router.post('/listings', (req, res, next) => {
   .insert({
     user_id: user_id,
     gym_id: gym_id,
-    purchased: purchased,
+    purchased: false,
     date: date
   })
   .returning('*')
@@ -49,8 +50,8 @@ router.post('/listings', (req, res, next) => {
 });
 
 router.patch('/listings/:id', function(req, res, next) {
-// console.log('hit patch')
   const id = req.params.id
+  console.log(id)
   // console.log(id)
   const { user_id, gym_id, purchased, date } = req.body
 
