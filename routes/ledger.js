@@ -28,8 +28,8 @@ router.get('/ledger/:id', (req, res, next) =>{
 });
 
 router.post('/ledger', (req, res, next) => {
-  const { gym_date, user_id, listing_id, ledger_hash, gym_id } = req.body
-  let pass = gym_date+user_id+listing_id+gym_id
+  const { gym_date, user_id, listing_id, ledger_hash, gym_id, currentTime } = req.body
+  let pass = currentTime+gym_date+user_id+listing_id+gym_id
   knex('ledger')
   .insert({
     gym_date: gym_date,
