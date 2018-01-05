@@ -18,8 +18,23 @@ router.get('/qrCodes/:id', function(req, res){
   res.send(png_string)
 })
 
-// router.get('/qrCodes/Verification/:id', function(req, res){
-//     let smokeyBrowns = bcrypt.compare(myPlaintextPassword, hash).then(function(res) {
-// })
+router.get('/qrCodes/verification/:hash', function(req, res){
+
+  let hash = req.params.hash
+  let stuff = hash.replace('>', '/')
+  console.log('***********************'+stuff)
+
+
+  knex('ledger')
+    .where('ledger_hash', stuff)
+    .then((newLedger)=>{
+      console.log(newLedger)
+      res.json(newLedger[0])
+    })
+    .catch((err)=>next(err))
+
+  console.log(stuff)
+
+})
 
 module.exports = router;
