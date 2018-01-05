@@ -9,7 +9,7 @@ const salt = bcrypt.genSaltSync(10);
 //qr route;
 router.get('/qrCodes/:id', function(req, res){
   let id = req.params.id
-  id.replace('>', '/')
+  id.replace(new RegExp('>', 'g'), '/')
   let crypted = bcrypt.hashSync(id, salt)
   console.log(crypted)
   var qr_png = qr.image(`http://localhost:3000/verification/${id}`, { type: 'png' });
@@ -21,7 +21,7 @@ router.get('/qrCodes/:id', function(req, res){
 router.get('/qrCodes/verification/:hash', function(req, res){
 
   let hash = req.params.hash
-  let stuff = hash.replace('>', '/')
+  let stuff = hash.replace(new RegExp('>', 'g'), '/')
   console.log('***********************'+stuff)
 
 
