@@ -5,6 +5,7 @@ exports.up = function(knex, Promise) {
     table.integer('listing_id').references('listings.id').onDelete('CASCADE').index()
     table.integer('gym_id').references('gyms.id').onDelete('CASCADE').index()
     table.string('ledger_hash')
+    table.date('gym_date').notNullable()
     table.timestamps(true, true)
   })
 };

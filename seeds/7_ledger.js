@@ -6,7 +6,9 @@ exports.seed = function(knex, Promise) {
         	id: 1,
           user_id: 1,
           listing_id: null,
-          ledger_hash: 'sk345kjh345kjl34'
+          ledger_hash: 'sk345kjh345kjl34',
+          gym_id: 1,
+          gym_date: '1-30-18'
         }
       ])
       .then(()=>{
