@@ -47,7 +47,7 @@ router.post('/daypasses', (req, res, next) => {
 
   let { gym_id, user_id, date } = req.body
 
-
+//
   // console.log(req.body.arr)
   knex('daypasses')
   .insert({
