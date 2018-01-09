@@ -2,7 +2,7 @@ module.exports = {
 
   development: {
     client: 'pg',
-    connection: 'postgres://localhost/flex_dev'
+    connection: process.env.DATABASE_URL
     },
 
   production: {
