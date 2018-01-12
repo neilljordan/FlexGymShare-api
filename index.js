@@ -27,7 +27,16 @@ const salt = bcrypt.genSaltSync(10);
 const cookieSession = require('cookie-session')
 
 // set up some basic security stuff
-const headerOrigin = process.env.ORIGIN_HOST || 'https://test.flexgymshare.com'; //for deployment
+// const headerOrigin = process.env.REACT_APP_API_URL//for deployment
+
+
+console.log(process.env.NODE_ENV)
+let headerOrigin = ''
+if (process.env.NODE_ENV === undefined) {
+  headerOrigin = 'http://localhost:3000'
+} else {
+  headerOrigin = 'https://test.flexgymshare.com'
+}
 
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", `${headerOrigin}`)//for running locally
