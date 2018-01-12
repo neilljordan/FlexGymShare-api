@@ -26,15 +26,8 @@ const knex = require('./knex');
 const salt = bcrypt.genSaltSync(10);
 const cookieSession = require('cookie-session')
 
-console.log(process.env.NODE_ENV)
-let headerOrigin = ''
-if (process.env.NODE_ENV === undefined) {
-  headerOrigin = 'http://localhost:3000'
-} else {
-  headerOrigin = 'https://test.flexgymshare.com'
-}
-
-console.log(headerOrigin)
+// set up some basic security stuff
+const headerOrigin = process.env.ORIGIN_HOST || 'https://test.flexgymshare.com'; //for deployment
 
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", `${headerOrigin}`)//for running locally
@@ -71,20 +64,19 @@ res.sendStatus(404);
 
 
 const port = process.env.PORT || 3131; //for deployment
-// const port = process.env.PORT || 3000; //for running locally
 
 // for qr codes
 const qr_svg = qr.image('I love QR!', { type: 'svg' });
-
 qr_svg.pipe(require('fs').createWriteStream('i_love_qr.svg'));
-
 const svg_string = qr.imageSync('I love QR!', { type: 'svg' });
 
-
+// log some info to console after starting
 app.listen(port, () => {
-console.log('Listening on port', port);
+  console.log('Listening on port', port);
 });
 
-console.log(process.env.NODE_ENV)
-//
+console.log('Allowed origin: ' + headerOrigin);
+console.log('Node configuration: ' + process.env.NODE_ENV);
+console.log('Node version: ' + process.version);
+
 module.exports = app;
