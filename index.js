@@ -27,6 +27,7 @@ const salt = bcrypt.genSaltSync(10);
 const cookieSession = require('cookie-session')
 
 // set up some basic security stuff
+//
 const headerOrigin = process.env.ORIGIN_HOST || 'https://test.flexgymshare.com'; //for deployment
 
 app.use(function(req, res, next) {
