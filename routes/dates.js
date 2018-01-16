@@ -108,7 +108,7 @@ router.delete('/dates/', function(req, res, next) {
   })
 });
 
-
+//
 router.delete('/dates/:id', function(req, res, next) {
   const id = req.params.id
   knex('dates')
