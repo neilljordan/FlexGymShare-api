@@ -12,7 +12,7 @@ exports.seed = function(knex, Promise) {
             website: 'http://oneboulderfitness.com/',
             blackout: "12/25/2017",
             price : 10,
-            image: 'http://96bda424cfcc34d9dd1a-0a7f10f87519dba22d2dbc6233a731e5.r41.cf2.rackcdn.com/oneboulderfitness/logo/ONE-Logo-Tagline-NoRibbon/ONE-Logo-Tagline-NoRibbon_gallery.png'
+            image: 'https://i.imgur.com/dMX53Om.png'
         },
         {
             id:2,
@@ -24,7 +24,7 @@ exports.seed = function(knex, Promise) {
             website: 'https://www.wellbridge.com/colorado-athletic-club/boulder',
             blackout: "Sunday, December 24 | 6AM-1PM, Monday: December 25 | Closed, Sunday: December 31 | 5AM-6PM",
             price : 9,
-            image: 'http://www.centennialgunclub.com/wp-content/uploads/2016/01/colorado-athletic-club.png'
+            image: 'https://i.imgur.com/6JqFYZx.png'
         },
         {
             id:3,
@@ -36,7 +36,7 @@ exports.seed = function(knex, Promise) {
             website: 'https://www.24hourfitness.com/Website/clubList/CO/boulder',
             blackout: "none",
             price : 7.50,
-            image: 'http://www.bsideblog.com/images/2008/06/24HourFitness.jpg'
+            image: 'https://i.imgur.com/6i0c0ko.png'
           }
       ])
       .then(()=>{
