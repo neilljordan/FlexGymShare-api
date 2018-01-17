@@ -12,3 +12,4 @@ exports.down = function(knex, Promise) {
   return knex.schema.dropTable('daypasses')
 };
 //
+//
