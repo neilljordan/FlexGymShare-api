@@ -5,6 +5,7 @@ const knex = require('../knex');
 const router = express.Router();
 
 //
+//
 
 router.get('/ammenities', (req, res, next) => {
   knex('ammenities')
