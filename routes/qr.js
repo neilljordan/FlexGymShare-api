@@ -21,6 +21,7 @@ router.get('/qrCodes/:id', function(req, res){
 router.get('/qrCodes/verification/:hash', function(req, res){
 
   let hash = req.params.hash
+  console.log(hash)
   let stuff = hash.replace(new RegExp('>', 'g'), '/')
   console.log('***********************'+stuff)
 
@@ -28,7 +29,7 @@ router.get('/qrCodes/verification/:hash', function(req, res){
   knex('ledger')
     .where('ledger_hash', stuff)
     .then((newLedger)=>{
-      console.log(newLedger)
+      console.log('jackjackjackjackjackjackjack', newLedger)
       res.json(newLedger[0])
     })
     .catch((err)=>next(err))
