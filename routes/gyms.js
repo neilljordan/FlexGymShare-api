@@ -6,11 +6,11 @@ const router = express.Router();
 const salt = bcrypt.genSaltSync(10);
 
 router.get('/gyms', (req, res, next) => {
-  knex('gyms')
+  knex('gym')
     .select('*')
     // using raw SQL to add amenities to gyms
-    //.column(knex.raw('(select array(select amenities.name from amenities, gym_amenities where gym_amenities.gym_id = gyms.id and gym_amenities.amenity_id = amenities.id) as amenities_available)'))
-    .orderBy('gyms.id')
+    .column(knex.raw('(select array(select amenity.name from amenity, gym_amenities where gym_amenities.gym_id = gym.id and gym_amenities.amenity_id = amenity.id) as amenities_available)'))
+    .orderBy('gym.id')
     .then((gyms) => {
       res.json(gyms);
     })
@@ -20,9 +20,12 @@ router.get('/gyms', (req, res, next) => {
 });
 
 router.get('/gyms/:id', (req, res, next) => {
-  const id = req.params.id;
-  knex('gyms')
-    .where('id', id)
+  const gymId = req.params.id;
+  knex('gym')
+    .select('*')
+    // using raw SQL to add amenities to gyms
+    .column(knex.raw('(select array(select amenity.name from amenity, gym_amenities where gym_amenities.gym_id = gym.id and gym_amenities.amenity_id = amenity.id) as amenities_available)'))
+    .where('id', gymId)
     .then((gyms) => {
       res.json(gyms);
     })
@@ -33,9 +36,9 @@ router.post('/gyms', (req, res, next) => {
   const { name, address, price } = req.body;
   knex('gyms')
     .insert({
-      name: name,
-      address: address,
-      price: price,
+      name,
+      address,
+      price,
     })
     .returning('*')
     .then((gyms) => {
@@ -51,12 +54,9 @@ router.post('/gyms', (req, res, next) => {
 });
 
 router.patch('/gyms/:id', (req, res, next) => {
-// console.log('hit patch')
-  const id = req.params.id
-  // console.log(id)
+  const gymId = req.params.id;
   const { name, address, price } = req.body;
-
-  let patchGym = {}
+  const patchGym = {};
 
   if (name) {
     patchGym.name = name;
@@ -67,12 +67,13 @@ router.patch('/gyms/:id', (req, res, next) => {
   if (price) {
     patchGym.price = price;
   }
+
   knex('gyms')
-    .where('id', id)
+    .where('id', gymId)
     .then((gyms) => {
       knex('gyms')
         .update(patchGym)
-        .where('id', id)
+        .where('id', gymId)
         .returning('*')
         .then((gyms) => {
           let patchGym = {
@@ -86,26 +87,24 @@ router.patch('/gyms/:id', (req, res, next) => {
     });
 });
 
-router.delete('/gyms/:id', function(req, res, next) {
-  const id = req.params.id
+router.delete('/gyms/:id', (req, res, next) => {
+  const gymId = req.params.id;
   knex('gyms')
-
-  .then((gyms)=>{
-    knex('gyms')
-    .del()
-    .where('id', id)
-    .returning('*')
-
-      .then((gyms)=>{
-        let gym = {
-          name: gyms[0].name,
-          address: gyms[0].address,
-          price: gyms[0].price
-        }
-        res.json(gym)
-      })
-    .catch((err)=>next(err))
-  })
+    .then((gyms) => {
+      knex('gyms')
+        .del()
+        .where('id', gymId)
+        .returning('*')
+        .then((gyms) => {
+          const gym = {
+            name: gyms[0].name,
+            address: gyms[0].address,
+            price: gyms[0].price,
+          };
+          res.json(gym);
+        })
+        .catch(err => next(err));
+    });
 });
 
 module.exports = router;
