@@ -6,7 +6,7 @@ exports.up = function (knex, Promise) {
       table.string('last_name').notNullable();
       table.string('email').notNullable().unique();
       table.string('profile_image').defaultTo('');
-      table.string('facebookUID').defaultTo('');
+      table.string('facebook_uid').defaultTo('');
       table.integer('gym_id').references('gym.id').onDelete('CASCADE').index().defaultTo(null);
       table.timestamps(true, true);
     }),
@@ -35,14 +35,14 @@ exports.up = function (knex, Promise) {
     knex.schema.createTable('blackout_date', (table) => {
       table.increments('id').primary();
       table.integer('gym_id').notNullable().references('gym.id').onDelete('CASCADE').index();
-      table.date('blackout_date');
+      table.date('blackout_date').notNullable();
       table.timestamps(true, true);
     }),
     knex.schema.createTable('daypass', (table) => {
       table.increments('id').primary();
       table.integer('user_id').notNullable().references('user.id').onDelete('CASCADE').index();
       table.integer('gym_id').notNullable().references('gym.id').onDelete('CASCADE').index();
-      table.date('date');
+      table.date('date').notNullable();
       table.timestamps(true, true);
     }),
     knex.schema.createTable('listing', (table) => {
