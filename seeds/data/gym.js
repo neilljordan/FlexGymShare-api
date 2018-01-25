@@ -7,7 +7,7 @@ module.exports = [
     telephone: '303-625-6881',
     address: '1800 Broadway Suite 190, Boulder CO, 80302',
     website: 'http://oneboulderfitness.com/',
-    default_price: 7,
+    default_price: 10,
     image: 'https://i.imgur.com/dMX53Om.png',
   },
   {
@@ -18,7 +18,7 @@ module.exports = [
     telephone: '303-501-1700',
     address: '1821 30th St, Boulder, CO 80301',
     website: 'https://www.wellbridge.com/colorado-athletic-club/boulder',
-    default_price: 7,
+    default_price: 7.5,
     image: 'https://i.imgur.com/6JqFYZx.png',
   },
   {
@@ -29,7 +29,18 @@ module.exports = [
     telephone: '303-209-9274',
     address: '2900 Iris Ave, Boulder, CO 80301',
     website: 'https://www.24hourfitness.com/Website/clubList/CO/boulder',
-    default_price: 7,
+    default_price: 9,
+    image: 'https://i.imgur.com/6i0c0ko.png',
+  },
+  {
+    id: 4,
+    name: 'Motion Climbing',
+    description: 'We are proud to be Boulder’s most energy efficient climbing and fitness facility. A combination of ample daylighting thanks to Jim Logan Architects design, solar panels and solar thermal heaters from Lighthouse Solar providing over 80% of our energy, and high-quality, efficient building materials and practices from Harrington Homes and Costen LLC have helped to create one of the most efficient and environmentally friendly commercial buildings in the country.',
+    hours: 'Monday-Sunday, 5AM-10PM',
+    telephone: '303-333-9284',
+    address: '2900 Iris Ave, Boulder, CO 80301',
+    website: 'https://movementboulder.com/',
+    default_price: 8,
     image: 'https://i.imgur.com/6i0c0ko.png',
   },
 ];

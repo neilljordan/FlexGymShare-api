@@ -10,14 +10,11 @@ const path = require('path');
 
 const users = require('./routes/users');
 const gyms = require('./routes/gyms');
-const memberships = require('./routes/memberships');
-const dates = require('./routes/dates');
-const token = require('./routes/token');
-const ammenities = require('./routes/ammenities');
 const daypasses = require('./routes/daypasses');
 const listings = require('./routes/listings');
 const ledger = require('./routes/ledger');
 const qrCodes = require('./routes/qr');
+const token = require('./routes/token');
 
 const qr = require('qr-image');
 const fs = require('fs');
@@ -47,14 +44,11 @@ app.use(cookieParser());
 
 app.use('/', users);
 app.use('/', gyms);
-app.use('/', memberships);
-app.use('/', dates);
-app.use('/', token);
-app.use('/', ammenities);
 app.use('/', daypasses);
 app.use('/', listings);
 app.use('/', ledger);
 app.use('/', qrCodes);
+app.use('/', token);
 
 app.use(express.static(path.join(__dirname, 'public')));
 

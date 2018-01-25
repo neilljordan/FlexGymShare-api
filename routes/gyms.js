@@ -10,6 +10,7 @@ router.get('/gyms', (req, res, next) => {
     .select('*')
     // using raw SQL to add amenities to gyms
     .column(knex.raw('(select array(select amenity.name from amenity, gym_amenities where gym_amenities.gym_id = gym.id and gym_amenities.amenity_id = amenity.id) as amenities_available)'))
+    .column(knex.raw('(select array(select date from blackout_date where blackout_date.gym_id = gym.id) as blackout_dates)'))
     .orderBy('gym.id')
     .then((gyms) => {
       res.json(gyms);
@@ -25,6 +26,7 @@ router.get('/gyms/:id', (req, res, next) => {
     .select('*')
     // using raw SQL to add amenities to gyms
     .column(knex.raw('(select array(select amenity.name from amenity, gym_amenities where gym_amenities.gym_id = gym.id and gym_amenities.amenity_id = amenity.id) as amenities_available)'))
+    .column(knex.raw('(select array(select date from blackout_date where blackout_date.gym_id = gym.id) as blackout_dates)'))
     .where('id', gymId)
     .then((gyms) => {
       res.json(gyms);
@@ -34,7 +36,7 @@ router.get('/gyms/:id', (req, res, next) => {
 
 router.post('/gyms', (req, res, next) => {
   const { name, address, price } = req.body;
-  knex('gyms')
+  knex('gym')
     .insert({
       name,
       address,
@@ -53,7 +55,7 @@ router.post('/gyms', (req, res, next) => {
     .catch(err => next(err));
 });
 
-router.patch('/gyms/:id', (req, res, next) => {
+router.patch('/gym/:id', (req, res, next) => {
   const gymId = req.params.id;
   const { name, address, price } = req.body;
   const patchGym = {};
@@ -68,10 +70,10 @@ router.patch('/gyms/:id', (req, res, next) => {
     patchGym.price = price;
   }
 
-  knex('gyms')
+  knex('gym')
     .where('id', gymId)
     .then((gyms) => {
-      knex('gyms')
+      knex('gym')
         .update(patchGym)
         .where('id', gymId)
         .returning('*')
@@ -89,9 +91,9 @@ router.patch('/gyms/:id', (req, res, next) => {
 
 router.delete('/gyms/:id', (req, res, next) => {
   const gymId = req.params.id;
-  knex('gyms')
+  knex('gym')
     .then((gyms) => {
-      knex('gyms')
+      knex('gym')
         .del()
         .where('id', gymId)
         .returning('*')

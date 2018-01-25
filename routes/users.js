@@ -1,217 +1,179 @@
-'use strict';
-
 const express = require('express');
 const knex = require('../knex');
+const bcrypt = require('bcrypt');
+
 const router = express.Router();
-var bcrypt = require('bcrypt');
-var salt = bcrypt.genSaltSync(10);
+const salt = bcrypt.genSaltSync(10);
 
 router.get('/users', (req, res, next) => {
-  knex('users')
-  .orderBy('id')
-  .then((users) => {
-    res.json(users);
-  })
-  .catch((err) => {
-    next(err)
-  })
+  knex('user')
+    .orderBy('id')
+    .then((users) => {
+      res.json(users);
+    })
+    .catch((err) => {
+      next(err);
+    });
 });
 
 router.get('/users/email/:email', (req, res, next) => {
-  let email = req.params.email
-
-  knex('users')
-  .where('email', email)
-  .first()
-  .then((user) => {
-    if (user) {
-      res.send(JSON.stringify(true))
-    } else {
-      res.send(JSON.stringify(false))
-    }
-  })
-  .catch((err) => next(err))
-
-})
+  const userEmail = req.params.email;
+  knex('user')
+    .where('email', userEmail)
+    .first()
+    .then((user) => {
+      if (user) {
+        res.send(JSON.stringify(true));
+      } else {
+        res.send(JSON.stringify(false));
+      }
+    })
+    .catch(err => next(err));
+});
 
 router.get('/users/uid/:uid', (req, res, next) => {
-  let uid = req.params.uid
-
-  knex('users')
-  .where('facebookUID', uid)
-  .first()
-  .then((user) => {
-    if (user) {
-      res.send(JSON.stringify(user))
-    } else {
-      res.send(JSON.stringify(false))
-    }
-  })
-  .catch((err) => next(err))
-
-})
+  const fbId = req.params.uid;
+  knex('user')
+    .where('facebook_uid', fbId)
+    .first()
+    .then((user) => {
+      if (user) {
+        res.send(JSON.stringify(user));
+      } else {
+        res.send(JSON.stringify(false));
+      }
+    })
+    .catch(err => next(err));
+});
 
 router.get('/users/:email/:displayName/:profileImage/:uid', (req, res, next) => {
-  console.log('hi')
-  let email = req.params.email
-  let displayName = req.params.displayName
-  let displayNameArray = displayName.split(' ')
-  let first_name = displayNameArray[0]
-  let last_name = displayNameArray[1]
-  let profile_image = decodeURIComponent(req.params.profileImage)
-  let createdAt = req.body
-  console.log(createdAt)
+  const email = req.params.email;
+  const displayName = req.params.displayName;
+  const displayNameArray = displayName.split(' ');
+  const first_name = displayNameArray[0];
+  const last_name = displayNameArray[1];
+  const profile_image = decodeURIComponent(req.params.profileImage);
+  const createdAt = req.body;
+  const facebookUID = req.params.uid;
 
-  let facebookUID = req.params.uid
-  // profile_image = profile_image.replace(/%/g, '?')
-
-  knex('users')
-  .where('email', email)
-  .first()
-  .then((user) => {
-     console.log(user)
-     console.log('typeof' + typeof(user))
-    if (user) {
-     console.log('email already exists')
-     console.log(user.id)
-     let id = user.id
-     console.log(id)
-     return res.send(JSON.stringify(user))
-    } else {
-      console.log('email doesnt exisit')
-      let password = 'facebook_user_password'
-      let hashed_password = bcrypt.hashSync(password, salt)
-      const insertUser = {first_name, last_name, email, hashed_password, profile_image, facebookUID}
-      console.log(insertUser)
+  knex('user')
+    .where('email', email)
+    .first()
+    .then((user) => {
+      if (user) {
+        const id = user.id;
+        return res.send(JSON.stringify(user));
+      }
+      const insertUser = {
+        first_name, last_name, email, profile_image, facebookUID,
+      };
       return knex('users')
-      .insert((insertUser), ('*'))
-      .then((newUser) => {
-        res.send(JSON.stringify(newUser[0]))
-      })
-    }
-  })
-  .catch((err) => next(err))
-})
+        .insert((insertUser), ('*'))
+        .then((newUser) => {
+          res.send(JSON.stringify(newUser[0]));
+        });
+    })
+    .catch(err => next(err));
+});
 
-router.get('/users/:id', (req, res, next) =>{
-  const id = req.params.id;
-  knex('users')
-  .where('id', id)
-  .then((users) => {
-    res.json(users)
-  })
-  .catch((err) => next(err))
+router.get('/users/:id', (req, res, next) => {
+  const userId = req.params.id;
+  knex('user')
+    .where('id', userId)
+    .then((users) => {
+      res.json(users);
+    })
+    .catch(err => next(err));
 });
 
 router.post('/users', (req, res, next) => {
+  const {
+    first_name, last_name, email, profile_image,
+  } = req.body;
 
-  const { first_name, last_name, email, password, profile_image } = req.body
-
-  knex('users')
-  .insert({
-    first_name: first_name,
-    last_name: last_name,
-    email: email,
-    gym_id: null,
-    // stars,
-    // comments,
-    hashed_password: bcrypt.hashSync(password, salt),
-    profile_image: profile_image
-    // token,
-    // fb_user
-  })
-  .returning('*')
-  .then((users)=>{
-    let user = {
-      id: users[0].id,
-      first_name: users[0].first_name,
-      last_name: users[0].last_name,
-      email: users[0].email,
-    }
-    res.json(users)
-  })
-  .catch((err)=>next(err))
-});
-
-router.patch('/users/:id', function(req, res, next) {
-// console.log('hit patch')
-  const id = req.params.id
-  // console.log(id)
-  let password = ''
-  let hashed_password = ''
-  // console.log(hashed_password)
-  // console.log(id)
-  const { first_name, last_name, email, gymId } = req.body
-  console.log(req.body)
-
-  let patchUser = {}
-
-  if (first_name) {
-    patchUser.first_name = first_name
-  }
-  if (last_name) {
-    patchUser.last_name = last_name
-  }
-  if (email) {
-    patchUser.email = email
-  }
-  if (password) {
-    patchUser.hashed_password = hashed_password
-  }
-  if (gymId) {
-    patchUser.gym_id = gymId
-  }
-
-  console.log("this is gymId " +gymId)
-  console.log(patchUser)
-  knex('users')
-  .where('id', id)
-
-  .then((users)=>{
-    console.log(users)
-    knex('users')
-    .update(patchUser)
-    .where('id', id)
+  knex('user')
+    .insert({
+      first_name,
+      last_name,
+      email,
+      gym_id: null,
+      profile_image,
+    })
     .returning('*')
-
-    .then((users)=>{
-      console.log(users)
-      let patchUser = {
+    .then((users) => {
+      const user = {
         id: users[0].id,
         first_name: users[0].first_name,
         last_name: users[0].last_name,
         email: users[0].email,
-        hashed_password: users[0].hashed_password,
-        gymId: users[0].gym_id
-      }
-      res.json(patchUser)
+      };
+      res.json(users);
     })
-    .catch((err)=>next(err))
-  })
-})
+    .catch(err => next(err));
+});
 
-router.delete('/users/:id', function(req, res, next) {
-  const id = req.params.id
-  knex('users')
+router.patch('/users/:id', (req, res, next) => {
+  const userId = req.params.id;
+  const {
+    first_name, last_name, email, gymId 
+  } = req.body;
+  const patchUser = {};
 
-  .then((users)=>{
-    knex('users')
-    .del()
-    .where('id', id)
-    .returning('*')
+  if (first_name) {
+    patchUser.first_name = first_name;
+  }
+  if (last_name) {
+    patchUser.last_name = last_name;
+  }
+  if (email) {
+    patchUser.email = email;
+  }
+  if (gymId) {
+    patchUser.gym_id = gymId;
+  }
 
-      .then((users)=>{
-        let user = {
-          title: users[0].title,
-          author: users[0].author,
-          genre: users[0].genre,
-          description: users[0].description,
-          coverUrl: users[0].cover_url
-        }
-        res.json(user)
-      })
-    .catch((err)=>next(err))
-  })
+  knex('user')
+    .where('id', userId)
+    .then((users) => {
+      knex('user')
+        .update(patchUser)
+        .where('id', userId)
+        .returning('*')
+        .then((users) => {
+          const patchUser = {
+            id: users[0].id,
+            first_name: users[0].first_name,
+            last_name: users[0].last_name,
+            email: users[0].email,
+            hashed_password: users[0].hashed_password,
+            gymId: users[0].gym_id,
+          };
+          res.json(patchUser);
+        })
+        .catch(err => next(err));
+    });
+});
+
+router.delete('/users/:id', (req, res, next) => {
+  const userId = req.params.id;
+  knex('user')
+    .then((users) => {
+      knex('user')
+        .del()
+        .where('id', userId)
+        .returning('*')
+        .then((users) => {
+          const user = {
+            title: users[0].title,
+            author: users[0].author,
+            genre: users[0].genre,
+            description: users[0].description,
+            coverUrl: users[0].cover_url,
+          };
+          res.json(user);
+        })
+        .catch(err => next(err));
+    });
 });
 
 module.exports = router;

@@ -1,82 +1,71 @@
-'use strict';
-
 const express = require('express');
 const knex = require('../knex');
-const router = express.Router();
-var bcrypt = require('bcrypt');
-var salt = bcrypt.genSaltSync(10);
+const bcrypt = require('bcrypt');
 
+const router = express.Router();
+const salt = bcrypt.genSaltSync(10);
 
 router.get('/daypasses', (req, res, next) => {
-  console.log('get hit')
-  knex('daypasses')
-  .orderBy('id')
-  .then((daypasses) => {
-    res.json(daypasses);
-  })
-  .catch((err) => {
-    next(err)
-  })
+  knex('daypass')
+    .orderBy('id')
+    .then((daypasses) => {
+      res.json(daypasses);
+    })
+    .catch((err) => {
+      next(err);
+    });
 });
 
-router.get('/daypasses/renter_id/:id', (req, res, next) =>   {
-  let id = req.params.id
-  knex('daypasses')
-  .where('user_id', id)
-  .then((daypasses) => {
-    res.json(daypasses);
-  })
-  .catch((err) => {
-    next(err)
-  })
-})
+router.get('/daypasses/renter_id/:id', (req, res, next) => {
+  const renterId = req.params.id;
+  knex('daypass')
+    .where('user_id', renterId)
+    .then((daypasses) => {
+      res.json(daypasses);
+    })
+    .catch((err) => {
+      next(err);
+    });
+});
 
-router.get('/daypasses/:id', (req, res, next) =>{
-  const id = req.params.id;
-  knex('daypasses')
-  .where('id', id)
-  .then((daypass) => {
-    res.json(daypass)
-  })
-  .catch((err) => next(err))
+router.get('/daypasses/:id', (req, res, next) => {
+  const passId = req.params.id;
+  knex('daypass')
+    .where('id', passId)
+    .then((daypass) => {
+      res.json(daypass);
+    })
+    .catch(err => next(err));
 });
 
 router.post('/daypasses', (req, res, next) => {
-
-  console.log(req.body)
-
-  let { gym_id, user_id, date } = req.body
-
-//
-  // console.log(req.body.arr)
-  knex('daypasses')
-  .insert({
-    gym_id: gym_id,
-    user_id: user_id,
-    date: date
-  })
-  .returning('*')
-  .then((daypass)=>{
-    res.json(daypass)
-  })
-  .catch((err)=>next(err))
+  const { gymId, userId, date } = req.body;
+  knex('daypass')
+    .insert({
+      gymId,
+      userId,
+      date,
+    })
+    .returning('*')
+    .then((daypass) => {
+      res.json(daypass);
+    })
+    .catch(err => next(err));
 });
 
-router.delete('/daypasses/:id', function(req, res, next) {
-  const id = req.params.id
-  knex('daypasses')
-
-  .then((dates)=>{
-    knex('daypasses')
-    .del()
-    .where('id', id)
-    .returning('*')
-
-      .then((date)=>{
-        res.json(date[0])
-      })
-    .catch((err)=>next(err))
-  })
+router.delete('/daypasses/:id', (req, res, next) => {
+  const passId = req.params.id;
+  knex('daypass')
+    .then((dates) => {
+      knex('daypass')
+        .del()
+        .where('id', passId)
+        .returning('*')
+        .then((date) => {
+          res.json(date[0]);
+        })
+        .catch(err => next(err));
+    });
 });
 
 module.exports = router;

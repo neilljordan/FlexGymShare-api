@@ -1,40 +1,31 @@
-'use strict';
-
 const express = require('express');
 const knex = require('../knex');
-const router = express.Router();
 const qr = require('qr-image');
 const bcrypt = require('bcrypt');
+
+const router = express.Router();
 const salt = bcrypt.genSaltSync(10);
-//qr route;
-router.get('/qrCodes/:id', function(req, res){
-  let id = req.params.id
-  id.replace(new RegExp('>', 'g'), '/')
-  let crypted = bcrypt.hashSync(id, salt)
-  console.log(crypted)
-  var qr_png = qr.image(`https://test.flexgymshare.com/verification/${id}`, { type: 'png' });
-  qr_png.pipe(require('fs').createWriteStream('validate_session.png'));
-  var png_string = qr.imageSync(`https://test.flexgymshare.com/verification/${id}`, { type: 'png' });
-  res.send(png_string)
-})
 
-router.get('/qrCodes/verification/:hash', function(req, res){
+router.get('/qrCodes/:id', (req, res) => {
+  const qrId = req.params.id;
+  qrId.replace(new RegExp('>', 'g'), '/');
+  const crypted = bcrypt.hashSync(qrId, salt);
+  const qrPng = qr.image(`https://test.flexgymshare.com/verification/${id}`, { type: 'png' });
+  qrPng.pipe(require('fs').createWriteStream('validate_session.png'));
+  const pngString = qr.imageSync(`https://test.flexgymshare.com/verification/${id}`, { type: 'png' });
+  res.send(pngString);
+});
 
-  let hash = req.params.hash
-  let stuff = hash.replace(new RegExp('>', 'g'), '/')
-  console.log('***********************'+stuff)
-
+router.get('/qrCodes/verification/:hash', (req, res) => {
+  const hash = req.params.hash;
+  const stuff = hash.replace(new RegExp('>', 'g'), '/');
 
   knex('ledger')
     .where('ledger_hash', stuff)
-    .then((newLedger)=>{
-      console.log(newLedger)
-      res.json(newLedger[0])
+    .then((newLedger) => {
+      res.json(newLedger[0]);
     })
-    .catch((err)=>next(err))
-
-  console.log(stuff)
-
-})
+    .catch(err => next(err));
+});
 
 module.exports = router;
