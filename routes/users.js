@@ -95,7 +95,7 @@ router.get('/users/uid/:uid', (req, res, next) => {
 
 router.post('/users', (req, res, next) => {
   const {
-    first_name, last_name, email, profile_image,
+    first_name, last_name, email, profile_image, facebookUID,
   } = req.body;
 
   knex('user')
@@ -103,18 +103,12 @@ router.post('/users', (req, res, next) => {
       first_name,
       last_name,
       email,
-      gym_id: null,
+      facebook_uid: facebookUID,
       profile_image,
     })
     .returning('*')
     .then((users) => {
-      const user = {
-        id: users[0].id,
-        first_name: users[0].first_name,
-        last_name: users[0].last_name,
-        email: users[0].email,
-      };
-      res.json(users);
+      res.json(users[0]);
     })
     .catch(err => next(err));
 });
