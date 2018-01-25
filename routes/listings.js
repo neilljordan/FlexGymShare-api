@@ -26,16 +26,27 @@ router.get('/listings/:id', (req, res, next) => {
     .catch(err => next(err));
 });
 
+router.get('/listings/user/:id', (req, res, next) => {
+  const userId = req.params.id;
+  knex('listing')
+    .where('lister_id', userId)
+    .orderBy('date')
+    .then((listing) => {
+      res.json(listing);
+    })
+    .catch(err => next(err));
+});
+
 router.post('/listings', (req, res, next) => {
   const {
-    user_id, gym_id, purchased, date,
+    user_id, gym_id, is_purchased, date,
   } = req.body;
 
   knex('listing')
     .insert({
-      user_id,
+      lister_id,
       gym_id,
-      purchased: false,
+      is_purchased: false,
       date,
     })
     .returning('*')
@@ -48,13 +59,13 @@ router.post('/listings', (req, res, next) => {
 router.patch('/listings/:id', (req, res, next) => {
   const listingId = req.params.id;
   const {
-    user_id, gym_id, purchased, date 
+    user_id, gym_id, is_purchased, date 
   } = req.body;
 
   const patchListing = {};
 
   if (user_id) {
-    patchListing.user_id = user_id;
+    patchListing.lister_id = user_id;
   }
   if (gym_id) {
     patchListing.gym_id = gym_id;

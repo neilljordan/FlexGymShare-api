@@ -2,12 +2,12 @@
   "name": "flex",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "eslint": "eslint",
     "lint": "eslint .",
     "knex": "knex",
-    "start": "nodemon index.js",
+    "start": "nodemon server.js",
     "heroku-postbuild": "knex migrate:rollback; knex migrate:latest; knex seed:run;"
   },
   "author": "",

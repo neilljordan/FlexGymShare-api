@@ -5,6 +5,7 @@ const bcrypt = require('bcrypt');
 const router = express.Router();
 const salt = bcrypt.genSaltSync(10);
 
+// get all users
 router.get('/users', (req, res, next) => {
   knex('user')
     .orderBy('id')
@@ -16,6 +17,19 @@ router.get('/users', (req, res, next) => {
     });
 });
 
+// get user by integer id
+router.get('/users/:id', (req, res, next) => {
+  const userId = req.params.id;
+  knex('user')
+    .where('id', userId)
+    .first()
+    .then((users) => {
+      res.json(users);
+    })
+    .catch(err => next(err));
+});
+
+// get user by email
 router.get('/users/email/:email', (req, res, next) => {
   const userEmail = req.params.email;
   knex('user')
@@ -31,6 +45,7 @@ router.get('/users/email/:email', (req, res, next) => {
     .catch(err => next(err));
 });
 
+// get user by Facebook UID
 router.get('/users/uid/:uid', (req, res, next) => {
   const fbId = req.params.uid;
   knex('user')
@@ -46,45 +61,37 @@ router.get('/users/uid/:uid', (req, res, next) => {
     .catch(err => next(err));
 });
 
-router.get('/users/:email/:displayName/:profileImage/:uid', (req, res, next) => {
-  const email = req.params.email;
-  const displayName = req.params.displayName;
-  const displayNameArray = displayName.split(' ');
-  const first_name = displayNameArray[0];
-  const last_name = displayNameArray[1];
-  const profile_image = decodeURIComponent(req.params.profileImage);
-  const createdAt = req.body;
-  const facebookUID = req.params.uid;
+// TODO: delete this route
+// router.get('/users/:email/:displayName/:profileImage/:uid', (req, res, next) => {
+//   const email = req.params.email;
+//   const displayName = req.params.displayName;
+//   const displayNameArray = displayName.split(' ');
+//   const first_name = displayNameArray[0];
+//   const last_name = displayNameArray[1];
+//   const profile_image = decodeURIComponent(req.params.profileImage);
+//   const createdAt = req.body;
+//   const facebookUID = req.params.uid;
 
-  knex('user')
-    .where('email', email)
-    .first()
-    .then((user) => {
-      if (user) {
-        const id = user.id;
-        return res.send(JSON.stringify(user));
-      }
-      const insertUser = {
-        first_name, last_name, email, profile_image, facebookUID,
-      };
-      return knex('users')
-        .insert((insertUser), ('*'))
-        .then((newUser) => {
-          res.send(JSON.stringify(newUser[0]));
-        });
-    })
-    .catch(err => next(err));
-});
+//   knex('user')
+//     .where('email', email)
+//     .first()
+//     .then((user) => {
+//       if (user) {
+//         const id = user.id;
+//         return res.send(JSON.stringify(user));
+//       }
+//       const insertUser = {
+//         first_name, last_name, email, profile_image, facebookUID,
+//       };
+//       return knex('users')
+//         .insert((insertUser), ('*'))
+//         .then((newUser) => {
+//           res.send(JSON.stringify(newUser[0]));
+//         });
+//     })
+//     .catch(err => next(err));
+// });
 
-router.get('/users/:id', (req, res, next) => {
-  const userId = req.params.id;
-  knex('user')
-    .where('id', userId)
-    .then((users) => {
-      res.json(users);
-    })
-    .catch(err => next(err));
-});
 
 router.post('/users', (req, res, next) => {
   const {

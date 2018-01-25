@@ -5,6 +5,7 @@ const bcrypt = require('bcrypt');
 const router = express.Router();
 const salt = bcrypt.genSaltSync(10);
 
+// get all gyms
 router.get('/gyms', (req, res, next) => {
   knex('gym')
     .select('*')
@@ -20,6 +21,7 @@ router.get('/gyms', (req, res, next) => {
     });
 });
 
+// get gym by id
 router.get('/gyms/:id', (req, res, next) => {
   const gymId = req.params.id;
   knex('gym')
@@ -34,6 +36,7 @@ router.get('/gyms/:id', (req, res, next) => {
     .catch(err => next(err));
 });
 
+// TODO: needs to be fixed or removed
 router.post('/gyms', (req, res, next) => {
   const { name, address, price } = req.body;
   knex('gym')
@@ -55,6 +58,7 @@ router.post('/gyms', (req, res, next) => {
     .catch(err => next(err));
 });
 
+// needs to be fixed or removed
 router.patch('/gym/:id', (req, res, next) => {
   const gymId = req.params.id;
   const { name, address, price } = req.body;
@@ -89,6 +93,7 @@ router.patch('/gym/:id', (req, res, next) => {
     });
 });
 
+// needs to be fixed or removed
 router.delete('/gyms/:id', (req, res, next) => {
   const gymId = req.params.id;
   knex('gym')

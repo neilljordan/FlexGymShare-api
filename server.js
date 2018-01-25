@@ -12,7 +12,7 @@ const users = require('./routes/users');
 const gyms = require('./routes/gyms');
 const daypasses = require('./routes/daypasses');
 const listings = require('./routes/listings');
-const ledger = require('./routes/ledger');
+const transactions = require('./routes/transactions');
 const qrCodes = require('./routes/qr');
 const token = require('./routes/token');
 
@@ -46,7 +46,7 @@ app.use('/', users);
 app.use('/', gyms);
 app.use('/', daypasses);
 app.use('/', listings);
-app.use('/', ledger);
+app.use('/', transactions);
 app.use('/', qrCodes);
 app.use('/', token);
 

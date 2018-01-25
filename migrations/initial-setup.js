@@ -53,12 +53,14 @@ exports.up = function (knex, Promise) {
     }),
     knex.schema.createTable('listing', (table) => {
       table.increments('id').primary();
-      table.integer('user_id').notNullable().references('user.id').onDelete('CASCADE')
+      table.integer('lister_id').notNullable().references('user.id').onDelete('CASCADE')
+        .index();
+      table.integer('renter_id').references('user.id').onDelete('CASCADE').defaultTo(null)
         .index();
       table.integer('gym_id').notNullable().references('gym.id').onDelete('CASCADE')
         .index();
-      table.boolean('purchased').defaultTo(false);
-      table.date('date');
+      table.boolean('is_purchased').defaultTo(false);
+      table.date('date').notNullable();
       table.timestamps(true, true);
     }),
     knex.schema.createTable('transaction', (table) => {
