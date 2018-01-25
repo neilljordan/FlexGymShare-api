@@ -98,7 +98,7 @@ router.get('/users/:id', (req, res, next) =>{
   knex('users')
   .where('id', id)
   .then((users) => {
-    res.json(users)
+    res.json(users[0])
   })
   .catch((err) => next(err))
 });
