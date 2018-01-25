@@ -19,6 +19,5 @@ exports.seed = function (knex, Promise) {
     .then(() => knex('gym_amenities').insert(gymAmenitiesData))
     .then(() => knex('listing').insert(listingData))
     .then(() => knex('blackout_date').insert(blackoutDatesData))
-    .then(() => knex('transaction').insert(transactionData))
-    .catch(console.error('ERROR IN SEED'));
+    .then(() => knex('transaction').insert(transactionData));
 };
