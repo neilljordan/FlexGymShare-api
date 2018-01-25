@@ -1,40 +1,34 @@
-'use strict';
-
 const express = require('express');
 const knex = require('../knex');
-const router = express.Router();
 const qr = require('qr-image');
 const bcrypt = require('bcrypt');
+
+const router = express.Router();
 const salt = bcrypt.genSaltSync(10);
-//qr route;
-router.get('/qrCodes/:id', function(req, res){
-  let id = req.params.id
-  id.replace(new RegExp('>', 'g'), '/')
-  let crypted = bcrypt.hashSync(id, salt)
-  console.log(crypted)
-  var qr_png = qr.image(`https://test.flexgymshare.com/verification/${id}`, { type: 'png' });
-  qr_png.pipe(require('fs').createWriteStream('validate_session.png'));
-  var png_string = qr.imageSync(`https://test.flexgymshare.com/verification/${id}`, { type: 'png' });
-  res.send(png_string)
-})
 
-router.get('/qrCodes/verification/:hash', function(req, res){
+// TODO: change the route name from /qrCodes to something like /passes
+// generate a QR PNG with embedded URL based on a hash
+router.get('/qrCodes/:hash', (req, res) => {
+  const qrHash = req.params.hash;
+  qrHash.replace(new RegExp('>', 'g'), '/');
+  // const crypted = bcrypt.hashSync(qrId, salt);
+  // const qrPng = qr.image(`https://test.flexgymshare.com/verification/${id}`, { type: 'png' });
+  // qrPng.pipe(require('fs').createWriteStream('validate_session.png'));
+  // TODO: replace hard-coded URL with a configuration setting
+  const pngString = qr.imageSync(`https://test.flexgymshare.com/verification/${qrHash}`, { type: 'png' });
+  res.send(pngString);
+});
 
-  let hash = req.params.hash
-  let stuff = hash.replace(new RegExp('>', 'g'), '/')
-  console.log('***********************'+stuff)
+// find the transaction record associated with a hash
+router.get('/qrCodes/verification/:hash', (req, res) => {
+  const transactionHash = req.params.hash.replace(new RegExp('>', 'g'), '/');
 
-
-  knex('ledger')
-    .where('ledger_hash', stuff)
-    .then((newLedger)=>{
-      console.log(newLedger)
-      res.json(newLedger[0])
+  knex('transaction')
+    .where('hash', transactionHash)
+    .then((newTransaction) => {
+      res.json(newTransaction[0]);
     })
-    .catch((err)=>next(err))
-
-  console.log(stuff)
-
-})
+    .catch(err => next(err));
+});
 
 module.exports = router;
