@@ -45,7 +45,7 @@ router.post('/daypasses', (req, res, next) => {
 
   console.log(req.body)
 
-  let { gym_id, user_id, date } = req.body
+  let { gym_id, user_id, date, hash } = req.body
 
 //
   // console.log(req.body.arr)
@@ -53,7 +53,8 @@ router.post('/daypasses', (req, res, next) => {
   .insert({
     gym_id: gym_id,
     user_id: user_id,
-    date: date
+    date: date,
+    hash: hash
   })
   .returning('*')
   .then((daypass)=>{
