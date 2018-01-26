@@ -39,11 +39,11 @@ router.get('/daypasses/:id', (req, res, next) => {
 });
 
 router.post('/daypasses', (req, res, next) => {
-  const { gymId, userId, date } = req.body;
+  const { gym_id, user_id, date } = req.body;
   knex('daypass')
     .insert({
-      gymId,
-      userId,
+      gym_id,
+      user_id,
       date,
     })
     .returning('*')
