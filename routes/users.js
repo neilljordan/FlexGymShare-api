@@ -61,38 +61,7 @@ router.get('/users/uid/:uid', (req, res, next) => {
     .catch(err => next(err));
 });
 
-// TODO: delete this route
-// router.get('/users/:email/:displayName/:profileImage/:uid', (req, res, next) => {
-//   const email = req.params.email;
-//   const displayName = req.params.displayName;
-//   const displayNameArray = displayName.split(' ');
-//   const first_name = displayNameArray[0];
-//   const last_name = displayNameArray[1];
-//   const profile_image = decodeURIComponent(req.params.profileImage);
-//   const createdAt = req.body;
-//   const facebookUID = req.params.uid;
-
-//   knex('user')
-//     .where('email', email)
-//     .first()
-//     .then((user) => {
-//       if (user) {
-//         const id = user.id;
-//         return res.send(JSON.stringify(user));
-//       }
-//       const insertUser = {
-//         first_name, last_name, email, profile_image, facebookUID,
-//       };
-//       return knex('users')
-//         .insert((insertUser), ('*'))
-//         .then((newUser) => {
-//           res.send(JSON.stringify(newUser[0]));
-//         });
-//     })
-//     .catch(err => next(err));
-// });
-
-
+// create a new user
 router.post('/users', (req, res, next) => {
   const {
     first_name, last_name, email, profile_image, facebookUID,
@@ -113,6 +82,7 @@ router.post('/users', (req, res, next) => {
     .catch(err => next(err));
 });
 
+// partial update of a user
 router.patch('/users/:id', (req, res, next) => {
   const userId = req.params.id;
   const {
@@ -155,6 +125,7 @@ router.patch('/users/:id', (req, res, next) => {
     });
 });
 
+// delete a user
 router.delete('/users/:id', (req, res, next) => {
   const userId = req.params.id;
   knex('user')
