@@ -16,7 +16,7 @@ router.get('/daypasses', (req, res, next) => {
     });
 });
 
-router.get('/daypasses/renter_id/:id', (req, res, next) => {
+router.get('/daypasses/user/:id', (req, res, next) => {
   const renterId = req.params.id;
   knex('daypass')
     .where('user_id', renterId)
