@@ -15,10 +15,17 @@ const qr = require('qr-image');
 const fs = require('fs');
 const bcrypt = require('bcrypt');
 const knex = require('./knex');
+const opbeat = require('opbeat').start({
+  appId: 'a7b22c4b09',
+  organizationId: '8e92995e0b274928af1aebf18e10357c',
+  secretToken: 'a31263fb85fab9c8155cca0807914c0c884f4b04',
+});
 
 const app = express();
 const salt = bcrypt.genSaltSync(10);
 const cookieSession = require('cookie-session');
+
+const port = process.env.PORT || 3131; // for deployment
 
 // set up some basic security stuff...only calls from ORIGIN HOST are allowed
 const headerOrigin = process.env.ORIGIN_HOST || 'https://test.flexgymshare.com'; // for deployment
@@ -52,7 +59,7 @@ app.use((_req, res) => {
   res.sendStatus(404);
 });
 
-const port = process.env.PORT || 3131; // for deployment
+app.use(opbeat.middleware.express())
 
 // log some info to console after starting
 app.listen(port, () => {
