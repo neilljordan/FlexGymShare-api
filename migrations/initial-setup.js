@@ -15,13 +15,21 @@ exports.up = function (knex, Promise) {
       table.increments('id').primary().notNullable();
       table.string('name').notNullable();
       table.text('description').notNullable();
-      table.string('hours').notNullable();
       table.string('address').notNullable();
       table.string('telephone').notNullable();
       table.string('website');
       table.decimal('default_price').notNullable();
+      table.decimal('off_peak_price');
       table.string('image');
       table.timestamps(true, true);
+    }),
+    knex.schema.createTable('gym_hours', (table) => {
+      table.increments('id').notNullable();
+      table.integer('gym_id').references('gym.id').onDelete('CASCADE').index();
+      table.integer('day_of_week', ).notNullable();
+      table.boolean('is_off_peak').notNullable();
+      table.time('start_time').notNullable();
+      table.time('end_time').notNullable();
     }),
     knex.schema.createTable('amenity', (table) => {
       table.increments('id').notNullable();
@@ -87,6 +95,7 @@ exports.down = function (knex, Promise) {
     knex.schema.dropTableIfExists('listing'),
     knex.schema.dropTableIfExists('amenity'),
     knex.schema.dropTableIfExists('user'),
+    knex.schema.dropTableIfExists('gym_hours'),
     knex.schema.dropTableIfExists('gym'),
   // .return({ created: true })
   // .catch(console.error('ERROR IN SETUP DOWN'));
