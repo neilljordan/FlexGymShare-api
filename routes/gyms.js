@@ -12,6 +12,8 @@ router.get('/gyms', (req, res, next) => {
     // using raw SQL to add amenities to gyms
     .column(knex.raw('(select array(select amenity.name from amenity, gym_amenities where gym_amenities.gym_id = gym.id and gym_amenities.amenity_id = amenity.id) as amenities_available)'))
     .column(knex.raw('(select array(select date from blackout_date where blackout_date.gym_id = gym.id) as blackout_dates)'))
+    .column(knex.raw('(SELECT array(SELECT day_of_week || \':\' || start_time || \'-\'  || end_time FROM gym_hours WHERE gym.id = gym_hours.gym_id AND is_off_peak = FALSE) as opening_hours)'))
+    .column(knex.raw('(SELECT array(SELECT day_of_week || \':\' || start_time || \'-\'  || end_time FROM gym_hours WHERE gym.id = gym_hours.gym_id AND is_off_peak = TRUE) as off_peak_hours)'))
     .orderBy('gym.id')
     .then((gyms) => {
       res.json(gyms);
@@ -29,6 +31,8 @@ router.get('/gyms/:id', (req, res, next) => {
     // using raw SQL to add amenities to gyms
     .column(knex.raw('(select array(select amenity.name from amenity, gym_amenities where gym_amenities.gym_id = gym.id and gym_amenities.amenity_id = amenity.id) as amenities_available)'))
     .column(knex.raw('(select array(select date from blackout_date where blackout_date.gym_id = gym.id) as blackout_dates)'))
+    .column(knex.raw('(SELECT array(SELECT day_of_week || \':\' || start_time || \'-\'  || end_time FROM gym_hours WHERE gym.id = gym_hours.gym_id AND is_off_peak = FALSE) as opening_hours)'))
+    .column(knex.raw('(SELECT array(SELECT day_of_week || \':\' || start_time || \'-\'  || end_time FROM gym_hours WHERE gym.id = gym_hours.gym_id AND is_off_peak = TRUE) as off_peak_hours)'))
     .where('id', gymId)
     .then((gyms) => {
       res.json(gyms);
