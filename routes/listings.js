@@ -39,7 +39,7 @@ router.get('/listings/user/:id', (req, res, next) => {
 
 router.post('/listings', (req, res, next) => {
   const {
-    user_id, gym_id, is_purchased, date,
+    lister_id, gym_id, is_purchased, date,
   } = req.body;
 
   knex('listing')
@@ -59,7 +59,7 @@ router.post('/listings', (req, res, next) => {
 router.patch('/listings/:id', (req, res, next) => {
   const listingId = req.params.id;
   const {
-    user_id, gym_id, is_purchased, date 
+    user_id, gym_id, is_purchased, date
   } = req.body;
 
   const patchListing = {};
