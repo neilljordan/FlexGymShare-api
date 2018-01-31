@@ -11,10 +11,6 @@ const listings = require('./routes/listings');
 const transactions = require('./routes/transactions');
 const qrCodes = require('./routes/qr');
 const token = require('./routes/token');
-const qr = require('qr-image');
-const fs = require('fs');
-const bcrypt = require('bcrypt');
-const knex = require('./knex');
 const opbeat = require('opbeat').start({
   appId: 'a7b22c4b09',
   organizationId: '8e92995e0b274928af1aebf18e10357c',
@@ -22,7 +18,6 @@ const opbeat = require('opbeat').start({
 });
 
 const app = express();
-const salt = bcrypt.genSaltSync(10);
 const cookieSession = require('cookie-session');
 
 const port = process.env.PORT || 3131; // for deployment
@@ -59,7 +54,7 @@ app.use((_req, res) => {
   res.sendStatus(404);
 });
 
-app.use(opbeat.middleware.express())
+app.use(opbeat.middleware.express());
 
 // log some info to console after starting
 app.listen(port, () => {

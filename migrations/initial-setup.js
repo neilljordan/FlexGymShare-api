@@ -89,7 +89,7 @@ exports.up = function (knex, Promise) {
         .index()
         .defaultTo(1);
       table.date('pass_date').notNullable();
-      table.string('hash');
+      table.string('code');
       table.timestamps(true, true);
     }),
   ]);

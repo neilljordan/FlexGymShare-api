@@ -1,9 +1,7 @@
 const express = require('express');
 const knex = require('../knex');
-const bcrypt = require('bcrypt');
 
 const router = express.Router();
-const salt = bcrypt.genSaltSync(10);
 
 // get all gyms
 router.get('/gyms', (req, res, next) => {

@@ -1,9 +1,7 @@
 const express = require('express');
 const knex = require('../knex');
-const bcrypt = require('bcrypt');
 
 const router = express.Router();
-const salt = bcrypt.genSaltSync(10);
 
 // get all users
 router.get('/users', (req, res, next) => {
@@ -72,7 +70,7 @@ router.post('/users', (req, res, next) => {
       first_name,
       last_name,
       email,
-      facebook_uid: facebook_uid,
+      facebook_uid,
       profile_image,
     })
     .returning('*')
@@ -116,7 +114,6 @@ router.patch('/users/:id', (req, res, next) => {
             first_name: users[0].first_name,
             last_name: users[0].last_name,
             email: users[0].email,
-            hashed_password: users[0].hashed_password,
             gymId: users[0].gym_id,
           };
           res.json(patchUser);
