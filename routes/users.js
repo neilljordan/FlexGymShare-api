@@ -45,7 +45,7 @@ router.get('/users/email/:email', (req, res, next) => {
     .catch(err => next(err));
 });
 
-// get user by Facebook UID
+// get user by Facebook_uid
 router.get('/users/uid/:uid', (req, res, next) => {
   const fbId = req.params.uid;
   knex('user')
@@ -64,7 +64,7 @@ router.get('/users/uid/:uid', (req, res, next) => {
 // create a new user
 router.post('/users', (req, res, next) => {
   const {
-    first_name, last_name, email, profile_image, facebookUID,
+    first_name, last_name, email, profile_image, facebook_uid,
   } = req.body;
 
   knex('user')
@@ -72,7 +72,7 @@ router.post('/users', (req, res, next) => {
       first_name,
       last_name,
       email,
-      facebook_uid: facebookUID,
+      facebook_uid: facebook_uid,
       profile_image,
     })
     .returning('*')
