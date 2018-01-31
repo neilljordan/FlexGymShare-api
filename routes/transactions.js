@@ -50,6 +50,8 @@ router.post('/transactions', (req, res, next) => {
     pass_date, pass_type_id, user_id, listing_id, hash, gym_id, currentTime,
   } = req.body;
   const pass = currentTime + pass_date + user_id + listing_id + gym_id + pass_type_id;
+  console.log(pass)
+  console.log(typeof pass)
   knex('transaction')
     .insert({
       pass_date,
