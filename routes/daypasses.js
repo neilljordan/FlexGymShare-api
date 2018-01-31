@@ -7,6 +7,8 @@ const salt = bcrypt.genSaltSync(10);
 
 router.get('/daypasses', (req, res, next) => {
   knex('daypass')
+    .select('*')
+    .column(knex.raw('(select pass_type.name from pass_type, daypass where pass_type.id = daypass.pass_type_id) as pass_name'))
     .orderBy('id')
     .then((daypasses) => {
       res.json(daypasses);
@@ -19,6 +21,8 @@ router.get('/daypasses', (req, res, next) => {
 router.get('/daypasses/user/:id', (req, res, next) => {
   const renterId = req.params.id;
   knex('daypass')
+    .select('*')
+    .column(knex.raw('(select pass_type.name from pass_type, daypass where pass_type.id = daypass.pass_type_id) as pass_name'))
     .where('user_id', renterId)
     .then((daypasses) => {
       res.json(daypasses);
@@ -31,6 +35,8 @@ router.get('/daypasses/user/:id', (req, res, next) => {
 router.get('/daypasses/:id', (req, res, next) => {
   const passId = req.params.id;
   knex('daypass')
+    .select('*')
+    .column(knex.raw('(select pass_type.name from pass_type, daypass where pass_type.id = daypass.pass_type_id) as pass_name'))
     .where('id', passId)
     .then((daypass) => {
       res.json(daypass);
@@ -39,12 +45,13 @@ router.get('/daypasses/:id', (req, res, next) => {
 });
 
 router.post('/daypasses', (req, res, next) => {
-  const { gym_id, user_id, date } = req.body;
+  const { gym_id, user_id, date, pass_type_id } = req.body;
   knex('daypass')
     .insert({
       gym_id,
       user_id,
       date,
+      pass_type_id,
     })
     .returning('*')
     .then((daypass) => {

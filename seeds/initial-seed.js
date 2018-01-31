@@ -2,6 +2,8 @@ const userData = require('./data/user');
 const gymData = require('./data/gym');
 const amenityData = require('./data/amenity');
 const listingData = require('./data/listing');
+const passTypeData = require('./data/pass_type');
+const daypassData = require('./data/daypass');
 const transactionData = require('./data/transaction');
 const gymAmenitiesData = require('./data/gym_amenities');
 const blackoutDatesData = require('./data/blackout_date');
@@ -9,6 +11,8 @@ const gymHoursData = require('./data/gym_hours');
 
 exports.seed = function (knex, Promise) {
   return knex('transaction').del()
+    .then(() => knex('daypass').del())
+    .then(() => knex('pass_type').del())
     .then(() => knex('blackout_date').del())
     .then(() => knex('listing').del())
     .then(() => knex('gym_amenities').del())
@@ -29,6 +33,10 @@ exports.seed = function (knex, Promise) {
     .then(() => knex.raw("SELECT setval('listing_id_seq', (SELECT COUNT(*) FROM listing))"))
     .then(() => knex('blackout_date').insert(blackoutDatesData))
     .then(() => knex.raw("SELECT setval('blackout_date_id_seq', (SELECT COUNT(*) FROM blackout_date))"))
+    .then(() => knex('pass_type').insert(passTypeData))
+    .then(() => knex.raw("SELECT setval('pass_type_id_seq', (SELECT COUNT(*) FROM pass_type))"))
+    .then(() => knex('daypass').insert(daypassData))
+    .then(() => knex.raw("SELECT setval('daypass_id_seq', (SELECT COUNT(*) FROM daypass))"))
     .then(() => knex('transaction').insert(transactionData))
     .then(() => knex.raw("SELECT setval('transaction_id_seq', (SELECT COUNT(*) FROM transaction))"));
 };
