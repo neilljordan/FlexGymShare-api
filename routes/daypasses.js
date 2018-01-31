@@ -1,15 +1,13 @@
 const express = require('express');
 const knex = require('../knex');
-const bcrypt = require('bcrypt');
 
 const router = express.Router();
-const salt = bcrypt.genSaltSync(10);
 
 router.get('/daypasses', (req, res, next) => {
-  knex('daypass')
-    .select('*')
-    .column(knex.raw('(select pass_type.name from pass_type, daypass where pass_type.id = daypass.pass_type_id) as pass_name'))
-    .orderBy('id')
+  knex.select('*')
+    .from('daypass')
+    .innerJoin('pass_type', 'pass_type.id', 'daypass.pass_type_id')
+    .orderBy('daypass.id')
     .then((daypasses) => {
       res.json(daypasses);
     })
@@ -20,9 +18,9 @@ router.get('/daypasses', (req, res, next) => {
 
 router.get('/daypasses/user/:id', (req, res, next) => {
   const renterId = req.params.id;
-  knex('daypass')
-    .select('*')
-    .column(knex.raw('(select pass_type.name from pass_type, daypass where pass_type.id = daypass.pass_type_id) as pass_name'))
+  knex.select('*')
+    .from('daypass')
+    .innerJoin('pass_type', 'pass_type.id', 'daypass.pass_type_id')
     .where('user_id', renterId)
     .then((daypasses) => {
       res.json(daypasses);
@@ -34,10 +32,10 @@ router.get('/daypasses/user/:id', (req, res, next) => {
 
 router.get('/daypasses/:id', (req, res, next) => {
   const passId = req.params.id;
-  knex('daypass')
-    .select('*')
-    .column(knex.raw('(select pass_type.name from pass_type, daypass where pass_type.id = daypass.pass_type_id) as pass_name'))
-    .where('id', passId)
+  knex.select('*')
+    .from('daypass')
+    .innerJoin('pass_type', 'pass_type.id', 'daypass.pass_type_id')
+    .where('daypass.id', passId)
     .then((daypass) => {
       res.json(daypass);
     })
