@@ -12,6 +12,6 @@ module.exports = [
   {
     id: 3,
     gym_id: 2,
-    date: '3-29-18',
+    date: '2-24-18',
   },
 ];
