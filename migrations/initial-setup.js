@@ -9,15 +9,19 @@ exports.up = function (knex, Promise) {
       table.string('profile_image').defaultTo('');
       table.integer('gym_id').references('gym.id').onDelete('CASCADE').index()
         .defaultTo(null);
+      // table.uuid('uuid').defaultTo(knex.raw('uuid_generate_v4()'));
       table.timestamps(true, true);
     }),
     knex.schema.createTable('gym', (table) => {
       table.increments('id').primary();
+      table.string('slug').unique().notNullable();
       table.string('name').notNullable();
       table.text('description').notNullable();
       table.string('address').notNullable();
       table.string('telephone').notNullable();
-      table.string('website');
+      table.string('website_link');
+      table.string('schedule_link');
+      table.string('facebook_handle');
       table.decimal('default_price').notNullable();
       table.decimal('off_peak_price');
       table.string('image');
