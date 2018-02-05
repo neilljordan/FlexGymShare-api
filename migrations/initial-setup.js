@@ -12,16 +12,6 @@ exports.up = function (knex, Promise) {
       // table.uuid('uuid').defaultTo(knex.raw('uuid_generate_v4()'));
       table.timestamps(true, true);
     }),
-    knex.schema.createTable('gym_staff', (table) => {
-      table.increments('id').primary();
-      table.increments('gym_id').references('gym.id').onDelete('CASCADE').index();
-      table.increments('user_id').references('user.id').onDelete('CASCADE').index();
-      table.increments('role_id').references('role.id').onDelete('CASCADE').index();
-    }),
-    knex.schema.createTable('role', (table) => {
-      table.increments('id').primary();
-      table.string('name').notNullable();
-    })
     knex.schema.createTable('gym', (table) => {
       table.increments('id').primary();
       table.string('slug').unique().notNullable();
@@ -36,6 +26,16 @@ exports.up = function (knex, Promise) {
       table.decimal('off_peak_price');
       table.string('image');
       table.timestamps(true, true);
+    }),
+    knex.schema.createTable('role', (table) => {
+      table.increments('id').primary();
+      table.string('name').notNullable();
+    }),
+    knex.schema.createTable('gym_staff', (table) => {
+      table.increments('id').primary();
+      table.integer('gym_id').references('gym.id').onDelete('CASCADE').index();
+      table.integer('user_id').references('user.id').onDelete('CASCADE').index();
+      table.integer('role_id').references('role.id').onDelete('CASCADE').index();
     }),
     knex.schema.createTable('gym_hours', (table) => {
       table.increments('id').primary();
