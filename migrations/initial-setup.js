@@ -120,10 +120,10 @@ exports.down = function (knex, Promise) {
     knex.schema.dropTableIfExists('blackout_date'),
     knex.schema.dropTableIfExists('listing'),
     knex.schema.dropTableIfExists('amenity'),
+    knex.schema.dropTableIfExists('gym_staff'),
     knex.schema.dropTableIfExists('role'),
     knex.schema.dropTableIfExists('user'),
     knex.schema.dropTableIfExists('gym_hours'),
-    knex.schema.dropTableIfExists('gym_staff'),
     knex.schema.dropTableIfExists('gym'),
   // .return({ created: true })
   // .catch(console.error('ERROR IN SETUP DOWN'));
