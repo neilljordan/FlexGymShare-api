@@ -34,8 +34,8 @@ exports.up = function (knex, Promise) {
     knex.schema.createTable('gym_staff', (table) => {
       table.increments('id').primary();
       table.integer('gym_id').references('gym.id').onDelete('CASCADE').index();
-      table.integer('user_id').references('user.id').onDelete('CASCADE').index();
-      table.integer('role_id').references('role.id').onDelete('CASCADE').index();
+      table.integer('user_id').references('user.id').onDelete('CASCADE')
+      table.integer('role_id').references('role.id').onDelete('CASCADE')
     }),
     knex.schema.createTable('gym_hours', (table) => {
       table.increments('id').primary();
@@ -120,11 +120,11 @@ exports.down = function (knex, Promise) {
     knex.schema.dropTableIfExists('blackout_date'),
     knex.schema.dropTableIfExists('listing'),
     knex.schema.dropTableIfExists('amenity'),
+    knex.schema.dropTableIfExists('role'),
     knex.schema.dropTableIfExists('user'),
     knex.schema.dropTableIfExists('gym_hours'),
-    knex.schema.dropTableIfExists('gym'),
     knex.schema.dropTableIfExists('gym_staff'),
-    knex.schema.dropTableIfExists('role'),
+    knex.schema.dropTableIfExists('gym'),
   // .return({ created: true })
   // .catch(console.error('ERROR IN SETUP DOWN'));
   ]);
