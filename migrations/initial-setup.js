@@ -23,7 +23,7 @@ exports.up = function (knex, Promise) {
       table.string('schedule_link');
       table.string('facebook_handle');
       table.decimal('default_price').notNullable();
-      table.decimal('off_peak_price');
+      table.decimal('off_peak_price').defaultTo(null);
       table.string('image');
       table.timestamps(true, true);
     }),

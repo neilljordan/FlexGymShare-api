@@ -9,7 +9,7 @@ module.exports = [
     schedule_link: 'http://oneboulderfitness.com/schedule',
     facebook_handle: 'oneboulderfitness',
     default_price: 10,
-    off_peak_price: 5,
+    off_peak_price: null,
     image: 'https://i.imgur.com/dMX53Om.png',
   },
   {

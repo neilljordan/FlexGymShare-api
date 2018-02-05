@@ -1,10 +1,15 @@
 const express = require('express');
 const knex = require('../knex');
+const config = require('config');
+
 
 const router = express.Router();
 
 // get all gyms
 router.get('/gyms', (req, res, next) => {
+  // const gyms = req.body
+  const { default_price, off_peak_price } = req.body;
+
   knex('gym')
     .select('*')
     // using raw SQL to add amenities to gyms
@@ -14,6 +19,15 @@ router.get('/gyms', (req, res, next) => {
     .column(knex.raw('(SELECT array(SELECT day_of_week || \':\' || start_time || \'-\'  || end_time FROM gym_hours WHERE gym.id = gym_hours.gym_id AND is_off_peak = TRUE) as off_peak_hours)'))
     .orderBy('gym.id')
     .then((gyms) => {
+      for(let i = 0; i<gyms.length; i++) {
+        if(gyms[i].off_peak_price === null) {
+          gyms[i].off_peak_price = config.get('gym.settings.off_peak_price')
+          console.log(gyms.off_peak_price)
+        }
+        if(gyms[i].default_price === null) {
+          gyms.default_price = config.get('gym.settings.default_price')
+        }
+      }
       res.json(gyms);
     })
     .catch((err) => {
