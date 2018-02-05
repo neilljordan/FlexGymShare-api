@@ -1,7 +1,5 @@
 const express = require('express');
 const knex = require('../knex');
-const qr = require('qr-image');
-
 const router = express.Router();
 
 router.get('/roles', (req, res) => {
