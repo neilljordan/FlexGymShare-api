@@ -31,6 +31,17 @@ exports.up = function (knex, Promise) {
       table.increments('id').primary();
       table.string('name').notNullable();
     }),
+    knex.schema.createTable('invite', (table) => {
+      table.increments('id').primary()
+      table.string('email').notNullable();
+      table.integer('gym_id').references('gym.id').onDelete('CASCADE').index()
+      table.integer('role_id').references('role.id').onDelete('CASCADE')
+      table.date('date_sent').notNullable();
+      table.date('date_accepted').notNullable();
+      table.string('code').notNullable();
+      table.integer('sender_id').references('user.id').onDelete('CASCADE')
+      table.integer('acceptor_id').references('user.id').onDelete('CASCADE')
+    }),
     knex.schema.createTable('gym_staff', (table) => {
       table.increments('id').primary();
       table.integer('gym_id').references('gym.id').onDelete('CASCADE').index();
@@ -121,10 +132,12 @@ exports.down = function (knex, Promise) {
     knex.schema.dropTableIfExists('listing'),
     knex.schema.dropTableIfExists('amenity'),
     knex.schema.dropTableIfExists('gym_staff'),
+    knex.schema.dropTableIfExists('invites'),
     knex.schema.dropTableIfExists('role'),
     knex.schema.dropTableIfExists('user'),
     knex.schema.dropTableIfExists('gym_hours'),
     knex.schema.dropTableIfExists('gym'),
+    knex.schema.dropTableIfExists('invite'),
   // .return({ created: true })
   // .catch(console.error('ERROR IN SETUP DOWN'));
   ]);
