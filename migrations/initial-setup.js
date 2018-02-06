@@ -18,12 +18,8 @@ exports.up = function (knex, Promise) {
       table.string('name').notNullable();
       table.text('description').notNullable();
       table.string('address').notNullable();
-      table.string('telephone').notNullable();
       table.string('website_link');
-      table.string('schedule_link');
-      table.string('facebook_handle');
-      table.decimal('default_price').notNullable();
-      table.decimal('off_peak_price');
+      table.string('telephone').notNullable();
       table.string('image');
       table.timestamps(true, true);
     }),
@@ -32,23 +28,29 @@ exports.up = function (knex, Promise) {
       table.string('name').notNullable();
     }),
     knex.schema.createTable('invite', (table) => {
-      table.increments('id').primary()
+      table.increments('id').primary();
       table.string('email').notNullable();
-      table.integer('gym_id').references('gym.id').onDelete('CASCADE').index()
-      table.integer('role_id').references('role.id').onDelete('CASCADE')
+      table.integer('gym_id').references('gym.id').onDelete('CASCADE').index();
+      table.integer('role_id').references('role.id').onDelete('CASCADE');
+      table.integer('sender_id').references('user.id').onDelete('CASCADE');
       table.date('date_sent').notNullable();
+      table.integer('acceptor_id').references('user.id').onDelete('CASCADE');
       table.date('date_accepted');
       table.string('code').notNullable();
-      table.integer('sender_id').references('user.id').onDelete('CASCADE')
-      table.integer('acceptor_id').references('user.id').onDelete('CASCADE')
-      table.string('status')
+      table.string('status');
       table.timestamps(true, true);
+    }),
+    knex.schema.createTable('gym_config', (table) => {
+      table.increments('id').primary();
+      table.integer('gym_id').references('gym.id').onDelete('CASCADE').index();
+      table.string('name').notNullable();
+      table.string('value').notNullable();
     }),
     knex.schema.createTable('gym_staff', (table) => {
       table.increments('id').primary();
       table.integer('gym_id').references('gym.id').onDelete('CASCADE').index();
-      table.integer('user_id').references('user.id').onDelete('CASCADE')
-      table.integer('role_id').references('role.id').onDelete('CASCADE')
+      table.integer('user_id').references('user.id').onDelete('CASCADE');
+      table.integer('role_id').references('role.id').onDelete('CASCADE');
     }),
     knex.schema.createTable('gym_hours', (table) => {
       table.increments('id').primary();
@@ -137,6 +139,7 @@ exports.down = function (knex, Promise) {
     knex.schema.dropTableIfExists('invite'),
     knex.schema.dropTableIfExists('role'),
     knex.schema.dropTableIfExists('user'),
+    knex.schema.dropTableIfExists('gym_config'),
     knex.schema.dropTableIfExists('gym_hours'),
     knex.schema.dropTableIfExists('gym'),
   // .return({ created: true })
