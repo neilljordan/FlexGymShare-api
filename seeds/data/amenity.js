@@ -5,7 +5,7 @@ module.exports = [
   },
   {
     id: 2,
-    name: 'weight_room',
+    name: 'weight room',
   },
   {
     id: 3,
