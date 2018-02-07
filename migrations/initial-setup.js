@@ -51,6 +51,7 @@ exports.up = function (knex, Promise) {
       table.integer('gym_id').references('gym.id').onDelete('CASCADE').index();
       table.integer('user_id').references('user.id').onDelete('CASCADE');
       table.integer('role_id').references('role.id').onDelete('CASCADE');
+      table.timestamps(true, true);
     }),
     knex.schema.createTable('gym_hours', (table) => {
       table.increments('id').primary();
@@ -59,6 +60,7 @@ exports.up = function (knex, Promise) {
       table.boolean('is_off_peak').notNullable().defaultTo(false);
       table.time('start_time').notNullable();
       table.time('end_time').notNullable();
+      table.timestamps(true, true);
     }),
     knex.schema.createTable('amenity', (table) => {
       table.increments('id').primary();
@@ -108,6 +110,18 @@ exports.up = function (knex, Promise) {
       table.date('date').notNullable();
       table.timestamps(true, true);
     }),
+    knex.schema.createTable('visit', (table) => {
+      table.increments('id').primary();
+      table.integer('renter_id').notNullable().references('user.id').onDelete('CASCADE')
+        .index();
+      table.integer('worker_id').notNullable().references('user.id').onDelete('CASCADE')
+        .index();
+      table.integer('gym_id').notNullable().references('gym.id').onDelete('CASCADE')
+        .index();
+      table.date('date').notNullable();
+      table.text('notes');
+      table.timestamps(true, true);
+    }),
     knex.schema.createTable('transaction', (table) => {
       table.increments('id').primary();
       table.integer('user_id').notNullable().references('user.id').onDelete('CASCADE')
@@ -129,18 +143,19 @@ exports.up = function (knex, Promise) {
 exports.down = function (knex, Promise) {
   return Promise.all([
     knex.schema.dropTableIfExists('transaction'),
+    knex.schema.dropTableIfExists('visit'),
     knex.schema.dropTableIfExists('daypass'),
     knex.schema.dropTableIfExists('pass_type'),
     knex.schema.dropTableIfExists('gym_amenities'),
+    knex.schema.dropTableIfExists('gym_config'),
     knex.schema.dropTableIfExists('blackout_date'),
+    knex.schema.dropTableIfExists('gym_hours'),
+    knex.schema.dropTableIfExists('gym_staff'),
     knex.schema.dropTableIfExists('listing'),
     knex.schema.dropTableIfExists('amenity'),
-    knex.schema.dropTableIfExists('gym_staff'),
     knex.schema.dropTableIfExists('invite'),
     knex.schema.dropTableIfExists('role'),
     knex.schema.dropTableIfExists('user'),
-    knex.schema.dropTableIfExists('gym_config'),
-    knex.schema.dropTableIfExists('gym_hours'),
     knex.schema.dropTableIfExists('gym'),
   // .return({ created: true })
   // .catch(console.error('ERROR IN SETUP DOWN'));
