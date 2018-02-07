@@ -36,7 +36,7 @@ exports.up = function (knex, Promise) {
       table.string('email').notNullable();
       table.integer('gym_id').references('gym.id').onDelete('CASCADE').index();
       table.integer('role_id').references('role.id').onDelete('CASCADE');
-      table.date('date_sent').notNullable();
+      table.string('date_sent').notNullable();
       table.date('date_accepted');
       table.string('code').notNullable();
       table.integer('sender_id').references('user.id').onDelete('CASCADE');
