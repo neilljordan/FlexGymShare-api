@@ -32,6 +32,17 @@ router.get('/transactions/user/:id', (req, res, next) => {
     });
 });
 
+// get transactions for a particular gym
+router.get('/transactions/gym/:gym_id', (req, res, next) => {
+  const gymId = req.params.gym_id;
+  knex('transaction')
+    .where('gym_id', gymId)
+    .then((rows) => {
+      res.json(rows);
+    })
+    .catch(err => next(err));
+});
+
 router.get('/transactions/:id', (req, res, next) => {
   const transactionId = req.params.id;
   knex.select('*')
