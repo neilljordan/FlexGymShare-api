@@ -38,6 +38,7 @@ router.get('/staff/:gymId/:userId', (req, res, next) => {
     .then((staff) => {
       res.json(staff);
       console.log("************************** "+JSON.stringify(res.body))
+      console.log("$$$$$$$$$$$$$$$$$$$$$$$$$$ "+JSON.stringify(staff))
     })
     .catch(err => next(err));
 });
