@@ -6,6 +6,7 @@ const cors = require('cors');
 const path = require('path');
 const users = require('./routes/users');
 const gyms = require('./routes/gyms');
+const staff = require('./routes/staff');
 const daypasses = require('./routes/daypasses');
 const listings = require('./routes/listings');
 const transactions = require('./routes/transactions');
@@ -46,6 +47,7 @@ app.use(cookieParser());
 
 app.use('/', users);
 app.use('/', gyms);
+app.use('/', staff);
 app.use('/', daypasses);
 app.use('/', listings);
 app.use('/', transactions);

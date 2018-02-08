@@ -16,11 +16,28 @@ router.get('/staff', (req, res) => {
 });
 
 router.get('/staff/:id', (req, res, next) => {
+  console.log('asdfasdfasdfasdfasdfadf')
   const staffId = req.params.id;
+  console.log(staffId)
   knex('gym_staff')
     .where('id', staffId)
     .then((staff) => {
       res.json(staff);
+    })
+    .catch(err => next(err));
+});
+
+router.get('/staff/:gymId/:userId', (req, res, next) => {
+  console.log("************************** "+JSON.stringify(req.params))
+  const gymId = req.params.gymId;
+  const userId = req.params.userId;
+  console.log('gymId from routes '+gymId)
+  console.log('userId from routes '+userId)
+  knex('gym_staff')
+    .where('gym_id', gymId)
+    .then((staff) => {
+      res.json(staff);
+      console.log("************************** "+JSON.stringify(res.body))
     })
     .catch(err => next(err));
 });
