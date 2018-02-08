@@ -96,18 +96,19 @@ router.post('/invites', (req, res, next) => {
 router.patch('/invites/code/:code', (req, res, next) => {
   const code = req.params.code;
   const {
-    date_accepted, acceptor_id,
+    date_accepted, acceptor_id, status,
   } = req.body;
 
   const patchInvite = {};
 
-  if (!date_accepted || !acceptor_id) {
+  if (!date_accepted || !acceptor_id || !status) {
     // throw error these are required to patch
-    res.status(500).send('You need both date_accepted && acceptor_id!!!!');
+    res.status(500).send('You need both date_accepted && acceptor_id && status!!!!');
   }
 
   patchInvite.date_accepted = date_accepted;
   patchInvite.acceptor_id = acceptor_id;
+  patchInvite.status = status
 
   knex('invite')
     .where('code', code)

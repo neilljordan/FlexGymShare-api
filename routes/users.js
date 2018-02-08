@@ -49,18 +49,21 @@ router.get('/users/roles/:gym_id/:user_id', (req, res, next) => {
   } = req.params;
 
   knex('gym_staff')
+    .join('role', 'gym_staff.role_id', '=', 'role.id')
     .where('user_id', user_id)
-    .first()
     .then((gymStaff) => {
-      if (gymStaff) {
-        return knex('role')
-          .where('id', gymStaff.role_id)
-          .first()
-          .then((roles) => {
-            res.send(roles)
-          })
-      }
-      res.send(JSON.stringify(false))
+      res.send(gymStaff)
+      // if (gymStaff) {
+      //   return knex('role')
+      //     .select('*')
+      //     .column(knex.raw('(select array(select gym_id from gym_staff where gym_staff.user_id = gym.id) as blackout_dates)'))
+      //     .where('id', gymStaff.role_id)
+      //     .first()
+      //     .then((roles) => {
+      //       res.send(roles)
+      //     })
+      // }
+      // res.send(JSON.stringify(false))
     })
     .catch(err => next(err))
 })
