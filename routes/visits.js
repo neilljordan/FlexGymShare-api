@@ -24,6 +24,17 @@ router.get('/visits/:id', (req, res, next) => {
     .catch(err => next(err));
 });
 
+// get visits for a particular gym
+router.get('/visits/gym/:gym_id', (req, res, next) => {
+  const gymId = req.params.gym_id;
+  knex('visit')
+    .where('gym_id', gymId)
+    .then((rows) => {
+      res.json(rows);
+    })
+    .catch(err => next(err));
+});
+
 router.post('/visits', (req, res, next) => {
   const {
     renter_id,
