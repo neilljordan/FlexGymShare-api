@@ -1,5 +1,7 @@
 const express = require('express');
 const knex = require('../knex');
+const email = require('../utilities/email');
+
 const router = express.Router();
 
 // table.increments('id').primary()
@@ -81,6 +83,16 @@ router.post('/invites', (req, res, next) => {
       res.json(newInvite[0]);
     })
     .catch(err => next(err));
+
+  const emailContact = {
+    email: email,
+    custom_fields: {
+      invite_code: code,
+      invite_gym: gym_id, // TODO: provide the gym name instead of the ID
+    },
+  };
+
+  email.createSubscriber(emailContact); // TODO: do we want to return something here?
 });
 
 router.patch('/invites/code/:code', (req, res, next) => {
