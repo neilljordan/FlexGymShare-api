@@ -1,8 +1,5 @@
 const express = require('express');
 const knex = require('../knex');
-const config = require('config');
-
-
 const router = express.Router();
 
 // get all gyms
