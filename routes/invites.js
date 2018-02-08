@@ -48,16 +48,23 @@ router.get('/invites/code/:code', (req, res, next) => {
   const code = req.params.code;
   knex('invite')
     .where('code', code)
+    .first()
     .then((invite) => {
-      res.json(invite);
+      if (invite) {
+        res.json(invite);
+      } else {
+        res.send(JSON.stringify(false))
+      }
     })
     .catch(err => next(err));
 });
 
 router.post('/invites', (req, res, next) => {
   const {
-    email, gym_id, role_id, date_sent, code, sender_id,
+    email, gym_id, role_id, date_sent, code, sender_id, status,
   } = req.body;
+
+  console.log(date_sent)
 
   knex('invite')
     .insert({
@@ -67,6 +74,7 @@ router.post('/invites', (req, res, next) => {
       date_sent,
       code,
       sender_id,
+      status,
     })
     .returning('*')
     .then((newInvite) => {
