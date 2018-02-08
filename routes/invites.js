@@ -1,6 +1,6 @@
 const express = require('express');
 const knex = require('../knex');
-const email = require('../utilities/email');
+const drip = require('../utilities/dripClient');
 
 const router = express.Router();
 
@@ -55,7 +55,7 @@ router.get('/invites/code/:code', (req, res, next) => {
       if (invite) {
         res.json(invite);
       } else {
-        res.send(JSON.stringify(false))
+        res.send(JSON.stringify(false));
       }
     })
     .catch(err => next(err));
@@ -65,8 +65,6 @@ router.post('/invites', (req, res, next) => {
   const {
     email, gym_id, role_id, date_sent, code, sender_id, status,
   } = req.body;
-
-  console.log(date_sent)
 
   knex('invite')
     .insert({
@@ -85,27 +83,27 @@ router.post('/invites', (req, res, next) => {
     .catch(err => next(err));
 
   const emailContact = {
-    email: email,
+    email,
     custom_fields: {
       invite_code: code,
-      invite_gym: gym_id, // TODO: provide the gym name instead of the ID
+      invite_gym: gym_id, // TODO: replace with gym name
     },
   };
 
-  email.createSubscriber(emailContact); // TODO: do we want to return something here?
+  drip.createSubscriber(emailContact); // TODO: do we want to return something here?
 });
 
 router.patch('/invites/code/:code', (req, res, next) => {
   const code = req.params.code;
   const {
-    date_accepted, acceptor_id
+    date_accepted, acceptor_id,
   } = req.body;
 
   const patchInvite = {};
 
   if (!date_accepted || !acceptor_id) {
-    //throw error these are required to patch
-    res.status(500).send('You need both date_accepted && acceptor_id!!!!')
+    // throw error these are required to patch
+    res.status(500).send('You need both date_accepted && acceptor_id!!!!');
   }
 
   patchInvite.date_accepted = date_accepted;
