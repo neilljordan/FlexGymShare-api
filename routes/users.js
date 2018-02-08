@@ -35,13 +35,35 @@ router.get('/users/email/:email', (req, res, next) => {
     .first()
     .then((user) => {
       if (user) {
-        res.send(JSON.stringify(true));
+        res.json(user);
       } else {
         res.send(JSON.stringify(false));
       }
     })
     .catch(err => next(err));
 });
+
+router.get('/users/roles/:gym_id/:user_id', (req, res, next) => {
+  const {
+    user_id, gym_id,
+  } = req.params;
+
+  knex('gym_staff')
+    .where('user_id', user_id)
+    .first()
+    .then((gymStaff) => {
+      if (gymStaff) {
+        return knex('role')
+          .where('id', gymStaff.role_id)
+          .first()
+          .then((roles) => {
+            res.send(roles)
+          })
+      }
+      res.send(JSON.stringify(false))
+    })
+    .catch(err => next(err))
+})
 
 // get user by Facebook_uid
 router.get('/users/uid/:uid', (req, res, next) => {

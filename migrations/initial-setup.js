@@ -18,12 +18,8 @@ exports.up = function (knex, Promise) {
       table.string('name').notNullable();
       table.text('description').notNullable();
       table.string('address').notNullable();
-      table.string('telephone').notNullable();
       table.string('website_link');
-      table.string('schedule_link');
-      table.string('facebook_handle');
-      table.decimal('default_price').notNullable();
-      table.decimal('off_peak_price');
+      table.string('telephone').notNullable();
       table.string('image');
       table.timestamps(true, true);
     }),
@@ -36,13 +32,19 @@ exports.up = function (knex, Promise) {
       table.string('email').notNullable();
       table.integer('gym_id').references('gym.id').onDelete('CASCADE').index();
       table.integer('role_id').references('role.id').onDelete('CASCADE');
-      table.date('date_sent').notNullable();
-      table.date('date_accepted');
-      table.string('code').notNullable();
+      table.string('date_sent').notNullable();
       table.integer('sender_id').references('user.id').onDelete('CASCADE');
       table.integer('acceptor_id').references('user.id').onDelete('CASCADE');
+      table.date('date_accepted');
+      table.string('code').notNullable();
       table.string('status');
       table.timestamps(true, true);
+    }),
+    knex.schema.createTable('gym_config', (table) => {
+      table.increments('id').primary();
+      table.integer('gym_id').references('gym.id').onDelete('CASCADE').index();
+      table.string('name').notNullable();
+      table.string('value').notNullable();
     }),
     knex.schema.createTable('gym_staff', (table) => {
       table.increments('id').primary();

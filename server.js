@@ -50,7 +50,6 @@ app.use('/', qrCodes);
 app.use('/', token);
 app.use('/', invites);
 
-
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use((_req, res) => {
