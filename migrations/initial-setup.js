@@ -19,6 +19,7 @@ exports.up = function (knex, Promise) {
       table.text('description').notNullable();
       table.string('address').notNullable();
       table.string('website_link');
+      table.string('owner_email');
       table.string('telephone').notNullable();
       table.string('image');
       table.timestamps(true, true);
