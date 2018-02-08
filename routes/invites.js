@@ -1,18 +1,9 @@
 const express = require('express');
 const knex = require('../knex');
 const drip = require('../utilities/dripClient');
+const crypto = require('crypto');
 
 const router = express.Router();
-
-// table.increments('id').primary()
-// table.string('email').notNullable();
-// table.integer('gym_id').references('gym.id').onDelete('CASCADE').index()
-// table.integer('role_id').references('role.id').onDelete('CASCADE')
-// table.date('date_sent').notNullable();
-// table.date('date_accepted').notNullable();
-// table.string('code').notNullable();
-// table.integer('sender_id').references('user.id').onDelete('CASCADE')
-// table.integer('acceptor_id').references('user.id').onDelete('CASCADE')
 
 router.get('/invites', (req, res, next) => {
   knex('invite')
@@ -91,6 +82,56 @@ router.post('/invites', (req, res, next) => {
   };
 
   drip.createSubscriber(emailContact); // TODO: do we want to return something here?
+});
+
+function getOwnerEmailByGymId(id) {
+  return knex.select('owner_email').from('gym').where('gym.id', id)
+    .then((query) => {
+      const result = JSON.stringify(query);
+      return result;
+    });
+}
+
+// sends invite email to whichever address is in the gym table
+router.post('/invites/owner/:gym_id', (req, res, next) => {
+  let ownerEmail = '';
+  const gymId = req.params.gym_id;
+  const inviteCode = crypto.randomBytes(8).toString('hex');
+
+  getOwnerEmailByGymId(gymId).then((result) => {
+    // console.log(result);
+    // const json = JSON.parse(result);
+    ownerEmail = JSON.parse(result)[0].owner_email;
+    return ownerEmail;
+  })
+    .then((param) => {
+      console.log(param);
+      knex('invite')
+        .insert({
+          email: param,
+          gym_id: gymId,
+          role_id: 2,
+          date_sent: Date(),
+          code: inviteCode,
+          sender_id: 1,
+          status: 'pending',
+        })
+        .returning('id')
+        .then((rows) => {
+          res.json(rows[0]);
+          return rows;
+        })
+        .catch(err => next(err));
+    })
+    .then(() => {
+      drip.createSubscriber({
+        email: ownerEmail,
+        custom_fields: {
+          invite_code: inviteCode,
+          invite_gym: gymId, // TODO: replace with gym name
+        },
+      });
+    });
 });
 
 router.patch('/invites/code/:code', (req, res, next) => {
