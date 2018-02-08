@@ -15,6 +15,7 @@ const invites = require('./routes/invites');
 const visits = require('./routes/visits');
 const staff = require('./routes/staff');
 
+
 const opbeat = require('opbeat').start({
   appId: 'a7b22c4b09',
   organizationId: '8e92995e0b274928af1aebf18e10357c',
