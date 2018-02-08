@@ -7,6 +7,7 @@ module.exports = [
     telephone: '303-625-6881',
     address: '1800 Broadway Suite 190, Boulder CO, 80302',
     website_link: 'http://oneboulderfitness.com/',
+    image: 'https://i.imgur.com/dMX53Om.png - https://vignette.wikia.nocookie.net/animal-jam-clans-1/images/d/dd/Nacho_Libre.png/revision/latest?cb=20170318143421',
     owner_email: 'test+10@youflex.co',
     image: 'https://i.imgur.com/dMX53Om.png',
   },

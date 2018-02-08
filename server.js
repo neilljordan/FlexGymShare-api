@@ -6,6 +6,7 @@ const cors = require('cors');
 const path = require('path');
 const users = require('./routes/users');
 const gyms = require('./routes/gyms');
+const staff = require('./routes/staff');
 const daypasses = require('./routes/daypasses');
 const listings = require('./routes/listings');
 const transactions = require('./routes/transactions');
@@ -21,6 +22,10 @@ const opbeat = require('opbeat').start({
   organizationId: '8e92995e0b274928af1aebf18e10357c',
   secretToken: 'a31263fb85fab9c8155cca0807914c0c884f4b04',
 });
+const config = require('config');
+
+// const gymSettings = config.get('gym.settings');
+// const defaultPrice = config.get('gym.settings.default_price');
 
 const app = express();
 const cookieSession = require('cookie-session');
@@ -47,6 +52,7 @@ app.use(cookieParser());
 
 app.use('/', users);
 app.use('/', gyms);
+app.use('/', staff);
 app.use('/', daypasses);
 app.use('/', listings);
 app.use('/', transactions);
