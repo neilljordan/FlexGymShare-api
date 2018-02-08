@@ -15,6 +15,21 @@ router.get('/staff', (req, res) => {
     });
 });
 
+router.get('/staff/gym/:gym_id', (req, res, next) => {
+ //  select * from gym_staff INNER JOIN role ON role.id = gym_staff.role_id
+ // where gym_id = 4
+  const gymId = req.params.gym_id
+  knex('gym_staff')
+    .join('role', 'gym_staff.role_id', '=', 'role.id')
+    .join('user', 'gym_staff.user_id', '=', 'user.id')
+    .where('gym_staff.gym_id', gymId)
+    .then((staff) => {
+      console.log(staff)
+      res.json(staff)
+    })
+    .catch(err => next(err));
+})
+
 router.get('/staff/:id', (req, res, next) => {
   console.log('asdfasdfasdfasdfasdfadf')
   const staffId = req.params.id;
@@ -48,7 +63,7 @@ router.post('/staff', (req, res, next) => {
     gym_id, user_id, role_id,
   } = req.body;
 
-  knex('staff')
+  knex('gym_staff')
     .insert({
       gym_id,
       user_id,

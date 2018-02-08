@@ -12,6 +12,11 @@ const listings = require('./routes/listings');
 const transactions = require('./routes/transactions');
 const qrCodes = require('./routes/qr');
 const token = require('./routes/token');
+const invites = require('./routes/invites');
+const visits = require('./routes/visits');
+const staff = require('./routes/staff');
+
+
 const opbeat = require('opbeat').start({
   appId: 'a7b22c4b09',
   organizationId: '8e92995e0b274928af1aebf18e10357c',
@@ -53,6 +58,9 @@ app.use('/', listings);
 app.use('/', transactions);
 app.use('/', qrCodes);
 app.use('/', token);
+app.use('/', invites);
+app.use('/', visits);
+app.use('/', staff);
 
 app.use(express.static(path.join(__dirname, 'public')));
 

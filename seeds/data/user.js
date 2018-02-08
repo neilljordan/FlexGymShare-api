@@ -1,7 +1,7 @@
 module.exports = [
   {
     id: 1,
-    first_name: 'Lister',
+    first_name: 'Renter',
     last_name: 'User1',
     email: 'test+1@youflex.co',
     profile_image: '',
@@ -15,9 +15,16 @@ module.exports = [
   },
   {
     id: 3,
-    first_name: 'Lister',
+    first_name: 'Owner',
     last_name: 'User3',
     email: 'test+3@youflex.co',
+    profile_image: '',
+  },
+  {
+    id: 4,
+    first_name: 'Worker',
+    last_name: 'User4',
+    email: 'test+4@youflex.co',
     profile_image: '',
   },
 ];

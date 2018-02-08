@@ -8,6 +8,8 @@ module.exports = [
     address: '1800 Broadway Suite 190, Boulder CO, 80302',
     website_link: 'http://oneboulderfitness.com/',
     image: 'https://i.imgur.com/dMX53Om.png - https://vignette.wikia.nocookie.net/animal-jam-clans-1/images/d/dd/Nacho_Libre.png/revision/latest?cb=20170318143421',
+    owner_email: 'test+10@youflex.co',
+    image: 'https://i.imgur.com/dMX53Om.png',
   },
   {
     id: 2,
@@ -17,6 +19,7 @@ module.exports = [
     telephone: '(303) 234-9663',
     address: '2525 Arapahoe Ave, Boulder, CO 80302',
     website_link: 'http://www.crossfitsanitas.com/',
+    owner_email: 'test+11@youflex.co',
     image: 'https://i.imgur.com/6i0c0ko.png',
   },
   {
@@ -27,6 +30,7 @@ module.exports = [
     telephone: '303-501-1700',
     address: '1821 30th St, Boulder, CO 80301',
     website_link: 'https://www.wellbridge.com/colorado-athletic-club/boulder',
+    owner_email: 'test+12@youflex.co',
     image: 'https://i.imgur.com/6JqFYZx.png',
   },
   {
@@ -37,6 +41,7 @@ module.exports = [
     telephone: '303-209-9274',
     address: '2900 Iris Ave, Boulder, CO 80301',
     website_link: 'https://www.24hourfitness.com/website_link/clubList/CO/boulder',
+    owner_email: 'test+13@youflex.co',
     image: 'https://i.imgur.com/6i0c0ko.png',
   },
   {

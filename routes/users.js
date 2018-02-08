@@ -35,13 +35,38 @@ router.get('/users/email/:email', (req, res, next) => {
     .first()
     .then((user) => {
       if (user) {
-        res.send(JSON.stringify(true));
+        res.json(user);
       } else {
         res.send(JSON.stringify(false));
       }
     })
     .catch(err => next(err));
 });
+
+router.get('/users/roles/:gym_id/:user_id', (req, res, next) => {
+  const {
+    user_id, gym_id,
+  } = req.params;
+
+  knex('gym_staff')
+    .join('role', 'gym_staff.role_id', '=', 'role.id')
+    .where('user_id', user_id)
+    .then((gymStaff) => {
+      res.send(gymStaff)
+      // if (gymStaff) {
+      //   return knex('role')
+      //     .select('*')
+      //     .column(knex.raw('(select array(select gym_id from gym_staff where gym_staff.user_id = gym.id) as blackout_dates)'))
+      //     .where('id', gymStaff.role_id)
+      //     .first()
+      //     .then((roles) => {
+      //       res.send(roles)
+      //     })
+      // }
+      // res.send(JSON.stringify(false))
+    })
+    .catch(err => next(err))
+})
 
 // get user by Facebook_uid
 router.get('/users/uid/:uid', (req, res, next) => {
