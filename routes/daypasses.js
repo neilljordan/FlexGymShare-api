@@ -1,5 +1,6 @@
 const express = require('express');
 const knex = require('../knex');
+const crypto = require('crypto');
 
 const router = express.Router();
 
@@ -43,13 +44,15 @@ router.get('/daypasses/:id', (req, res, next) => {
 });
 
 router.post('/daypasses', (req, res, next) => {
-  const { gym_id, user_id, date, pass_type_id } = req.body;
+  const { gym_id, user_id, date, pass_type_id, transaction_id } = req.body;
   knex('daypass')
     .insert({
       gym_id,
       user_id,
       date,
       pass_type_id,
+      transaction_id,
+      code: crypto.randomBytes(10).toString('hex'),
     })
     .returning('*')
     .then((daypass) => {

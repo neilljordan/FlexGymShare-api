@@ -1,6 +1,5 @@
 const express = require('express');
 const knex = require('../knex');
-const crypto = require('crypto');
 
 const router = express.Router();
 
@@ -65,7 +64,6 @@ router.post('/transactions', (req, res, next) => {
       user_id,
       listing_id,
       pass_type_id,
-      code: crypto.randomBytes(20).toString('hex'),
       gym_id,
     })
     .returning('*')
