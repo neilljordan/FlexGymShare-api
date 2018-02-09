@@ -14,6 +14,19 @@ router.get('/visits', (req, res) => {
     });
 });
 
+router.get('/visits/transaction/:transactionId', (req, res, next) => {
+  const transactionId = req.params.transactionId;
+  knex('visit')
+    .where('transaction_id', transactionId)
+    .then((visit) => {
+      if (visit) {
+        res.json(visit);
+      }
+      res.send(JSON.stringify(false))
+    })
+    .catch(err => next(err));
+});
+
 router.get('/visits/:id', (req, res, next) => {
   const visitId = req.params.id;
   knex('visit')
@@ -37,6 +50,7 @@ router.get('/visits/gym/:gym_id', (req, res, next) => {
 
 router.post('/visits', (req, res, next) => {
   const {
+    transaction_id,
     renter_id,
     worker_id,
     gym_id,
@@ -46,6 +60,7 @@ router.post('/visits', (req, res, next) => {
 
   knex('visit')
     .insert({
+      transaction_id,
       renter_id,
       worker_id,
       gym_id,
