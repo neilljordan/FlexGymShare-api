@@ -37,11 +37,15 @@ router.get('/visits/:id', (req, res, next) => {
     .catch(err => next(err));
 });
 
+// [{"id":4,"renter_id":1,"worker_id":4,"gym_id":null,"daypass_id":1,"date":"2018-01-30T07:00:00.000Z","notes":"Rover is a good boy. A very good boy.","created_at":"2018-02-09T18:15:30.701Z","updated_at":"2018-02-09T18:15:30.701Z","facebook_uid":"","email":"test+4@youflex.co","first_name":"Worker","last_name":"User4","profile_image":""}]
+
 // get visits for a particular gym
 router.get('/visits/gym/:gym_id', (req, res, next) => {
   const gymId = req.params.gym_id;
   knex('visit')
-    .innerJoin('user', 'renter_id', 'user.id').as('renter')
+    .select('visit.id', 'visit.date', 'visit.notes', 'renter_table.first_name', 'renter_table.last_name', 'renter_table.email', 'worker_table.first_name as worker_first_name', 'worker_table.last_name as worker_last_name', 'worker_table.email as worker_email')
+    .innerJoin('user as worker_table', 'worker_id', 'worker_table.id')
+    .innerJoin('user as renter_table', 'renter_id', 'renter_table.id')
     .where('visit.gym_id', gymId)
     .then((rows) => {
       res.json(rows);

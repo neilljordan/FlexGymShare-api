@@ -31,6 +31,22 @@ router.get('/daypasses/user/:id', (req, res, next) => {
     });
 });
 
+router.get('/daypasses/gym/:id', (req, res, next) => {
+  const gymId = req.params.id;
+  knex.select('daypass.id', 'daypass.date', 'pass_type.name as pass_name', 'user.first_name', 'user.last_name', 'user.email', 'user.profile_image')
+    .from('daypass')
+    .innerJoin('pass_type', 'pass_type.id', 'daypass.pass_type_id')
+    .innerJoin('user', 'daypass.user_id', 'user.id')
+    .where('daypass.gym_id', gymId)
+    .orderBy('daypass.date')
+    .then((daypasses) => {
+      res.json(daypasses);
+    })
+    .catch((err) => {
+      next(err);
+    });
+});
+
 router.get('/daypasses/:id', (req, res, next) => {
   const passId = req.params.id;
   knex.select('*')
