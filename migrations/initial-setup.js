@@ -108,6 +108,9 @@ exports.up = function (knex, Promise) {
       table.integer('pass_type_id').notNullable().references('pass_type.id').onDelete('CASCADE')
         .index()
         .defaultTo(1);
+      table.integer('transaction_id').notNullable().references('transaction.id').onDelete('CASCADE')
+        .index();
+      table.string('code');
       table.date('date').notNullable();
       table.timestamps(true, true);
     }),
@@ -134,7 +137,6 @@ exports.up = function (knex, Promise) {
         .index()
         .defaultTo(1);
       table.date('pass_date').notNullable();
-      table.string('code');
       table.timestamps(true, true);
     }),
   ]);
