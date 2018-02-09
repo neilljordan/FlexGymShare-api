@@ -19,7 +19,10 @@ router.get('/staff/:id', (req, res, next) => {
   const staffId = req.params.id;
   console.log(staffId)
   knex('gym_staff')
-    .where('id', staffId)
+    .join('role', 'gym_staff.role_id', '=', 'role.id')
+    .join('user', 'gym_staff.user_id', '=', 'user.id')
+    .select('gym_staff.id', 'role.name', 'user.first_name', 'user.last_name', 'user.email')
+    .where('gym_staff.gym_id', gymId)
     .then((staff) => {
       res.json(staff);
     })
