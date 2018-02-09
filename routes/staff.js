@@ -18,14 +18,14 @@ router.get('/staff', (req, res) => {
 router.get('/staff/gym/:gym_id', (req, res) => {
   const gymId = req.params.gym_id;
   knex('gym_staff')
-    .where('gym_id', gymId)
-    .orderBy('id')
+    .select('gym_staff.id', 'role.name', 'user.email', 'user.first_name', 'user.last_name', 'user.profile_image', 'gym_staff.updated_at')
+    .innerJoin('user', 'gym_staff.user_id', 'user.id')
+    .innerJoin('role', 'gym_staff.role_id', 'role.id')
+    .where('gym_staff.gym_id', gymId)
     .then((gymStaff) => {
       res.json(gymStaff);
-    })
-    .catch((err) => {
-      next(err);
     });
+    // .catch(err => next(err));
 });
 
 router.get('/staff/:id', (req, res, next) => {
