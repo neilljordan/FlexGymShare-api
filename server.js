@@ -14,8 +14,6 @@ const qrCodes = require('./routes/qr');
 const token = require('./routes/token');
 const invites = require('./routes/invites');
 const visits = require('./routes/visits');
-const staff = require('./routes/staff');
-
 
 const opbeat = require('opbeat').start({
   appId: 'a7b22c4b09',

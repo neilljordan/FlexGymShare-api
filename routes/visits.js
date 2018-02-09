@@ -40,7 +40,6 @@ router.post('/visits', (req, res, next) => {
     renter_id,
     worker_id,
     gym_id,
-    pass_type,
     date,
     notes,
   } = req.body;
@@ -50,7 +49,6 @@ router.post('/visits', (req, res, next) => {
       renter_id,
       worker_id,
       gym_id,
-      pass_type,
       date,
       notes,
     })

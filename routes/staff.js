@@ -15,23 +15,7 @@ router.get('/staff', (req, res) => {
     });
 });
 
-router.get('/staff/gym/:gym_id', (req, res, next) => {
- //  select * from gym_staff INNER JOIN role ON role.id = gym_staff.role_id
- // where gym_id = 4
-  const gymId = req.params.gym_id
-  knex('gym_staff')
-    .join('role', 'gym_staff.role_id', '=', 'role.id')
-    .join('user', 'gym_staff.user_id', '=', 'user.id')
-    .where('gym_staff.gym_id', gymId)
-    .then((staff) => {
-      console.log(staff)
-      res.json(staff)
-    })
-    .catch(err => next(err));
-})
-
 router.get('/staff/:id', (req, res, next) => {
-  console.log('asdfasdfasdfasdfasdfadf')
   const staffId = req.params.id;
   console.log(staffId)
   knex('gym_staff')
@@ -43,7 +27,6 @@ router.get('/staff/:id', (req, res, next) => {
 });
 
 router.get('/staff/:gymId/:userId', (req, res, next) => {
-  console.log("************************** "+JSON.stringify(req.params))
   const gymId = req.params.gymId;
   const userId = req.params.userId;
   console.log('gymId from routes '+gymId)
@@ -52,8 +35,6 @@ router.get('/staff/:gymId/:userId', (req, res, next) => {
     .where('gym_id', gymId)
     .then((staff) => {
       res.json(staff);
-      console.log("************************** "+JSON.stringify(res.body))
-      console.log("$$$$$$$$$$$$$$$$$$$$$$$$$$ "+JSON.stringify(staff))
     })
     .catch(err => next(err));
 });
@@ -63,7 +44,7 @@ router.post('/staff', (req, res, next) => {
     gym_id, user_id, role_id,
   } = req.body;
 
-  knex('gym_staff')
+  knex('staff')
     .insert({
       gym_id,
       user_id,
