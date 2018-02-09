@@ -12,7 +12,7 @@ router.get('/qrCodes/:code', (req, res) => {
   res.send(pngString);
 });
 
-// find the transaction record associated with the code
+// find the daypass record associated with the code
 router.get('/qrCodes/verification/:code', (req, res) => {
   const passCode = req.params.code;
   knex('daypass')

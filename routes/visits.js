@@ -14,15 +14,15 @@ router.get('/visits', (req, res) => {
     });
 });
 
-router.get('/visits/transaction/:transactionId', (req, res, next) => {
-  const transactionId = req.params.transactionId;
+router.get('/visits/daypass/:daypass_id', (req, res, next) => {
+  const daypassId = req.params.daypass_id;
   knex('visit')
-    .where('transaction_id', transactionId)
+    .where('daypass_id', daypassId)
     .then((visit) => {
       if (visit) {
         res.json(visit);
       }
-      res.send(JSON.stringify(false))
+      res.send(JSON.stringify(false));
     })
     .catch(err => next(err));
 });
