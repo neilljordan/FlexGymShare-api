@@ -5,10 +5,9 @@ const crypto = require('crypto');
 const router = express.Router();
 
 router.get('/transactions', (req, res, next) => {
-  knex.select('*')
-    .from('transaction')
-    .innerJoin('pass_type', 'pass_type.id', 'transaction.pass_type_id')
-    .orderBy('transaction.id')
+  knex('transaction')
+    .join('pass_type', 'pass_type.id', '=', 'transaction.pass_type_id')
+    .select('transaction.code', 'transaction.id', 'pass_type.id', 'transaction.user_id', 'transaction.pass_date', 'pass_type.name', 'transaction.listing_id', 'transaction.gym_id')
     .then((transactions) => {
       res.json(transactions);
     })
@@ -19,10 +18,9 @@ router.get('/transactions', (req, res, next) => {
 
 router.get('/transactions/user/:id', (req, res, next) => {
   const userId = req.params.id;
-  knex.select('*')
-    .from('transaction')
-    .innerJoin('pass_type', 'pass_type.id', 'transaction.pass_type_id')
-    .orderBy('transaction.id')
+  knex('transaction')
+    .join('pass_type', 'pass_type.id', '=', 'transaction.pass_type_id')
+    .select('transaction.code', 'transaction.id', 'pass_type.id', 'transaction.user_id', 'transaction.pass_date', 'pass_type.name', 'transaction.listing_id', 'transaction.gym_id')
     .where('user_id', userId)
     .then((transactions) => {
       res.json(transactions);
@@ -30,6 +28,17 @@ router.get('/transactions/user/:id', (req, res, next) => {
     .catch((err) => {
       next(err);
     });
+});
+
+// get transactions for a particular gym
+router.get('/transactions/gym/:gym_id', (req, res, next) => {
+  const gymId = req.params.gym_id;
+  knex('transaction')
+    .where('gym_id', gymId)
+    .then((rows) => {
+      res.json(rows);
+    })
+    .catch(err => next(err));
 });
 
 router.get('/transactions/:id', (req, res, next) => {
