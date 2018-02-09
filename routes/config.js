@@ -4,7 +4,7 @@ const knex = require('../knex');
 const router = express.Router();
 
 router.get('/configs', (req, res) => {
-  knex('config')
+  knex('gym_config')
     .orderBy('id')
     .then((configs) => {
       res.json(configs);
@@ -16,7 +16,7 @@ router.get('/configs', (req, res) => {
 
 router.get('/configs/:id', (req, res, next) => {
   const gym_id = req.params.id;
-  knex('config')
+  knex('gym_config')
     .where('gym_id', gym_id)
     .then((config) => {
       res.json(config);
@@ -31,17 +31,24 @@ router.post('/configs', (req, res, next) => {
     value,
   } = req.body;
 
-  knex('config')
-    .insert({
-      gym_id,
-      name,
-      value,
+  console.log(gym_id)
+  console.log(name)
+
+  knex('gym_config')
+    .where(function() {
+      this.where('gym_id', gym_id).andWhere('name', name)
     })
-    .returning('*')
     .then((newconfig) => {
+      console.log(newConfig)
       res.json(newconfig[0]);
     })
     .catch(err => next(err));
+    // .insert({
+    //   gym_id,
+    //   name,
+    //   value,
+    // })
+    // .returning('*')
 });
 
 router.patch('/configs/:id', (req, res, next) => {
@@ -58,10 +65,10 @@ router.patch('/configs/:id', (req, res, next) => {
     patchconfig.name = name;
   }
 
-  knex('config')
+  knex('gym_config')
     .where('id', configId)
     .then((config) => {
-      knex('config')
+      knex('gym_config')
         .update(patchconfig)
         .where('id', configId)
         .returning('*')
@@ -75,9 +82,9 @@ router.patch('/configs/:id', (req, res, next) => {
 router.delete('/configs/:id', (req, res, next) => {
   const configId = req.params.id;
 
-  knex('config')
+  knex('gym_config')
     .then((config) => {
-      knex('config')
+      knex('gym_config')
         .del()
         .where('id', configId)
         .returning('*')

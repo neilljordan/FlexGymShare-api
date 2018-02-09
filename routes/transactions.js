@@ -68,8 +68,8 @@ router.post('/transactions', (req, res, next) => {
 
 router.patch('/transactions/:id', (req, res, next) => {
   const transactionId = req.params.id;
-  const { 
-    user_id, listing_id, pass_type_id, code 
+  const {
+    user_id, listing_id, pass_type_id, code
   } = req.body;
   const patchTransaction = {};
 
