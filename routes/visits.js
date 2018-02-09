@@ -41,7 +41,8 @@ router.get('/visits/:id', (req, res, next) => {
 router.get('/visits/gym/:gym_id', (req, res, next) => {
   const gymId = req.params.gym_id;
   knex('visit')
-    .where('gym_id', gymId)
+    .innerJoin('user', 'renter_id', 'user.id').as('renter')
+    .where('visit.gym_id', gymId)
     .then((rows) => {
       res.json(rows);
     })
