@@ -52,7 +52,7 @@ router.get('/users/roles/:gym_id/:user_id', (req, res, next) => {
     .join('role', 'gym_staff.role_id', '=', 'role.id')
     .where('user_id', user_id)
     .then((gymStaff) => {
-      res.send(gymStaff)
+      res.send(gymStaff);
       // if (gymStaff) {
       //   return knex('role')
       //     .select('*')
@@ -65,8 +65,8 @@ router.get('/users/roles/:gym_id/:user_id', (req, res, next) => {
       // }
       // res.send(JSON.stringify(false))
     })
-    .catch(err => next(err))
-})
+    .catch(err => next(err));
+});
 
 // get user by Facebook_uid
 router.get('/users/uid/:uid', (req, res, next) => {
@@ -109,7 +109,7 @@ router.post('/users', (req, res, next) => {
 router.patch('/users/:id', (req, res, next) => {
   const userId = req.params.id;
   const {
-    first_name, last_name, email, gymId
+    first_name, last_name, email, gymId,
   } = req.body;
   const patchUser = {};
 

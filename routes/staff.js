@@ -15,6 +15,19 @@ router.get('/staff', (req, res) => {
     });
 });
 
+router.get('/staff/gym/:gym_id', (req, res) => {
+  const gymId = req.params.gym_id;
+  knex('gym_staff')
+    .where('gym_id', gymId)
+    .orderBy('id')
+    .then((gymStaff) => {
+      res.json(gymStaff);
+    })
+    .catch((err) => {
+      next(err);
+    });
+});
+
 router.get('/staff/:id', (req, res, next) => {
   const staffId = req.params.id;
   console.log(staffId)
