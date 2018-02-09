@@ -113,13 +113,13 @@ exports.up = function (knex, Promise) {
     }),
     knex.schema.createTable('visit', (table) => {
       table.increments('id').primary();
-      table.integer('transaction_id').notNullable().references('transaction.id').onDelete('CASCADE')
       table.integer('renter_id').notNullable().references('user.id').onDelete('CASCADE')
         .index();
       table.integer('worker_id').notNullable().references('user.id').onDelete('CASCADE')
         .index();
       table.integer('gym_id').notNullable().references('gym.id').onDelete('CASCADE')
         .index();
+      table.integer('daypass_id').notNullable().references('daypass.id').onDelete('CASCADE');
       table.date('date').notNullable();
       table.text('notes');
       table.timestamps(true, true);

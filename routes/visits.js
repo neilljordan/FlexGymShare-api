@@ -50,7 +50,7 @@ router.get('/visits/gym/:gym_id', (req, res, next) => {
 
 router.post('/visits', (req, res, next) => {
   const {
-    transaction_id,
+    daypass_id,
     renter_id,
     worker_id,
     gym_id,
@@ -60,7 +60,7 @@ router.post('/visits', (req, res, next) => {
 
   knex('visit')
     .insert({
-      transaction_id,
+      daypass_id,
       renter_id,
       worker_id,
       gym_id,
