@@ -60,7 +60,7 @@ router.post('/staff', (req, res, next) => {
     gym_id, user_id, role_id,
   } = req.body;
 
-  knex('staff')
+  knex('gym_staff')
     .insert({
       gym_id,
       user_id,
