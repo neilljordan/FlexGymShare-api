@@ -113,6 +113,7 @@ exports.up = function (knex, Promise) {
     }),
     knex.schema.createTable('visit', (table) => {
       table.increments('id').primary();
+      table.integer('transaction_id').notNullable().references('transaction.id').onDelete('CASCADE')
       table.integer('renter_id').notNullable().references('user.id').onDelete('CASCADE')
         .index();
       table.integer('worker_id').notNullable().references('user.id').onDelete('CASCADE')
@@ -143,9 +144,9 @@ exports.up = function (knex, Promise) {
 
 exports.down = function (knex, Promise) {
   return Promise.all([
-    knex.schema.dropTableIfExists('transaction'),
     knex.schema.dropTableIfExists('visit'),
     knex.schema.dropTableIfExists('daypass'),
+    knex.schema.dropTableIfExists('transaction'),
     knex.schema.dropTableIfExists('pass_type'),
     knex.schema.dropTableIfExists('gym_amenities'),
     knex.schema.dropTableIfExists('gym_config'),
@@ -158,6 +159,7 @@ exports.down = function (knex, Promise) {
     knex.schema.dropTableIfExists('role'),
     knex.schema.dropTableIfExists('user'),
     knex.schema.dropTableIfExists('gym'),
+
   // .return({ created: true })
   // .catch(console.error('ERROR IN SETUP DOWN'));
   ]);
