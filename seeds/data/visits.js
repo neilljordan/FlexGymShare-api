@@ -1,5 +1,6 @@
 module.exports = [
   {
+    transaction_id: 1,
     renter_id: 1,
     worker_id: 4,
     gym_id: 1,

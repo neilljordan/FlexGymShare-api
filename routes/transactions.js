@@ -5,10 +5,9 @@ const crypto = require('crypto');
 const router = express.Router();
 
 router.get('/transactions', (req, res, next) => {
-  knex.select('*')
-    .from('transaction')
-    .innerJoin('pass_type', 'pass_type.id', 'transaction.pass_type_id')
-    .orderBy('transaction.id')
+  knex('transaction')
+    .join('pass_type', 'pass_type.id', '=', 'transaction.pass_type_id')
+    .select('transaction.code', 'transaction.id', 'pass_type.id', 'transaction.user_id', 'transaction.pass_date', 'pass_type.name', 'transaction.listing_id', 'transaction.gym_id')
     .then((transactions) => {
       res.json(transactions);
     })
@@ -19,10 +18,9 @@ router.get('/transactions', (req, res, next) => {
 
 router.get('/transactions/user/:id', (req, res, next) => {
   const userId = req.params.id;
-  knex.select('*')
-    .from('transaction')
-    .innerJoin('pass_type', 'pass_type.id', 'transaction.pass_type_id')
-    .orderBy('transaction.id')
+  knex('transaction')
+    .join('pass_type', 'pass_type.id', '=', 'transaction.pass_type_id')
+    .select('transaction.code', 'transaction.id', 'pass_type.id', 'transaction.user_id', 'transaction.pass_date', 'pass_type.name', 'transaction.listing_id', 'transaction.gym_id')
     .where('user_id', userId)
     .then((transactions) => {
       res.json(transactions);
@@ -79,8 +77,8 @@ router.post('/transactions', (req, res, next) => {
 
 router.patch('/transactions/:id', (req, res, next) => {
   const transactionId = req.params.id;
-  const { 
-    user_id, listing_id, pass_type_id, code 
+  const {
+    user_id, listing_id, pass_type_id, code
   } = req.body;
   const patchTransaction = {};
 

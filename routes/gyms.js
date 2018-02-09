@@ -1,10 +1,12 @@
 const express = require('express');
 const knex = require('../knex');
-
 const router = express.Router();
 
 // get all gyms
 router.get('/gyms', (req, res, next) => {
+  // const gyms = req.body
+  const { default_price, off_peak_price } = req.body;
+
   knex('gym')
     .select('*')
     // using raw SQL to add amenities to gyms

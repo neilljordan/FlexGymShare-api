@@ -1,0 +1,6 @@
+{
+  "settings": {
+    "off_peak_price": 5,
+    "default_price": 15
+  }
+}
