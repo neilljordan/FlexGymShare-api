@@ -107,16 +107,16 @@ exports.up = function (knex, Promise) {
       table.integer('lister_id').notNullable().references('user.id').onDelete('CASCADE')
         .index()
         .comment('The person who listed the pass');
+      table.integer('gym_id').notNullable().references('gym.id').onDelete('CASCADE')
+        .index();
+      table.date('date').notNullable()
+        .comment('The date the pass is listed for');
       table.integer('renter_id').references('user.id').onDelete('CASCADE').defaultTo(null)
         .index()
         .comment('The person who rented the pass');
-      table.integer('gym_id').notNullable().references('gym.id').onDelete('CASCADE')
-        .index();
       table.integer('transaction_id').references('transaction.id')
         .onDelete('CASCADE')
         .comment('The transaction that purchased the listing (null until it was bought)');
-      table.date('date').notNullable()
-        .comment('The date the pass is listed for');
       table.timestamps(true, true);
     }),
     knex.schema.createTable('daypass', (table) => {
