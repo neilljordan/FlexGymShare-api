@@ -51,6 +51,55 @@ router.post('/configs', (req, res, next) => {
     // .returning('*')
 });
 
+router.put('/configs/gym/:gym_id', (req, res, next) => {
+  const gym_id = req.params.gym_id
+  let { name, value } = req.body
+  console.log(gym_id)
+  console.log(name)
+  console.log(value)
+  name = name.toString()
+  value = value.toString()
+
+  let patch = {
+    name,
+    value,
+  }
+
+  let post = {
+    gym_id,
+    name,
+    value
+  }
+
+  knex('gym_config')
+    .where('gym_id', gym_id)
+    .andWhere('name', name)
+    .then((config) => {
+      if (config) {
+        //patch it
+        knex('gym_config')
+          .update(patch)
+          .where('gym_id', gym_id)
+          .andWhere('name', name)
+          .returning('*')
+          .then((patchedConfig) => {
+            console.log(patchedConfig)
+            res.json(patchedConfig[0]);
+            res.end(500)
+          })
+          .catch(err => next(err));
+      } else {
+        knex('gym_config')
+          .insert(post)
+          .then((newConfig) => {
+            res.json(newConfig);
+          })
+          .catch(err => next(err));
+      }
+    })
+
+})
+
 router.patch('/configs/:id', (req, res, next) => {
   const configId = req.params.id;
   const {
