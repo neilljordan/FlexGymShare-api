@@ -16,7 +16,6 @@ exports.up = function (knex, Promise) {
       table.increments('id').primary();
       table.string('slug').unique().notNullable();
       table.string('name').notNullable();
-      table.text('description').notNullable();
       table.string('address').notNullable();
       table.string('website_link');
       table.string('owner_email');
@@ -45,7 +44,7 @@ exports.up = function (knex, Promise) {
       table.increments('id').primary();
       table.integer('gym_id').references('gym.id').onDelete('CASCADE').index();
       table.string('name').notNullable();
-      table.string('value').notNullable();
+      table.text('value').notNullable();
     }),
     knex.schema.createTable('gym_staff', (table) => {
       table.increments('id').primary();
