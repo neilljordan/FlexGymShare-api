@@ -51,8 +51,8 @@ exports.up = function (knex, Promise) {
       table.comment('Gym-specific overrides of default settings');
       table.increments('id').primary();
       table.integer('gym_id').references('gym.id').onDelete('CASCADE').index();
-      table.string('name').notNullable();
-      table.string('value').notNullable();
+      table.string('name').notNullable().comment('The name of the setting (matching the config file)');
+      table.string('value', 500).notNullable().comment('The value of the setting');
       table.timestamps(true, true);
     }),
     knex.schema.createTable('gym_staff', (table) => {
@@ -105,14 +105,18 @@ exports.up = function (knex, Promise) {
       table.comment('A pass that allows a user to visit a gym');
       table.increments('id').primary();
       table.integer('lister_id').notNullable().references('user.id').onDelete('CASCADE')
-        .index();
+        .index()
+        .comment('The person who listed the pass');
       table.integer('renter_id').references('user.id').onDelete('CASCADE').defaultTo(null)
-        .index();
+        .index()
+        .comment('The person who rented the pass');
       table.integer('gym_id').notNullable().references('gym.id').onDelete('CASCADE')
         .index();
       table.integer('transaction_id').references('transaction.id')
-        .onDelete('CASCADE');
-      table.date('date').notNullable();
+        .onDelete('CASCADE')
+        .comment('The transaction that purchased the listing (null until it was bought)');
+      table.date('date').notNullable()
+        .comment('The date the pass is listed for');
       table.timestamps(true, true);
     }),
     knex.schema.createTable('daypass', (table) => {
@@ -147,13 +151,17 @@ exports.up = function (knex, Promise) {
       table.comment('A record that a user successfully visited a gym');
       table.increments('id').primary();
       table.integer('renter_id').notNullable().references('user.id').onDelete('CASCADE')
-        .index();
+        .index()
+        .comment('The user who rented the pass and visited the gym');
       table.integer('worker_id').notNullable().references('user.id').onDelete('CASCADE')
-        .index();
+        .index()
+        .comment('The employee who checked in the user and authorized the visit');
       table.integer('gym_id').notNullable().references('gym.id').onDelete('CASCADE')
         .index();
-      table.integer('daypass_id').notNullable().references('daypass.id').onDelete('CASCADE');
-      table.date('date').notNullable();
+      table.integer('daypass_id').notNullable().references('daypass.id').onDelete('CASCADE')
+        .comment('The daypass that was used for the visit');
+      table.date('date').notNullable()
+        .comment('The date the visit took place');
       table.text('notes');
       table.timestamps(true, true);
     }),

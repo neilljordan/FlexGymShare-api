@@ -37,15 +37,17 @@ router.get('/listings/user/:id', (req, res, next) => {
 
 router.post('/listings', (req, res, next) => {
   const {
-    lister_id, gym_id, is_purchased, date,
+    lister_id, 
+    gym_id,
+    date,
   } = req.body;
 
   knex('listing')
     .insert({
       lister_id,
       gym_id,
-      is_purchased: false,
       date,
+      is_purchased: false,
     })
     .returning('*')
     .then((listing) => {
