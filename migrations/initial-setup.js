@@ -51,7 +51,7 @@ exports.up = function (knex, Promise) {
       table.increments('id').primary();
       table.integer('gym_id').references('gym.id').onDelete('CASCADE').index();
       table.string('name').notNullable().comment('The name of the setting (matching the config file)');
-      table.string('value', 500).notNullable().comment('The value of the setting');
+      table.string('value', 800).notNullable().comment('The value of the setting');
       table.timestamps(true, true);
     }),
     knex.schema.createTable('gym_staff', (table) => {
