@@ -14,11 +14,19 @@ router.get('/qrCodes/:code', (req, res) => {
 
 // find the daypass record associated with the code
 router.get('/qrCodes/verification/:code', (req, res) => {
+  console.log('hi');
   const passCode = req.params.code;
   knex('daypass')
     .where('code', passCode)
     .then((rows) => {
-      res.json(rows[0]);
+      if (rows[0]) {
+        console.log(rows[0])
+        console.log('rows')
+        res.json(rows[0]);
+      } else {
+        console.log('false')
+        res.send(JSON.stringify(false));
+      }
     })
     .catch(err => next(err));
 });
