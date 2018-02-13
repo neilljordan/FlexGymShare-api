@@ -5,10 +5,11 @@ const crypto = require('crypto');
 const router = express.Router();
 
 router.get('/daypasses', (req, res, next) => {
-  knex.select('*')
-    .from('daypass')
+  knex('daypass')
+    .select('daypass.*', 'pass_type.name as pass_name', 'gym.name as gym_name', 'user.first_name', 'user.last_name', 'user.email', 'user.profile_image')
     .innerJoin('pass_type', 'pass_type.id', 'daypass.pass_type_id')
-    .orderBy('daypass.id')
+    .innerJoin('user', 'daypass.user_id', 'user.id')
+    .innerJoin('gym', 'daypass.gym_id', 'gym.id')
     .then((daypasses) => {
       res.json(daypasses);
     })
@@ -19,10 +20,12 @@ router.get('/daypasses', (req, res, next) => {
 
 router.get('/daypasses/user/:id', (req, res, next) => {
   const renterId = req.params.id;
-  knex.select('*')
-    .from('daypass')
+  knex('daypass')
+    .select('daypass.*', 'pass_type.name as pass_name', 'gym.name as gym_name', 'user.first_name', 'user.last_name', 'user.email', 'user.profile_image')
     .innerJoin('pass_type', 'pass_type.id', 'daypass.pass_type_id')
-    .where('user_id', renterId)
+    .innerJoin('user', 'daypass.user_id', 'user.id')
+    .innerJoin('gym', 'daypass.gym_id', 'gym.id')
+    .where('daypass.user_id', renterId)
     .then((daypasses) => {
       res.json(daypasses);
     })
@@ -33,10 +36,11 @@ router.get('/daypasses/user/:id', (req, res, next) => {
 
 router.get('/daypasses/gym/:id', (req, res, next) => {
   const gymId = req.params.id;
-  knex.select('daypass.id', 'daypass.date', 'pass_type.name as pass_name', 'user.first_name', 'user.last_name', 'user.email', 'user.profile_image')
-    .from('daypass')
+  knex('daypass')
+    .select('daypass.*', 'pass_type.name as pass_name', 'gym.name as gym_name', 'user.first_name', 'user.last_name', 'user.email', 'user.profile_image')
     .innerJoin('pass_type', 'pass_type.id', 'daypass.pass_type_id')
     .innerJoin('user', 'daypass.user_id', 'user.id')
+    .innerJoin('gym', 'daypass.gym_id', 'gym.id')
     .where('daypass.gym_id', gymId)
     .orderBy('daypass.date')
     .then((daypasses) => {
@@ -49,9 +53,11 @@ router.get('/daypasses/gym/:id', (req, res, next) => {
 
 router.get('/daypasses/:id', (req, res, next) => {
   const passId = req.params.id;
-  knex.select('*')
-    .from('daypass')
+  knex('daypass')
+    .select('daypass.*', 'pass_type.name as pass_name', 'gym.name as gym_name', 'user.first_name', 'user.last_name', 'user.email', 'user.profile_image')
     .innerJoin('pass_type', 'pass_type.id', 'daypass.pass_type_id')
+    .innerJoin('user', 'daypass.user_id', 'user.id')
+    .innerJoin('gym', 'daypass.gym_id', 'gym.id')
     .where('daypass.id', passId)
     .then((daypass) => {
       res.json(daypass);
@@ -60,14 +66,20 @@ router.get('/daypasses/:id', (req, res, next) => {
 });
 
 router.post('/daypasses', (req, res, next) => {
-  const { gym_id, user_id, date, pass_type_id, transaction_id } = req.body;
+  const {
+    user_id,
+    gym_id,
+    pass_type_id,
+    transaction_id,
+    date,
+  } = req.body;
   knex('daypass')
     .insert({
-      gym_id,
       user_id,
-      date,
+      gym_id,
       pass_type_id,
       transaction_id,
+      date,
       code: crypto.randomBytes(10).toString('hex'),
     })
     .returning('*')
@@ -75,21 +87,6 @@ router.post('/daypasses', (req, res, next) => {
       res.json(daypass);
     })
     .catch(err => next(err));
-});
-
-router.delete('/daypasses/:id', (req, res, next) => {
-  const passId = req.params.id;
-  knex('daypass')
-    .then((dates) => {
-      knex('daypass')
-        .del()
-        .where('id', passId)
-        .returning('*')
-        .then((date) => {
-          res.json(date[0]);
-        })
-        .catch(err => next(err));
-    });
 });
 
 module.exports = router;
