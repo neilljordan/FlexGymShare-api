@@ -25,7 +25,6 @@ exports.up = function (knex, Promise) {
       table.string('owner_email').comment('Email address of the account owner');
       table.string('pass_retail_price').comment('The amount the gym charges for drop-ins');
       table.string('image'); // TODO: remove this
-      table.text('description').notNullable(); // TODO: move this to a setting
       table.timestamps(true, true);
     }),
     knex.schema.createTable('role', (table) => {
