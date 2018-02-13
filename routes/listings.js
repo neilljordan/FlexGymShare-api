@@ -47,7 +47,6 @@ router.post('/listings', (req, res, next) => {
       lister_id,
       gym_id,
       date,
-      is_purchased: false,
     })
     .returning('*')
     .then((listing) => {
