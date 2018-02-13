@@ -16,6 +16,7 @@ const invites = require('./routes/invites');
 const configs = require('./routes/config');
 const visits = require('./routes/visits');
 const roles = require('./routes/roles');
+const payment = require('./routes/payment');
 
 const opbeat = require('opbeat').start({
   appId: 'a7b22c4b09',
@@ -58,6 +59,7 @@ app.use('/', invites);
 app.use('/', configs);
 app.use('/', visits);
 app.use('/', roles);
+app.use('/', payment);
 
 app.use(express.static(path.join(__dirname, 'public')));
 
