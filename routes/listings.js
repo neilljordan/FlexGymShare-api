@@ -14,6 +14,24 @@ router.get('/listings', (req, res, next) => {
     });
 });
 
+router.get('/listings/gym/:gym_id/:date', (req, res, next) => {
+  const { gym_id, date } = req.params;
+  console.log(gym_id, date);
+
+  knex('listing')
+    .where('gym_id', gym_id)
+    .andWhere('date', date)
+    .andWhere('renter_id', null)
+    .then((listings) => {
+      console.log(listings[0]);
+      if (listings[0]) {
+        res.send(listings[0]);
+      } else {
+        res.send(JSON.stringify(false));
+      }
+    });
+})
+
 router.get('/listings/:id', (req, res, next) => {
   const listingId = req.params.id;
   knex('listing')
