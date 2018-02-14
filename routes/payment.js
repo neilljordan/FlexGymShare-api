@@ -41,7 +41,7 @@ function createChargeRecord(charge, userId) {
     knex('charge')
       .insert({
         date: chargeDate,
-        amount: charge.amount,
+        amount: charge.amount / 100, // convert back to dollars
         user_id: userId,
         transaction_id: null,
         charge_code: charge.id,
@@ -60,27 +60,35 @@ function createChargeRecord(charge, userId) {
 
 // handle the POST request when a user completes a purchase
 router.post('/payment', (req, res, next) => {
-  const token = req.body.stripeToken; // Using Express
-  const userId = 1;
-  console.log(token);
+  const {
+    user_id,
+    email,
+    first_name,
+    last_name,
+    token_id,
+    cart_gym,
+    cart_date,
+    cart_pass_type,
+    cart_amount,
+  } = req.body;
 
   // see if there is already a customer record for the user
   knex('user')
     .select('customer.customer_code')
     .leftJoin('customer', 'customer.user_id', 'user.id')
-    .where('user.id', userId)
+    .where('user.id', user_id)
     .then((rows) => {
       if (rows[0].customer_code) {
         console.log('This is already a customer');
         stripeClient.charges.create({
-          amount: 1000,
+          amount: cart_amount * 100, // convert to cents
           currency: 'usd',
           customer: rows[0].customer_code,
-          description: 'Example charge',
-          statement_descriptor: 'Flex Pass: 2/19/18',
-          metadata: { order_id: 9809 },
+          description: `${cart_pass_type}: ${cart_date} at ${cart_gym.name}`,
+          statement_descriptor: `Flex Pass: ${cart_date}`,
+          metadata: { pass_type: cart_pass_type, pass_date: cart_date, gym_name: cart_gym.name },
         }).then((charge) => {
-          return createChargeRecord(charge, userId);
+          return createChargeRecord(charge, user_id);
         }).then((chargeRows) => {
           res.json(chargeRows[0]);
         }).catch(err => next(err));
@@ -88,21 +96,21 @@ router.post('/payment', (req, res, next) => {
         console.log('This is a new customer');
         // create the customer in Stripe then the DB
         stripeClient.customers.create({
-          email: 'paying.user@example.com',
-          source: token.id,
+          email: email,
+          source: token_id,
         }).then((customer) => {
-          return createCustomerRecord(customer, userId);
+          return createCustomerRecord(customer, user_id);
         }).then((customer) => {
           return stripeClient.charges.create({
-            amount: 1000,
+            amount: cart_amount * 100,
             currency: 'usd',
             customer: customer.id,
-            description: 'Example charge',
-            statement_descriptor: 'Flex Pass: 2/19/18',
-            metadata: { order_id: 9809 },
+            description: `${cart_pass_type}: ${cart_date} at ${cart_gym.name}`,
+            statement_descriptor: `Flex Pass: ${cart_date}`,
+            metadata: { pass_type: cart_pass_type, pass_date: cart_date, gym_name: cart_gym.name },
           });
         }).then((charge) => {
-          return createChargeRecord(charge, userId);
+          return createChargeRecord(charge, user_id);
         }).then((chargeRows) => {
           res.json(chargeRows[0]);
         }).catch(err => next(err));

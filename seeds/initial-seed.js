@@ -15,6 +15,8 @@ const visitData = require('./data/visit');
 
 exports.seed = function (knex, Promise) {
   return knex('transaction').del()
+    .then(() => knex('customer').del())
+    .then(() => knex('charge').del())
     .then(() => knex('visit').del())
     .then(() => knex('daypass').del())
     .then(() => knex('pass_type').del())
