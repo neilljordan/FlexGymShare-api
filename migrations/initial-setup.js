@@ -185,7 +185,7 @@ exports.up = function (knex, Promise) {
       table.timestamps(true, true);
     }),
     knex.schema.createTable('transaction', (table) => {
-      table.comment('A ledger of all financial transactions in the system');
+      table.comment('A record of all orders in the system');
       table.increments('id').primary();
       table.date('date').notNullable();
       table.decimal('amount', 8, 2).notNullable();
@@ -198,6 +198,21 @@ exports.up = function (knex, Promise) {
       table.integer('linked_transaction_id').references('transaction.id')
         .comment('For sell transactions...points to the purchase transaction');
       table.string('comment');
+      table.timestamps(true, true);
+    }),
+    knex.schema.createTable('charge', (table) => {
+      table.comment('A ledger of all financial credits and debits in the system');
+      table.increments('id').primary();
+      table.date('date').notNullable();
+      table.decimal('amount', 8, 2).notNullable();
+      table.integer('user_id').notNullable().references('user.id').onDelete('CASCADE')
+        .index();
+      table.integer('transaction_id').references('transaction.id')
+        .comment('For sell transactions...points to the purchase transaction');
+      table.string('charge_code')
+        .comment('The external system code representing the charge');
+      table.string('description');
+      table.string('status');
       table.timestamps(true, true);
     }),
   ]);
@@ -218,6 +233,7 @@ exports.down = function (knex, Promise) {
     knex.schema.dropTableIfExists('invite'),
     knex.schema.dropTableIfExists('role'),
     knex.schema.dropTableIfExists('listing'),
+    knex.schema.dropTableIfExists('charge'),
     knex.schema.dropTableIfExists('transaction'),
     knex.schema.dropTableIfExists('transaction_type'),
     knex.schema.dropTableIfExists('pass_type'),
