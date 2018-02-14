@@ -93,7 +93,6 @@ router.post('/payment', (req, res, next) => {
           res.json(chargeRows[0]);
         }).catch(err => next(err));
       } else {
-        console.log('This is a new customer');
         // create the customer in Stripe then the DB
         stripeClient.customers.create({
           email: email,
@@ -113,7 +112,9 @@ router.post('/payment', (req, res, next) => {
           return createChargeRecord(charge, user_id);
         }).then((chargeRows) => {
           res.json(chargeRows[0]);
-        }).catch(err => next(err));
+        }).catch(err => {
+          res.status(500).json({ error: err.toString() });
+        });
       }
     });
 });
