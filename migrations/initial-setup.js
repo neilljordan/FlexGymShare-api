@@ -14,6 +14,20 @@ exports.up = function (knex, Promise) {
       // table.uuid('uuid').defaultTo(knex.raw('uuid_generate_v4()'));
       table.timestamps(true, true);
     }),
+    knex.schema.createTable('customer', (table) => {
+      table.comment('Users who have completed a transaction and have a payment ID');
+      table.increments('id').primary();
+      table.integer('user_id').references('user.id').onDelete('CASCADE');
+      table.string('customer_code').notNullable().unique();
+      table.string('customer_email').notNullable().unique();
+      table.string('card_code').notNullable().unique();
+      table.string('card_brand').notNullable().unique();
+      table.string('card_zip_code', 5).notNullable();
+      table.string('card_last4', 4).notNullable();
+      table.string('card_exp_month', 2).notNullable();
+      table.string('card_exp_year', 4).notNullable();
+      table.timestamps(true, true);
+    }),
     knex.schema.createTable('gym', (table) => {
       table.comment('Specific gym location (i.e. not the chain name)...includes all information provided at signing');
       table.increments('id').primary();
@@ -207,6 +221,7 @@ exports.down = function (knex, Promise) {
     knex.schema.dropTableIfExists('transaction'),
     knex.schema.dropTableIfExists('transaction_type'),
     knex.schema.dropTableIfExists('pass_type'),
+    knex.schema.dropTableIfExists('customer'),
     knex.schema.dropTableIfExists('user'),
     knex.schema.dropTableIfExists('gym'),
   // .return({ created: true })
