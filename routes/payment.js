@@ -41,7 +41,7 @@ function createChargeRecord(charge, userId) {
     knex('charge')
       .insert({
         date: chargeDate,
-        amount: charge.amount / 100, // convert back to dollars
+        amount: -(charge.amount / 100), // convert back to dollars and make negative
         user_id: userId,
         transaction_id: null,
         charge_code: charge.id,
@@ -78,6 +78,11 @@ router.post('/payment', (req, res, next) => {
     .leftJoin('customer', 'customer.user_id', 'user.id')
     .where('user.id', user_id)
     .then((rows) => {
+      // make sure the user actually exists and otherwise send an error
+      if (!rows.length) {
+        res.status(500).json({ error: 'Not a valid user' });
+      }
+      // check to see if it's an existing customer
       if (rows[0].customer_code) {
         console.log('This is already a customer');
         stripeClient.charges.create({
@@ -92,8 +97,9 @@ router.post('/payment', (req, res, next) => {
         }).then((chargeRows) => {
           res.json(chargeRows[0]);
         }).catch(err => next(err));
+      // create the customer in Stripe and the DB
       } else {
-        // create the customer in Stripe then the DB
+        console.log('This is a new customer');
         stripeClient.customers.create({
           email: email,
           source: token_id,
