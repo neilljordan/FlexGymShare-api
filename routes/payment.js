@@ -41,7 +41,7 @@ function createChargeRecord(charge, userId) {
     knex('charge')
       .insert({
         date: chargeDate,
-        amount: charge.amount / 100, // convert back to dollars
+        amount: -(charge.amount / 100), // convert back to dollars and make negative
         user_id: userId,
         transaction_id: null,
         charge_code: charge.id,
