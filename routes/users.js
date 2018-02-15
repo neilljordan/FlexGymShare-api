@@ -6,6 +6,8 @@ const router = express.Router();
 // get all users
 router.get('/users', (req, res, next) => {
   knex('user')
+    .select('user.*, sum(amount) as account_balance')
+    .leftJoin('transaction', 'transaction.user_id', 'user.id')
     .orderBy('id')
     .then((users) => {
       res.json(users);
