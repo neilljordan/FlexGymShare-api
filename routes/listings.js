@@ -72,28 +72,22 @@ router.post('/listings', (req, res, next) => {
     })
     .catch(err => next(err));
 });
-
+//i needed a comment...
 router.patch('/listings/:id', (req, res, next) => {
   const listingId = req.params.id;
   const {
-    user_id, gym_id, is_purchased, date
+    renter_id, transaction_id
   } = req.body;
 
   const patchListing = {};
 
-  if (user_id) {
-    patchListing.lister_id = user_id;
+  if (renter_id) {
+    patchListing.renter_id = renter_id;
   }
-  if (gym_id) {
-    patchListing.gym_id = gym_id;
+  if (transaction_id) {
+    patchListing.transaction_id = transaction_id;
   }
-  if (purchased) {
-    patchListing.purchased = purchased;
-  }
-  if (date) {
-    patchListing.date = date;
-  }
-
+  console.log('yolo dawgie')
   knex('listing')
     .where('id', listingId)
     .then((listing) => {
