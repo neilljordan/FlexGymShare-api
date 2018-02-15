@@ -118,7 +118,9 @@ router.post('/payment', (req, res, next) => {
           return createChargeRecord(charge, user_id);
         }).then((chargeRows) => {
           res.json(chargeRows[0]);
-        }).catch(err => next(err));
+        }).catch(err => {
+          res.status(500).json({ error: err.toString() });
+        });
       }
     });
 });
