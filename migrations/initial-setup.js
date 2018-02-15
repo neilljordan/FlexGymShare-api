@@ -15,7 +15,7 @@ exports.up = function (knex, Promise) {
       table.timestamps(true, true);
     }),
     knex.schema.createTable('customer', (table) => {
-      table.comment('Users who have completed a order and have a payment ID');
+      table.comment('Users who have completed a transaction and have a payment ID');
       table.increments('id').primary();
       table.integer('user_id').references('user.id').onDelete('CASCADE');
       table.string('customer_code').notNullable().unique();
@@ -37,7 +37,7 @@ exports.up = function (knex, Promise) {
       table.string('telephone');
       table.string('website_link');
       table.string('owner_email').comment('Email address of the account owner');
-      table.string('pass_retail_price').comment('The amount the gym charges for drop-ins');
+      table.string('pass_retail_price').comment('The amount the gym transactions for drop-ins');
       table.string('image'); // TODO: remove this
       table.timestamps(true, true);
     }),
@@ -197,26 +197,26 @@ exports.up = function (knex, Promise) {
       table.string('comment');
       table.timestamps(true, true);
     }),
-    knex.schema.createTable('charge_type', (table) => {
-      table.comment('The available types of charges in the system (Used a Card, Applied a Credit, Earned a Credit)');
+    knex.schema.createTable('transaction_type', (table) => {
+      table.comment('The available types of transactions in the system (Used a Card, Applied a Credit, Earned a Credit)');
       table.increments('id').primary();
       table.string('name').notNullable();
       table.boolean('is_credit').defaultTo(false).notNullable();
       table.timestamps(true, true);
     }),
-    knex.schema.createTable('charge', (table) => {
+    knex.schema.createTable('transaction', (table) => {
       table.comment('A ledger of all financial credits and debits in the system');
       table.increments('id').primary();
       table.date('date').notNullable();
       table.decimal('amount', 8, 2).notNullable();
-      table.integer('charge_type_id').notNullable().references('charge_type.id').onDelete('CASCADE')
+      table.integer('transaction_type_id').notNullable().references('transaction_type.id').onDelete('CASCADE')
         .index().defaultTo(1);
       table.integer('user_id').notNullable().references('user.id').onDelete('CASCADE')
         .index();
       table.integer('order_id').references('order.id')
         .comment('Link to the purchase order');
       table.string('charge_code')
-        .comment('The external system code representing the charge (only for Stripe)');
+        .comment('The external system code representing the transaction (only for Stripe)');
       table.string('description').comment('');
       table.string('status');
       table.timestamps(true, true);
@@ -229,7 +229,6 @@ exports.up = function (knex, Promise) {
 exports.down = function (knex, Promise) {
   return Promise.all([
     knex.schema.dropTableIfExists('visit'),
-    knex.schema.dropTableIfExists('daypass'),
     knex.schema.dropTableIfExists('gym_amenities'),
     knex.schema.dropTableIfExists('gym_config'),
     knex.schema.dropTableIfExists('blackout_date'),
@@ -238,13 +237,14 @@ exports.down = function (knex, Promise) {
     knex.schema.dropTableIfExists('amenity'),
     knex.schema.dropTableIfExists('invite'),
     knex.schema.dropTableIfExists('role'),
-    knex.schema.dropTableIfExists('charge'),
-    knex.schema.dropTableIfExists('charge_type'),
+    knex.schema.dropTableIfExists('transaction'),
+    knex.schema.dropTableIfExists('transaction_type'),
+    knex.schema.dropTableIfExists('daypass'),
+    knex.schema.dropTableIfExists('customer'),
     knex.schema.dropTableIfExists('order'),
     knex.schema.dropTableIfExists('order_type'),
     knex.schema.dropTableIfExists('listing'),
     knex.schema.dropTableIfExists('pass_type'),
-    knex.schema.dropTableIfExists('customer'),
     knex.schema.dropTableIfExists('user'),
     knex.schema.dropTableIfExists('gym'),
   // .return({ created: true })

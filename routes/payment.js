@@ -38,10 +38,11 @@ function createChargeRecord(charge, userId) {
     // stripe returns a UNIX epoch...convert to local date
     const chargeDate = new Date(0);
     chargeDate.setUTCSeconds(charge.created);
-    knex('charge')
+    knex('transaction')
       .insert({
         date: chargeDate,
-        amount: -(charge.amount / 100), // convert back to dollars and make negative
+        amount: (charge.amount / 100), // convert back to dollars and make negative
+        transaction_type_id: 2, // creating a Used a Card credit type
         user_id: userId,
         order_id: null,
         charge_code: charge.id,

@@ -16,16 +16,17 @@ router.get('/listings', (req, res, next) => {
 
 router.get('/listings/gym/:gym_id/:date', (req, res, next) => {
   const { gym_id, date } = req.params;
-  console.log(gym_id, date);
-
-  knex('listing')
-    .where('gym_id', gym_id)
-    .andWhere('date', date)
-    .andWhere('renter_id', null)
-    .then((listings) => {
-      console.log(listings[0]);
-      if (listings[0]) {
-        res.send(listings[0]);
+  // get listings that haven't been ordered yet by joining from order
+  knex('public.order')
+    .select('listing.*')
+    .leftJoin('listing')
+    .where('listing.gym_id', gym_id)
+    .andWhere('listing.date', date)
+    .wherNull('listing.id')
+    .then((rows) => {
+      console.log(rows[0]);
+      if (rows[0]) {
+        res.send(rows[0]);
       } else {
         res.send(JSON.stringify(false));
       }
