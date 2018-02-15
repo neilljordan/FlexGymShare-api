@@ -30,7 +30,7 @@ router.get('/listings/gym/:gym_id/:date', (req, res, next) => {
         res.send(JSON.stringify(false));
       }
     });
-})
+});
 
 router.get('/listings/:id', (req, res, next) => {
   const listingId = req.params.id;
@@ -55,7 +55,7 @@ router.get('/listings/user/:id', (req, res, next) => {
 
 router.post('/listings', (req, res, next) => {
   const {
-    lister_id, 
+    lister_id,
     gym_id,
     date,
   } = req.body;
@@ -72,35 +72,36 @@ router.post('/listings', (req, res, next) => {
     })
     .catch(err => next(err));
 });
-//i needed a comment...
-router.patch('/listings/:id', (req, res, next) => {
-  const listingId = req.params.id;
-  const {
-    renter_id, transaction_id
-  } = req.body;
 
-  const patchListing = {};
+// i needed a comment...
+// router.patch('/listings/:id', (req, res, next) => {
+//   const listingId = req.params.id;
+//   const {
+//     renter_id, transaction_id,
+//   } = req.body;
 
-  if (renter_id) {
-    patchListing.renter_id = renter_id;
-  }
-  if (transaction_id) {
-    patchListing.transaction_id = transaction_id;
-  }
-  console.log('yolo dawgie')
-  knex('listing')
-    .where('id', listingId)
-    .then((listing) => {
-      knex('listing')
-        .update(patchListing)
-        .where('id', listingId)
-        .returning('*')
-        .then((newListing) => {
-          res.json(newListing);
-        })
-        .catch(err => next(err));
-    });
-});
+//   const patchListing = {};
+
+//   if (renter_id) {
+//     patchListing.renter_id = renter_id;
+//   }
+//   if (transaction_id) {
+//     patchListing.transaction_id = transaction_id;
+//   }
+//   console.log('yolo dawgie');
+//   knex('listing')
+//     .where('id', listingId)
+//     .then((listing) => {
+//       knex('listing')
+//         .update(patchListing)
+//         .where('id', listingId)
+//         .returning('*')
+//         .then((newListing) => {
+//           res.json(newListing);
+//         })
+//         .catch(err => next(err));
+//     });
+// });
 
 router.delete('/listings/:id', (req, res, next) => {
   const listingId = req.params.id;

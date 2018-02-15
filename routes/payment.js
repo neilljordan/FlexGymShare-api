@@ -31,7 +31,7 @@ function createCustomerRecord(customer, userId) {
   });
 }
 
-// TODO: check the amount, link to the transaction
+// TODO: check the amount, link to the order
 // create a charge record in the DB and return the result
 function createChargeRecord(charge, userId) {
   return new Promise((resolve, reject) => {
@@ -43,7 +43,7 @@ function createChargeRecord(charge, userId) {
         date: chargeDate,
         amount: -(charge.amount / 100), // convert back to dollars and make negative
         user_id: userId,
-        transaction_id: null,
+        order_id: null,
         charge_code: charge.id,
         description: charge.description,
         status: charge.status,

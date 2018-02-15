@@ -15,7 +15,7 @@ exports.up = function (knex, Promise) {
       table.timestamps(true, true);
     }),
     knex.schema.createTable('customer', (table) => {
-      table.comment('Users who have completed a transaction and have a payment ID');
+      table.comment('Users who have completed a order and have a payment ID');
       table.increments('id').primary();
       table.integer('user_id').references('user.id').onDelete('CASCADE');
       table.string('customer_code').notNullable().unique();
@@ -124,12 +124,6 @@ exports.up = function (knex, Promise) {
         .index();
       table.date('date').notNullable()
         .comment('The date the pass is listed for');
-      table.integer('renter_id').references('user.id').onDelete('CASCADE').defaultTo(null)
-        .index()
-        .comment('The person who rented the pass');
-      table.integer('transaction_id').references('transaction.id')
-        .onDelete('CASCADE')
-        .comment('The transaction that purchased the listing (null until it was bought)');
       table.timestamps(true, true);
     }),
     knex.schema.createTable('daypass', (table) => {
@@ -149,9 +143,9 @@ exports.up = function (knex, Promise) {
         .notNullable()
         .defaultTo(1)
         .onDelete('CASCADE');
-      table.integer('transaction_id').references('transaction.id')
+      table.integer('order_id').references('order.id')
         .onDelete('CASCADE')
-        .comment('A link to the transaction where the pass was purchased');
+        .comment('A link to the order where the pass was created');
       table.string('code')
         .notNullable()
         .comment('The code to be used to redeem the pass');
@@ -178,13 +172,13 @@ exports.up = function (knex, Promise) {
       table.text('notes');
       table.timestamps(true, true);
     }),
-    knex.schema.createTable('transaction_type', (table) => {
-      table.comment('The available types of transactions in the system (Sale or Purchase)');
+    knex.schema.createTable('order_type', (table) => {
+      table.comment('The available types of orders in the system (Sale or Purchase)');
       table.increments('id').primary();
       table.string('name').notNullable();
       table.timestamps(true, true);
     }),
-    knex.schema.createTable('transaction', (table) => {
+    knex.schema.createTable('order', (table) => {
       table.comment('A record of all orders in the system');
       table.increments('id').primary();
       table.date('date').notNullable();
@@ -192,11 +186,14 @@ exports.up = function (knex, Promise) {
       table.integer('user_id').notNullable().references('user.id').onDelete('CASCADE')
         .index();
       table.integer('gym_id').references('gym.id').onDelete('CASCADE').index();
-      table.integer('transaction_type_id').references('transaction_type.id').onDelete('CASCADE').index();
+      table.integer('listing_id').references('listing.id')
+        .onDelete('CASCADE')
+        .comment('The order that purchased the listing (null until it was bought)');
+      table.integer('order_type_id').references('order_type.id').onDelete('CASCADE').index();
       table.integer('pass_type_id').notNullable().references('pass_type.id').onDelete('CASCADE')
         .defaultTo(1);
-      table.integer('linked_transaction_id').references('transaction.id')
-        .comment('For sell transactions...points to the purchase transaction');
+      table.integer('linked_order_id').references('order.id')
+        .comment('For sell orders...points to the purchase order');
       table.string('comment');
       table.timestamps(true, true);
     }),
@@ -216,8 +213,8 @@ exports.up = function (knex, Promise) {
         .index().defaultTo(1);
       table.integer('user_id').notNullable().references('user.id').onDelete('CASCADE')
         .index();
-      table.integer('transaction_id').references('transaction.id')
-        .comment('Link to the purchase transaction');
+      table.integer('order_id').references('order.id')
+        .comment('Link to the purchase order');
       table.string('charge_code')
         .comment('The external system code representing the charge (only for Stripe)');
       table.string('description').comment('');
@@ -241,11 +238,11 @@ exports.down = function (knex, Promise) {
     knex.schema.dropTableIfExists('amenity'),
     knex.schema.dropTableIfExists('invite'),
     knex.schema.dropTableIfExists('role'),
-    knex.schema.dropTableIfExists('listing'),
     knex.schema.dropTableIfExists('charge'),
     knex.schema.dropTableIfExists('charge_type'),
-    knex.schema.dropTableIfExists('transaction'),
-    knex.schema.dropTableIfExists('transaction_type'),
+    knex.schema.dropTableIfExists('order'),
+    knex.schema.dropTableIfExists('order_type'),
+    knex.schema.dropTableIfExists('listing'),
     knex.schema.dropTableIfExists('pass_type'),
     knex.schema.dropTableIfExists('customer'),
     knex.schema.dropTableIfExists('user'),
