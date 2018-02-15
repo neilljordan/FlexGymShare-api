@@ -6,7 +6,7 @@ module.exports = [
     gym_id: 1,
     pass_type_id: 1,
     listing_id: 3,
-    date: '1-21-18 08:32:12',
+    date: '1-21-18',
   },
   {
     id: 2,
@@ -15,7 +15,7 @@ module.exports = [
     gym_id: 2,
     pass_type_id: 1,
     listing_id: 4,
-    date: '1-28-18 12:32:12',
+    date: '1-28-18',
   },
   {
     id: 3,
@@ -23,7 +23,7 @@ module.exports = [
     user_id: 1,
     gym_id: 3,
     pass_type_id: 2,
-    date: '1-29-18 08:32:12',
+    date: '1-29-18',
   },
   {
     id: 4,
@@ -32,7 +32,7 @@ module.exports = [
     gym_id: 4,
     pass_type_id: 1,
     listing_id: 5,
-    date: '2-09-18 10:32:12',
+    date: '2-09-18',
   },
   {
     id: 5,
@@ -40,7 +40,7 @@ module.exports = [
     user_id: 1,
     gym_id: 3,
     pass_type_id: 2,
-    date: '2-10-18 08:32:12',
+    date: '2-10-18',
   },
   {
     id: 6,
@@ -49,6 +49,15 @@ module.exports = [
     gym_id: 4,
     pass_type_id: 1,
     listing_id: 6,
-    date: '2-12-18 08:32:12',
+    date: '2-12-18',
+  },
+  {
+    id: 7,
+    amount: 15,
+    user_id: 1,
+    gym_id: 1,
+    pass_type_id: 1,
+    listing_id: null,
+    date: '2-20-18',
   },
 ];

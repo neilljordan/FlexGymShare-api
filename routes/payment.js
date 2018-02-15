@@ -31,9 +31,35 @@ function createCustomerRecord(customer, userId) {
   });
 }
 
-// TODO: check the amount, link to the order
-// create a charge record in the DB and return the result
-function createChargeRecord(charge, userId) {
+// create an order (debit) transaction record in the DB and return the result
+function createOrderTransaction(charge, userId, orderId) {
+  return new Promise((resolve, reject) => {
+    // stripe returns a UNIX epoch...convert to local date
+    const chargeDate = new Date(0);
+    chargeDate.setUTCSeconds(charge.created);
+    knex('transaction')
+      .insert({
+        date: chargeDate,
+        amount: -(charge.amount / 100), // convert back to dollars and make negative
+        transaction_type_id: 1, // creating a Bought a Pass
+        user_id: userId,
+        order_id: orderId,
+        charge_code: null,
+        description: charge.description,
+        status: charge.status,
+      })
+      .returning('id')
+      .then((rows) => {
+        if (rows.length > 0) {
+          resolve(charge);
+        }
+      })
+      .catch(err => reject(Error(`Unable to create order transaction record: ${err}`)));
+  });
+}
+
+// create a charge (credit) transaction record in the DB and return the result
+function createChargeTransaction(charge, userId, orderId) {
   return new Promise((resolve, reject) => {
     // stripe returns a UNIX epoch...convert to local date
     const chargeDate = new Date(0);
@@ -44,7 +70,7 @@ function createChargeRecord(charge, userId) {
         amount: (charge.amount / 100), // convert back to dollars and make negative
         transaction_type_id: 2, // creating a Used a Card credit type
         user_id: userId,
-        order_id: null,
+        order_id: orderId,
         charge_code: charge.id,
         description: charge.description,
         status: charge.status,
@@ -55,7 +81,7 @@ function createChargeRecord(charge, userId) {
           resolve(rows);
         }
       })
-      .catch(err => reject(Error(`Unable to create charge record: ${err}`)));
+      .catch(err => reject(Error(`Unable to create charge transaction record: ${err}`)));
   });
 }
 
@@ -71,9 +97,8 @@ router.post('/payment', (req, res, next) => {
     cart_date,
     cart_pass_type,
     cart_amount,
+    order_id,
   } = req.body;
-
-  // need to pass in a charge amount and a credit amount
 
   // see if there is already a customer record for the user
   knex('user')
@@ -96,10 +121,14 @@ router.post('/payment', (req, res, next) => {
           statement_descriptor: `Flex Pass: ${cart_date}`,
           metadata: { pass_type: cart_pass_type, pass_date: cart_date, gym_name: cart_gym.name },
         }).then((charge) => {
-          return createChargeRecord(charge, user_id);
+          return createOrderTransaction(charge, user_id, order_id);
+        }).then((charge) => {
+          return createChargeTransaction(charge, user_id, order_id);
         }).then((chargeRows) => {
           res.json(chargeRows[0]);
-        }).catch(err => next(err));
+        }).catch((err) => {
+          res.status(500).json({ error: err.toString() });
+        });
       // create the customer in Stripe and the DB
       } else {
         console.log('This is a new customer');
@@ -118,10 +147,12 @@ router.post('/payment', (req, res, next) => {
             metadata: { pass_type: cart_pass_type, pass_date: cart_date, gym_name: cart_gym.name },
           });
         }).then((charge) => {
-          return createChargeRecord(charge, user_id);
+          return createOrderTransaction(charge, user_id, order_id);
+        }).then((charge) => {
+          return createChargeTransaction(charge, user_id, order_id);
         }).then((chargeRows) => {
           res.json(chargeRows[0]);
-        }).catch(err => {
+        }).catch((err) => {
           res.status(500).json({ error: err.toString() });
         });
       }
