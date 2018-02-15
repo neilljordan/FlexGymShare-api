@@ -31,7 +31,31 @@ router.get('/users/:id', (req, res, next) => {
     .orderBy('user.id')
     .where('user.id', userId)
     .then((rows) => {
-      res.json(rows);
+      if (rows) {
+        res.json(rows);
+      } else {
+        res.send(JSON.stringify(false));
+      }
+    })
+    .catch(err => next(err));
+});
+
+// get user by facebook_uid
+router.get('/users/uid/:uid', (req, res, next) => {
+  const fbId = req.params.uid;
+  knex('user')
+    .first('user.*')
+    .sum('transaction.amount as account_balance')
+    .leftJoin('transaction', 'transaction.user_id', 'user.id')
+    .groupBy('user.id')
+    .orderBy('user.id')
+    .where('facebook_uid', fbId)
+    .then((rows) => {
+      if (rows) {
+        res.json(rows);
+      } else {
+        res.send(JSON.stringify(false));
+      }
     })
     .catch(err => next(err));
 });
@@ -47,7 +71,11 @@ router.get('/users/email/:email', (req, res, next) => {
     .orderBy('user.id')
     .where('email', userEmail)
     .then((rows) => {
-      res.json(rows);
+      if (rows) {
+        res.json(rows);
+      } else {
+        res.send(JSON.stringify(false));
+      }
     })
     .catch(err => next(err));
 });
@@ -73,22 +101,6 @@ router.get('/users/roles/:gym_id/:user_id', (req, res, next) => {
       //     })
       // }
       // res.send(JSON.stringify(false))
-    })
-    .catch(err => next(err));
-});
-
-// get user by facebook_uid
-router.get('/users/uid/:uid', (req, res, next) => {
-  const fbId = req.params.uid;
-  knex('user')
-    .first('user.*')
-    .sum('transaction.amount as account_balance')
-    .leftJoin('transaction', 'transaction.user_id', 'user.id')
-    .groupBy('user.id')
-    .orderBy('user.id')
-    .where('facebook_uid', fbId)
-    .then((rows) => {
-      res.json(rows);
     })
     .catch(err => next(err));
 });
