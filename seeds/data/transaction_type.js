@@ -1,14 +1,27 @@
 module.exports = [
   {
     id: 1,
-    name: 'Pass Purchased by User',
+    name: 'Bought a Pass',
+    is_credit: false,
   },
   {
     id: 2,
-    name: 'Pass Sold by User',
+    name: 'Used a Card',
+    is_credit: true,
   },
   {
     id: 3,
-    name: 'Pass Sold by Gym',
+    name: 'Applied a Credit',
+    is_credit: false,
+  },
+  {
+    id: 4,
+    name: 'Earned a Credit',
+    is_credit: true,
+  },
+  {
+    id: 5,
+    name: 'Made a Withdrawal',
+    is_credit: false,
   },
 ];

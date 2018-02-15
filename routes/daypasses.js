@@ -70,7 +70,7 @@ router.post('/daypasses', (req, res, next) => {
     user_id,
     gym_id,
     pass_type_id,
-    transaction_id,
+    order_id,
     date,
   } = req.body;
   knex('daypass')
@@ -78,7 +78,7 @@ router.post('/daypasses', (req, res, next) => {
       user_id,
       gym_id,
       pass_type_id,
-      transaction_id,
+      order_id,
       date,
       code: crypto.randomBytes(10).toString('hex'),
     })

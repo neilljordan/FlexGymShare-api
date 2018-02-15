@@ -16,21 +16,22 @@ router.get('/listings', (req, res, next) => {
 
 router.get('/listings/gym/:gym_id/:date', (req, res, next) => {
   const { gym_id, date } = req.params;
-  console.log(gym_id, date);
-
-  knex('listing')
-    .where('gym_id', gym_id)
-    .andWhere('date', date)
-    .andWhere('renter_id', null)
-    .then((listings) => {
-      console.log(listings[0]);
-      if (listings[0]) {
-        res.send(listings[0]);
+  // get listings that haven't been ordered yet by joining from order
+  knex('public.order')
+    .select('listing.*')
+    .leftJoin('listing')
+    .where('listing.gym_id', gym_id)
+    .andWhere('listing.date', date)
+    .whereNull('listing.id')
+    .then((rows) => {
+      console.log(rows[0]);
+      if (rows[0]) {
+        res.send(rows[0]);
       } else {
         res.send(JSON.stringify(false));
       }
     });
-})
+});
 
 router.get('/listings/:id', (req, res, next) => {
   const listingId = req.params.id;
@@ -55,7 +56,7 @@ router.get('/listings/user/:id', (req, res, next) => {
 
 router.post('/listings', (req, res, next) => {
   const {
-    lister_id, 
+    lister_id,
     gym_id,
     date,
   } = req.body;
@@ -72,35 +73,36 @@ router.post('/listings', (req, res, next) => {
     })
     .catch(err => next(err));
 });
-//i needed a comment...
-router.patch('/listings/:id', (req, res, next) => {
-  const listingId = req.params.id;
-  const {
-    renter_id, transaction_id
-  } = req.body;
 
-  const patchListing = {};
+// i needed a comment...
+// router.patch('/listings/:id', (req, res, next) => {
+//   const listingId = req.params.id;
+//   const {
+//     renter_id, transaction_id,
+//   } = req.body;
 
-  if (renter_id) {
-    patchListing.renter_id = renter_id;
-  }
-  if (transaction_id) {
-    patchListing.transaction_id = transaction_id;
-  }
-  console.log('yolo dawgie')
-  knex('listing')
-    .where('id', listingId)
-    .then((listing) => {
-      knex('listing')
-        .update(patchListing)
-        .where('id', listingId)
-        .returning('*')
-        .then((newListing) => {
-          res.json(newListing);
-        })
-        .catch(err => next(err));
-    });
-});
+//   const patchListing = {};
+
+//   if (renter_id) {
+//     patchListing.renter_id = renter_id;
+//   }
+//   if (transaction_id) {
+//     patchListing.transaction_id = transaction_id;
+//   }
+//   console.log('yolo dawgie');
+//   knex('listing')
+//     .where('id', listingId)
+//     .then((listing) => {
+//       knex('listing')
+//         .update(patchListing)
+//         .where('id', listingId)
+//         .returning('*')
+//         .then((newListing) => {
+//           res.json(newListing);
+//         })
+//         .catch(err => next(err));
+//     });
+// });
 
 router.delete('/listings/:id', (req, res, next) => {
   const listingId = req.params.id;

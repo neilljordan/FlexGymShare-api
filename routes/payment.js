@@ -31,19 +31,20 @@ function createCustomerRecord(customer, userId) {
   });
 }
 
-// TODO: check the amount, link to the transaction
+// TODO: check the amount, link to the order
 // create a charge record in the DB and return the result
 function createChargeRecord(charge, userId) {
   return new Promise((resolve, reject) => {
     // stripe returns a UNIX epoch...convert to local date
     const chargeDate = new Date(0);
     chargeDate.setUTCSeconds(charge.created);
-    knex('charge')
+    knex('transaction')
       .insert({
         date: chargeDate,
-        amount: -(charge.amount / 100), // convert back to dollars and make negative
+        amount: (charge.amount / 100), // convert back to dollars and make negative
+        transaction_type_id: 2, // creating a Used a Card credit type
         user_id: userId,
-        transaction_id: null,
+        order_id: null,
         charge_code: charge.id,
         description: charge.description,
         status: charge.status,
@@ -71,6 +72,8 @@ router.post('/payment', (req, res, next) => {
     cart_pass_type,
     cart_amount,
   } = req.body;
+
+  // need to pass in a charge amount and a credit amount
 
   // see if there is already a customer record for the user
   knex('user')
