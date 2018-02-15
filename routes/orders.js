@@ -107,7 +107,7 @@ router.delete('/orders/:id', (req, res, next) => {
   knex('order')
     .del()
     .where('order.id', orderId)
-    .then((rows) {
+    .then((rows) => {
       res.json(rows); // returs the number of rows deleted
     })
     .catch(err => next(err));
