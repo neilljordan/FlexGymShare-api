@@ -186,14 +186,12 @@ exports.up = function (knex, Promise) {
       table.integer('user_id').notNullable().references('user.id').onDelete('CASCADE')
         .index();
       table.integer('gym_id').references('gym.id').onDelete('CASCADE').index();
+      table.integer('pass_type_id').notNullable().references('pass_type.id').onDelete('CASCADE')
+        .defaultTo(1);
+      table.integer('order_type_id').references('order_type.id').onDelete('CASCADE').index();
       table.integer('listing_id').references('listing.id')
         .onDelete('CASCADE')
         .comment('The order that purchased the listing (null until it was bought)');
-      table.integer('order_type_id').references('order_type.id').onDelete('CASCADE').index();
-      table.integer('pass_type_id').notNullable().references('pass_type.id').onDelete('CASCADE')
-        .defaultTo(1);
-      table.integer('linked_order_id').references('order.id')
-        .comment('For sell orders...points to the purchase order');
       table.string('comment');
       table.timestamps(true, true);
     }),

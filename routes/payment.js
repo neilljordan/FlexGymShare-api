@@ -73,6 +73,8 @@ router.post('/payment', (req, res, next) => {
     cart_amount,
   } = req.body;
 
+  // need to pass in a charge amount and a credit amount
+
   // see if there is already a customer record for the user
   knex('user')
     .select('customer.customer_code')

@@ -47,4 +47,10 @@ module.exports = [
     gym_id: 1,
     date: '2-15-18',
   },
+  {
+    id: 9,
+    lister_id: 3,
+    gym_id: 1,
+    date: '2-15-18',
+  },
 ];

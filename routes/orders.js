@@ -72,26 +72,32 @@ router.post('/orders', (req, res, next) => {
     amount,
     user_id,
     gym_id,
-    order_type_id,
     pass_type_id,
-    linked_order_id,
-    comment,
   } = req.body;
 
-  knex('order')
-    .insert({
-      date,
-      amount,
-      user_id,
-      gym_id,
-      order_type_id,
-      pass_type_id,
-      linked_order_id,
-      comment,
-    })
-    .returning('*')
-    .then((orders) => {
-      res.json(orders[0]);
+  knex('listing')
+    .first('listing.id')
+    .leftJoin('public.order', 'public.order.listing_id', 'listing.id')
+    .where('listing.gym_id', gym_id)
+    .andWhere('listing.date', date)
+    .whereNull('public.order.id')
+    .orderBy('listing.created_at')
+    .then((listingRows) => {
+      knex('order')
+        .insert({
+          date,
+          amount,
+          user_id,
+          gym_id,
+          pass_type_id,
+          order_type_id: 1, // buy a pass
+          listing_id: (listingRows !== undefined) ? listingRows.id : null, // use the listing if available
+        })
+        .returning('*')
+        .then((orderRows) => {
+          res.json(orderRows[0]);
+        })
+        .catch(err => next(err));
     })
     .catch(err => next(err));
 });

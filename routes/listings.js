@@ -22,7 +22,7 @@ router.get('/listings/gym/:gym_id/:date', (req, res, next) => {
     .leftJoin('listing')
     .where('listing.gym_id', gym_id)
     .andWhere('listing.date', date)
-    .wherNull('listing.id')
+    .whereNull('listing.id')
     .then((rows) => {
       console.log(rows[0]);
       if (rows[0]) {
