@@ -188,7 +188,7 @@ exports.up = function (knex, Promise) {
       table.integer('gym_id').references('gym.id').onDelete('CASCADE').index();
       table.integer('pass_type_id').notNullable().references('pass_type.id').onDelete('CASCADE')
         .defaultTo(1);
-      table.integer('order_type_id').references('order_type.id').onDelete('CASCADE').index();
+      table.integer('order_type_id').references('order_type.id').onDelete('CASCADE').defaultTo(1);
       table.integer('listing_id').references('listing.id')
         .onDelete('CASCADE')
         .comment('The order that purchased the listing (null until it was bought)');

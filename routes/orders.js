@@ -102,4 +102,15 @@ router.post('/orders', (req, res, next) => {
     .catch(err => next(err));
 });
 
+router.delete('/orders/:id', (req, res, next) => {
+  const orderId = req.params.id;
+  knex('order')
+    .del()
+    .where('order.id', orderId)
+    .then((rows) {
+      res.json(rows); // returs the number of rows deleted
+    })
+    .catch(err => next(err));
+});
+
 module.exports = router;
