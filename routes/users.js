@@ -6,13 +6,16 @@ const router = express.Router();
 // get all users
 router.get('/users', (req, res, next) => {
   knex('user')
-    .select('user.*, sum(amount) as account_balance')
+    .select('user.*')
+    .sum('transaction.amount as account_balance')
     .leftJoin('transaction', 'transaction.user_id', 'user.id')
-    .orderBy('id')
-    .then((users) => {
-      res.json(users);
+    .groupBy('user.id')
+    .orderBy('user.id')
+    .then((rows) => {
+      res.json(rows);
     })
     .catch((err) => {
+      console.error(err);
       next(err);
     });
 });
@@ -21,10 +24,14 @@ router.get('/users', (req, res, next) => {
 router.get('/users/:id', (req, res, next) => {
   const userId = req.params.id;
   knex('user')
-    .where('id', userId)
-    .first()
-    .then((users) => {
-      res.json(users);
+    .first('user.*')
+    .sum('transaction.amount as account_balance')
+    .leftJoin('transaction', 'transaction.user_id', 'user.id')
+    .groupBy('user.id')
+    .orderBy('user.id')
+    .where('user.id', userId)
+    .then((rows) => {
+      res.json(rows);
     })
     .catch(err => next(err));
 });
@@ -33,14 +40,14 @@ router.get('/users/:id', (req, res, next) => {
 router.get('/users/email/:email', (req, res, next) => {
   const userEmail = req.params.email;
   knex('user')
+    .first('user.*')
+    .sum('transaction.amount as account_balance')
+    .leftJoin('transaction', 'transaction.user_id', 'user.id')
+    .groupBy('user.id')
+    .orderBy('user.id')
     .where('email', userEmail)
-    .first()
-    .then((user) => {
-      if (user) {
-        res.json(user);
-      } else {
-        res.send(JSON.stringify(false));
-      }
+    .then((rows) => {
+      res.json(rows);
     })
     .catch(err => next(err));
 });
@@ -70,18 +77,18 @@ router.get('/users/roles/:gym_id/:user_id', (req, res, next) => {
     .catch(err => next(err));
 });
 
-// get user by Facebook_uid
+// get user by facebook_uid
 router.get('/users/uid/:uid', (req, res, next) => {
   const fbId = req.params.uid;
   knex('user')
+    .first('user.*')
+    .sum('transaction.amount as account_balance')
+    .leftJoin('transaction', 'transaction.user_id', 'user.id')
+    .groupBy('user.id')
+    .orderBy('user.id')
     .where('facebook_uid', fbId)
-    .first()
-    .then((user) => {
-      if (user) {
-        res.send(JSON.stringify(user));
-      } else {
-        res.send(JSON.stringify(false));
-      }
+    .then((rows) => {
+      res.json(rows);
     })
     .catch(err => next(err));
 });
@@ -144,29 +151,6 @@ router.patch('/users/:id', (req, res, next) => {
             gymId: users[0].gym_id,
           };
           res.json(patchUser);
-        })
-        .catch(err => next(err));
-    });
-});
-
-// delete a user
-router.delete('/users/:id', (req, res, next) => {
-  const userId = req.params.id;
-  knex('user')
-    .then((users) => {
-      knex('user')
-        .del()
-        .where('id', userId)
-        .returning('*')
-        .then((users) => {
-          const user = {
-            title: users[0].title,
-            author: users[0].author,
-            genre: users[0].genre,
-            description: users[0].description,
-            coverUrl: users[0].cover_url,
-          };
-          res.json(user);
         })
         .catch(err => next(err));
     });
