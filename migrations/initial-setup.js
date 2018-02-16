@@ -211,8 +211,8 @@ exports.up = function (knex, Promise) {
         .index().defaultTo(1);
       table.integer('user_id').notNullable().references('user.id').onDelete('CASCADE')
         .index();
-      table.integer('order_id').references('order.id')
-        .comment('Link to the purchase order');
+      table.integer('order_id').references('order.id').onDelete('CASCADE').index()
+        .comment('Link to the order that was placed');
       table.string('charge_code')
         .comment('The external system code representing the transaction (only for Stripe)');
       table.string('description').comment('');
