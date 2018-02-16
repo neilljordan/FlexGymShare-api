@@ -82,8 +82,11 @@ function createCustomerRecord(customer, userId, savePayment) {
 function createOrderTransaction(charge, userId, orderId) {
   return new Promise((resolve, reject) => {
     // stripe returns a UNIX epoch...convert to local date
+    console.log(charge)
     const chargeDate = new Date(0);
+    console.log(chargeDate)
     chargeDate.setUTCSeconds(charge.created);
+    console.log(chargeDate)
     knex('transaction')
       .insert({
         date: chargeDate,
@@ -98,7 +101,7 @@ function createOrderTransaction(charge, userId, orderId) {
       .returning('id')
       .then((rows) => {
         if (rows.length > 0) {
-          resolve(rows);
+          resolve(charge);
         }
       })
       .catch(err => reject(Error(`Unable to create order transaction record: ${err}`)));
@@ -109,8 +112,11 @@ function createOrderTransaction(charge, userId, orderId) {
 function createChargeTransaction(charge, userId, orderId) {
   return new Promise((resolve, reject) => {
     // stripe returns a UNIX epoch...convert to local date
+    console.log(charge)
     const chargeDate = new Date(0);
+    console.log(chargeDate)
     chargeDate.setUTCSeconds(charge.created);
+    console.log(chargeDate)
     knex('transaction')
       .insert({
         date: chargeDate,
@@ -125,7 +131,7 @@ function createChargeTransaction(charge, userId, orderId) {
       .returning('id')
       .then((rows) => {
         if (rows.length > 0) {
-          resolve(charge);
+          resolve(rows);
         }
       })
       .catch(err => reject(Error(`Unable to create charge transaction record: ${err}`)));
@@ -145,6 +151,8 @@ function createBalanceTransaction(userId, orderId, cartAmount, applyCredit) {
       .then((availableBalance) => {
         // if there is more on the account than the price then pay the whole price
         const appliedBalance = (availableBalance > cartAmount) ? cartAmount : availableBalance;
+        const date = new Date()
+        console.log(date)
         knex('transaction')
           .insert({
             date: new Date(),
@@ -213,6 +221,7 @@ router.post('/payment', (req, res, next) => {
               .then(charge => createOrderTransaction(charge, user_id, order_id))
               .then(charge => createChargeTransaction(charge, user_id, order_id))
               .then((transactionRows) => {
+                console.log(transactionRows)
                 res.json(transactionRows[0]);
               })
               .catch((err) => {
@@ -236,8 +245,8 @@ router.post('/payment', (req, res, next) => {
                 statement_descriptor: `Flex Pass: ${cart_date}`,
                 metadata: { pass_type: cart_pass_type, pass_date: cart_date, gym_name: cart_gym.name },
               }))
-              .then(charge => createChargeTransaction(charge, user_id, order_id))
               .then(charge => createOrderTransaction(charge, user_id, order_id))
+              .then(charge => createChargeTransaction(charge, user_id, order_id))
               .then((transactionRows) => {
                 res.json(transactionRows[0]);
               })
