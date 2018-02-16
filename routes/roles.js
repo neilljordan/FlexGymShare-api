@@ -3,7 +3,7 @@ const knex = require('../knex');
 
 const router = express.Router();
 
-router.get('/roles', (req, res) => {
+router.get('/roles', (req, res, next) => {
   knex('role')
     .orderBy('id')
     .then((roles) => {
@@ -44,7 +44,7 @@ router.get('/roles/gym/:gym_id/user/:user_id', (req, res, next) => {
 
 router.post('/roles', (req, res, next) => {
   const {
-    name
+    name,
   } = req.body;
 
   knex('role')

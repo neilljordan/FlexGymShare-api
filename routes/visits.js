@@ -3,7 +3,7 @@ const knex = require('../knex');
 
 const router = express.Router();
 
-router.get('/visits', (req, res) => {
+router.get('/visits', (req, res, next) => {
   knex('visit')
     .orderBy('id')
     .then((visits) => {

@@ -149,7 +149,7 @@ router.patch('/invites/code/:code', (req, res, next) => {
 
   patchInvite.date_accepted = date_accepted;
   patchInvite.acceptor_id = acceptor_id;
-  patchInvite.status = status
+  patchInvite.status = status;
 
   knex('invite')
     .where('code', code)

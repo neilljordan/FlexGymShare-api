@@ -3,7 +3,7 @@ const knex = require('../knex');
 
 const router = express.Router();
 
-router.get('/configs', (req, res) => {
+router.get('/configs', (req, res, next) => {
   knex('gym_config')
     .orderBy('id')
     .then((configs) => {
@@ -31,61 +31,57 @@ router.post('/configs', (req, res, next) => {
     value,
   } = req.body;
 
-  console.log(gym_id)
-  console.log(name)
-
   knex('gym_config')
-    .where(function() {
-      this.where('gym_id', gym_id).andWhere('name', name)
+    .where(function () {
+      this.where('gym_id', gym_id).andWhere('name', name);
     })
-    .then((newconfig) => {
-      console.log(newConfig)
-      res.json(newconfig[0]);
+    .then((rows) => {
+      res.json(rows[0]);
     })
     .catch(err => next(err));
-    // .insert({
-    //   gym_id,
-    //   name,
-    //   value,
-    // })
-    // .returning('*')
+  // .insert({
+  //   gym_id,
+  //   name,
+  //   value,
+  // })
+  // .returning('*')
 });
 
 router.put('/configs/gym/:gym_id', (req, res, next) => {
-  const gym_id = req.params.gym_id
-  let { name, value } = req.body
-  console.log(gym_id)
-  console.log(name)
-  console.log(value)
-  name = name.toString()
-  value = value.toString()
+  const gym_id = req.params.gym_id;
+  let { name, value } = req.body;
+  console.log(gym_id);
+  console.log(name);
+  console.log(value);
+  name = name.toString();
+  value = value.toString();
 
-  let patch = {
+  const patch = {
     name,
     value,
-  }
+  };
 
-  let post = {
+  const post = {
     gym_id,
     name,
-    value
-  }
+    value,
+  };
 
   knex('gym_config')
     .where('gym_id', gym_id)
     .andWhere('name', name)
     .then((config) => {
       if (config) {
-        //patch it
+        // patch it
         knex('gym_config')
           .update(patch)
           .where('gym_id', gym_id)
           .andWhere('name', name)
           .returning('*')
           .then((patchedConfig) => {
-            console.log(patchedConfig)
+            console.log(patchedConfig);
             res.json(patchedConfig[0]);
-            res.end(500)
+            res.end(500);
           })
           .catch(err => next(err));
       } else {
@@ -96,9 +92,8 @@ router.put('/configs/gym/:gym_id', (req, res, next) => {
           })
           .catch(err => next(err));
       }
-    })
-
-})
+    });
+});
 
 router.patch('/configs/:id', (req, res, next) => {
   const configId = req.params.id;
@@ -143,6 +138,5 @@ router.delete('/configs/:id', (req, res, next) => {
         .catch(err => next(err));
     });
 });
-
 
 module.exports = router;

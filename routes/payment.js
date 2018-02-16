@@ -8,10 +8,9 @@ const stripeClient = require('stripe')(stripeSecretKey);
 
 // update customer payment
 function updateCustomerPayment(token_id, user_id, card_info) {
-
-  console.log('update payment for: ' + user_id);
-  console.log('token_id: ' + token_id);
-  console.log('card info: ' + card_info);
+  console.log(`update payment for: ${user_id}`);
+  console.log(`token_id: ${token_id}`);
+  console.log(`card info: ${card_info}`);
 
   const cardZip = card_info.address_zip;
   const cardLast4 = card_info.last4;
@@ -28,6 +27,7 @@ function updateCustomerPayment(token_id, user_id, card_info) {
     card_exp_month: cardExpMonth,
     card_exp_year: cardExpYear,
   };
+
   knex('customer')
     .update(patchCustomer)
     .where('user_id', user_id)
@@ -141,9 +141,7 @@ function createBalanceTransaction(userId, orderId, cartAmount, applyCredit) {
     knex('transaction')
       .sum('amount')
       .where('user_id', userId)
-      .then((rows) => {
-        return parseFloat(rows[0].sum).toFixed(2);
-      })
+      .then(rows => parseFloat(rows[0].sum).toFixed(2))
       .then((availableBalance) => {
         // if there is more on the account than the price then pay the whole price
         const appliedBalance = (availableBalance > cartAmount) ? cartAmount : availableBalance;
@@ -187,8 +185,7 @@ router.post('/payment', (req, res, next) => {
     card_info,
   } = req.body;
 
-  let cartAmount = 0.0;
-  cartAmount = parseFloat(cart_amount);
+  const cartAmount = parseFloat(cart_amount);
 
   // see if there is already a customer record for the user
   knex('user')
@@ -247,6 +244,7 @@ router.post('/payment', (req, res, next) => {
               .catch((err) => {
                 res.status(500).json({ error: err.toString() });
               });
+          });
       }
     });
 });

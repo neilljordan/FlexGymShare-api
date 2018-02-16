@@ -4,7 +4,7 @@ const qr = require('qr-image');
 
 const router = express.Router();
 
-router.get('/staff', (req, res) => {
+router.get('/staff', (req, res, next) => {
   knex('gym_staff')
     .orderBy('id')
     .then((gymStaff) => {
@@ -25,17 +25,17 @@ router.get('/staff/gym/:gym_id', (req, res) => {
     .then((gymStaff) => {
       res.json(gymStaff);
     });
-    // .catch(err => next(err));
+  // .catch(err => next(err));
 });
 
 router.get('/staff/:id', (req, res, next) => {
   const staffId = req.params.id;
-  console.log(staffId)
+  console.log(staffId);
   knex('gym_staff')
     .join('role', 'gym_staff.role_id', '=', 'role.id')
     .join('user', 'gym_staff.user_id', '=', 'user.id')
     .select('gym_staff.id', 'role.name', 'user.first_name', 'user.last_name', 'user.email')
-    .where('gym_staff.gym_id', gymId)
+    .where('gym_staff.user_id', staffId)
     .then((staff) => {
       res.json(staff);
     })
@@ -45,8 +45,8 @@ router.get('/staff/:id', (req, res, next) => {
 router.get('/staff/:gymId/:userId', (req, res, next) => {
   const gymId = req.params.gymId;
   const userId = req.params.userId;
-  console.log('gymId from routes '+gymId)
-  console.log('userId from routes '+userId)
+  console.log(`gymId from routes ${gymId}`);
+  console.log(`userId from routes ${userId}`);
   knex('gym_staff')
     .where('gym_id', gymId)
     .then((staff) => {
@@ -76,7 +76,7 @@ router.post('/staff', (req, res, next) => {
 router.patch('/staff/:id', (req, res, next) => {
   const staffId = req.params.id;
   const {
-    gym_id, user_id, role_id
+    gym_id, user_id, role_id,
   } = req.body;
 
   const patchStaff = {};

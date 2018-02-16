@@ -1,5 +1,6 @@
 const express = require('express');
 const knex = require('../knex');
+
 const router = express.Router();
 
 // get all gyms
@@ -68,7 +69,7 @@ router.post('/gyms', (req, res, next) => {
 router.patch('/gym/:id', (req, res, next) => {
   const gymId = req.params.id;
   const { name, address, price } = req.body;
-  const patchGym = {};
+  let patchGym = {};
 
   if (name) {
     patchGym.name = name;
@@ -87,34 +88,13 @@ router.patch('/gym/:id', (req, res, next) => {
         .update(patchGym)
         .where('id', gymId)
         .returning('*')
-        .then((gyms) => {
-          let patchGym = {
-            name: gyms[0].name,
-            address: gyms[0].address,
-            price: gyms[0].price,
+        .then((rows) => {
+          patchGym = {
+            name: rows[0].name,
+            address: rows[0].address,
+            price: rows[0].price,
           };
           res.json(patchGym);
-        })
-        .catch(err => next(err));
-    });
-});
-
-// needs to be fixed or removed
-router.delete('/gyms/:id', (req, res, next) => {
-  const gymId = req.params.id;
-  knex('gym')
-    .then((gyms) => {
-      knex('gym')
-        .del()
-        .where('id', gymId)
-        .returning('*')
-        .then((gyms) => {
-          const gym = {
-            name: gyms[0].name,
-            address: gyms[0].address,
-            price: gyms[0].price,
-          };
-          res.json(gym);
         })
         .catch(err => next(err));
     });

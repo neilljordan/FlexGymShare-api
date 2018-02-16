@@ -132,7 +132,7 @@ router.patch('/users/:id', (req, res, next) => {
   const {
     first_name, last_name, email, gymId,
   } = req.body;
-  const patchUser = {};
+  let patchUser = {};
 
   if (first_name) {
     patchUser.first_name = first_name;
@@ -154,13 +154,13 @@ router.patch('/users/:id', (req, res, next) => {
         .update(patchUser)
         .where('id', userId)
         .returning('*')
-        .then((users) => {
-          const patchUser = {
-            id: users[0].id,
-            first_name: users[0].first_name,
-            last_name: users[0].last_name,
-            email: users[0].email,
-            gymId: users[0].gym_id,
+        .then((rows) => {
+          patchUser = {
+            id: rows[0].id,
+            first_name: rows[0].first_name,
+            last_name: rows[0].last_name,
+            email: rows[0].email,
+            gymId: rows[0].gym_id,
           };
           res.json(patchUser);
         })
