@@ -20,12 +20,12 @@ exports.up = function (knex, Promise) {
       table.integer('user_id').references('user.id').onDelete('CASCADE');
       table.string('customer_code').notNullable().unique();
       table.string('customer_email').notNullable().unique();
-      table.string('card_code').notNullable().unique();
-      table.string('card_brand').notNullable().unique();
-      table.string('card_zip_code', 5).notNullable();
-      table.string('card_last4', 4).notNullable();
-      table.string('card_exp_month', 2).notNullable();
-      table.string('card_exp_year', 4).notNullable();
+      table.string('card_code').unique();
+      table.string('card_brand');
+      table.string('card_zip_code', 5);
+      table.string('card_last4', 4);
+      table.string('card_exp_month', 2);
+      table.string('card_exp_year', 4);
       table.timestamps(true, true);
     }),
     knex.schema.createTable('gym', (table) => {

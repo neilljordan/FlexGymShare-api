@@ -6,20 +6,67 @@ const router = express.Router();
 const stripeSecretKey = 'sk_test_lfGo8iTH6oP0IErEDPTPWKtX';
 const stripeClient = require('stripe')(stripeSecretKey);
 
+// update customer payment
+function updateCustomerPayment(token_id, user_id, card_info) {
+
+  console.log('update payment for: ' + user_id);
+  console.log('token_id: ' + token_id);
+  console.log('card info: ' + card_info);
+
+  const cardZip = card_info.address_zip;
+  const cardLast4 = card_info.last4;
+  const cardExpMonth = card_info.exp_month;
+  const cardExpYear = card_info.exp_year;
+  // Could not pull this from card_info from token on UI
+  // const cardCode = card_info.default_source;
+  const cardBrand = card_info.brand;
+
+  const patchCustomer = {
+    card_brand: cardBrand,
+    card_zip_code: cardZip,
+    card_last4: cardLast4,
+    card_exp_month: cardExpMonth,
+    card_exp_year: cardExpYear,
+  };
+  knex('customer')
+    .update(patchCustomer)
+    .where('user_id', user_id)
+    .returning('*')
+    .then((updatedCustomer) => {
+      console.log(updatedCustomer);
+    });
+}
+
 // create a customer record in the DB and return the customer object
-function createCustomerRecord(customer, userId) {
+function createCustomerRecord(customer, userId, savePayment) {
+  let cardZip = null;
+  let cardLast4 = null;
+  let cardExpMonth = null;
+  let cardExpYear = null;
+  let cardCode = null;
+  let cardBrand = null;
+
+  if (savePayment !== false) {
+    cardZip = customer.sources.data[0].address_zip;
+    cardLast4 = customer.sources.data[0].last4;
+    cardExpMonth = customer.sources.data[0].exp_month;
+    cardExpYear = customer.sources.data[0].exp_year;
+    cardCode = customer.default_source;
+    cardBrand = customer.sources.data[0].brand;
+  }
+
   return new Promise((resolve, reject) => {
     knex('customer')
       .insert({
         user_id: userId,
         customer_code: customer.id,
         customer_email: customer.email,
-        card_code: customer.default_source,
-        card_brand: customer.sources.data[0].brand,
-        card_zip_code: customer.sources.data[0].address_zip,
-        card_last4: customer.sources.data[0].last4,
-        card_exp_month: customer.sources.data[0].exp_month,
-        card_exp_year: customer.sources.data[0].exp_year,
+        card_code: cardCode,
+        card_brand: cardBrand,
+        card_zip_code: cardZip,
+        card_last4: cardLast4,
+        card_exp_month: cardExpMonth,
+        card_exp_year: cardExpYear,
       })
       .returning('id')
       .then((rows) => {
@@ -136,6 +183,8 @@ router.post('/payment', (req, res, next) => {
     cart_amount,
     order_id,
     apply_credit,
+    save_payment,
+    card_info,
   } = req.body;
 
   let cartAmount = 0.0;
@@ -198,7 +247,6 @@ router.post('/payment', (req, res, next) => {
               .catch((err) => {
                 res.status(500).json({ error: err.toString() });
               });
-          });
       }
     });
 });
