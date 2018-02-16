@@ -128,14 +128,11 @@ router.post('/users', (req, res, next) => {
 
 // partial update of a user
 router.patch('/users/:id', (req, res, next) => {
-  console.log('users/id route hit')
-  console.log(req)
   const userId = req.params.id;
   const {
     first_name, last_name, email, gymId, membershipId
   } = req.body;
-  console.log(req.body)
-  console.log(req.body.membership_id)
+  
   let patchUser = {};
 
   if (first_name) {
