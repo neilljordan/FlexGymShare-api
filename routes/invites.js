@@ -6,6 +6,7 @@ const crypto = require('crypto');
 const router = express.Router();
 
 router.get('/invites', (req, res, next) => {
+  //comment
   knex('invite')
     .orderBy('id')
     .then((invites) => {
