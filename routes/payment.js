@@ -45,13 +45,13 @@ function createOrderTransaction(charge, userId, orderId) {
         user_id: userId,
         order_id: orderId,
         charge_code: null,
-        description: charge.description,
-        status: charge.status,
+        description: `Bought ${charge.description}`,
+        status: 'purchased',
       })
       .returning('id')
       .then((rows) => {
         if (rows.length > 0) {
-          resolve(charge);
+          resolve(rows);
         }
       })
       .catch(err => reject(Error(`Unable to create order transaction record: ${err}`)));
@@ -72,16 +72,53 @@ function createChargeTransaction(charge, userId, orderId) {
         user_id: userId,
         order_id: orderId,
         charge_code: charge.id,
-        description: charge.description,
+        description: `Used card for ${charge.description}`,
         status: charge.status,
       })
       .returning('id')
       .then((rows) => {
         if (rows.length > 0) {
-          resolve(rows);
+          resolve(charge);
         }
       })
       .catch(err => reject(Error(`Unable to create charge transaction record: ${err}`)));
+  });
+}
+
+// create an account balance (credit) transaction record in the DB and return the result
+function createBalanceTransaction(userId, orderId, cartAmount, applyCredit) {
+  return new Promise((resolve, reject) => {
+    if (!applyCredit) {
+      resolve(cartAmount);
+    }
+    knex('transaction')
+      .sum('amount')
+      .where('user_id', userId)
+      .then((rows) => {
+        return parseFloat(rows[0].sum).toFixed(2);
+      })
+      .then((availableBalance) => {
+        // if there is more on the account than the price then pay the whole price
+        const appliedBalance = (availableBalance > cartAmount) ? cartAmount : availableBalance;
+        knex('transaction')
+          .insert({
+            date: new Date(),
+            amount: -appliedBalance, // convert back to dollars and make negative
+            transaction_type_id: 3, // creating a Used Credit credit type
+            user_id: userId,
+            order_id: orderId,
+            charge_code: null,
+            description: 'Applied balance towards Flex Pass purchase',
+            status: 'applied',
+          })
+          .returning('id')
+          .then((rows) => {
+            if (rows.length > 0) {
+              resolve(cartAmount - appliedBalance);
+            }
+          })
+          .catch(err => reject(Error(`Unable to create charge transaction record: ${err}`)));
+      });
   });
 }
 
@@ -98,7 +135,11 @@ router.post('/payment', (req, res, next) => {
     cart_pass_type,
     cart_amount,
     order_id,
+    apply_credit,
   } = req.body;
+
+  let cartAmount = 0.0;
+  cartAmount = parseFloat(cart_amount);
 
   // see if there is already a customer record for the user
   knex('user')
@@ -113,48 +154,51 @@ router.post('/payment', (req, res, next) => {
       // check to see if it's an existing customer
       if (rows[0].customer_code) {
         console.log('This is already a customer');
-        stripeClient.charges.create({
-          amount: cart_amount * 100, // convert to cents
-          currency: 'usd',
-          customer: rows[0].customer_code,
-          description: `${cart_pass_type}: ${cart_date} at ${cart_gym.name}`,
-          statement_descriptor: `Flex Pass: ${cart_date}`,
-          metadata: { pass_type: cart_pass_type, pass_date: cart_date, gym_name: cart_gym.name },
-        }).then((charge) => {
-          return createOrderTransaction(charge, user_id, order_id);
-        }).then((charge) => {
-          return createChargeTransaction(charge, user_id, order_id);
-        }).then((chargeRows) => {
-          res.json(chargeRows[0]);
-        }).catch((err) => {
-          res.status(500).json({ error: err.toString() });
-        });
+        createBalanceTransaction(user_id, order_id, cartAmount, apply_credit)
+          .then((chargeAmount) => {
+            stripeClient.charges.create({
+              amount: chargeAmount * 100, // convert to cents
+              currency: 'usd',
+              customer: rows[0].customer_code,
+              description: `${cart_pass_type} for ${cart_date} at ${cart_gym.name}`,
+              statement_descriptor: `Flex Pass: ${cart_date}`,
+              metadata: { pass_type: cart_pass_type, pass_date: cart_date, gym_name: cart_gym.name },
+            })
+              .then(charge => createOrderTransaction(charge, user_id, order_id))
+              .then(charge => createChargeTransaction(charge, user_id, order_id))
+              .then((transactionRows) => {
+                res.json(transactionRows[0]);
+              })
+              .catch((err) => {
+                res.status(500).json({ error: err.toString() });
+              });
+          });
       // create the customer in Stripe and the DB
       } else {
         console.log('This is a new customer');
-        stripeClient.customers.create({
-          email: email,
-          source: token_id,
-        }).then((customer) => {
-          return createCustomerRecord(customer, user_id);
-        }).then((customer) => {
-          return stripeClient.charges.create({
-            amount: cart_amount * 100,
-            currency: 'usd',
-            customer: customer.id,
-            description: `${cart_pass_type}: ${cart_date} at ${cart_gym.name}`,
-            statement_descriptor: `Flex Pass: ${cart_date}`,
-            metadata: { pass_type: cart_pass_type, pass_date: cart_date, gym_name: cart_gym.name },
+        createBalanceTransaction(user_id, order_id, cartAmount, apply_credit)
+          .then((chargeAmount) => {
+            stripeClient.customers.create({
+              email,
+              source: token_id,
+            }).then(customer => createCustomerRecord(customer, user_id))
+              .then(customer => stripeClient.charges.create({
+                amount: chargeAmount * 100,
+                currency: 'usd',
+                customer: customer.id,
+                description: `${cart_pass_type}: ${cart_date} at ${cart_gym.name}`,
+                statement_descriptor: `Flex Pass: ${cart_date}`,
+                metadata: { pass_type: cart_pass_type, pass_date: cart_date, gym_name: cart_gym.name },
+              }))
+              .then(charge => createChargeTransaction(charge, user_id, order_id))
+              .then(charge => createOrderTransaction(charge, user_id, order_id))
+              .then((transactionRows) => {
+                res.json(transactionRows[0]);
+              })
+              .catch((err) => {
+                res.status(500).json({ error: err.toString() });
+              });
           });
-        }).then((charge) => {
-          return createOrderTransaction(charge, user_id, order_id);
-        }).then((charge) => {
-          return createChargeTransaction(charge, user_id, order_id);
-        }).then((chargeRows) => {
-          res.json(chargeRows[0]);
-        }).catch((err) => {
-          res.status(500).json({ error: err.toString() });
-        });
       }
     });
 });
