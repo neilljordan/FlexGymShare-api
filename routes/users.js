@@ -130,8 +130,9 @@ router.post('/users', (req, res, next) => {
 router.patch('/users/:id', (req, res, next) => {
   const userId = req.params.id;
   const {
-    first_name, last_name, email, gymId,
+    first_name, last_name, email, gymId, membershipId
   } = req.body;
+  
   let patchUser = {};
 
   if (first_name) {
@@ -145,6 +146,9 @@ router.patch('/users/:id', (req, res, next) => {
   }
   if (gymId) {
     patchUser.gym_id = gymId;
+  }
+  if (membershipId) {
+    patchUser.membership_id = membershipId;
   }
 
   knex('user')
@@ -161,6 +165,7 @@ router.patch('/users/:id', (req, res, next) => {
             last_name: rows[0].last_name,
             email: rows[0].email,
             gymId: rows[0].gym_id,
+            membershipId: rows[0].membership_id
           };
           res.json(patchUser);
         })
