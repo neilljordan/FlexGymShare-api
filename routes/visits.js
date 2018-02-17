@@ -43,7 +43,7 @@ router.get('/visits/:id', (req, res, next) => {
 router.get('/visits/gym/:gym_id', (req, res, next) => {
   const gymId = req.params.gym_id;
   knex('visit')
-    .select('visit.id', 'visit.date', 'visit.notes', 'renter_table.first_name', 'renter_table.last_name', 'renter_table.email', 'worker_table.first_name as worker_first_name', 'worker_table.last_name as worker_last_name', 'worker_table.email as worker_email')
+    .select('visit.id', 'visit.created_at', 'visit.date', 'visit.notes', 'renter_table.first_name', 'renter_table.last_name', 'renter_table.email', 'worker_table.first_name as worker_first_name', 'worker_table.last_name as worker_last_name', 'worker_table.email as worker_email')
     .innerJoin('user as worker_table', 'worker_id', 'worker_table.id')
     .innerJoin('user as renter_table', 'renter_id', 'renter_table.id')
     .where('visit.gym_id', gymId)
