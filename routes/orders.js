@@ -112,7 +112,6 @@ router.post('/orders', (req, res, next) => {
     .whereNull('public.order.id')
     .orderBy('listing.created_at')
     .then((listingRows) => {
-      console.log(listingRows);
       listerId = (listingRows !== undefined) ? listingRows.lister_id : null;
       knex('order')
         .insert({

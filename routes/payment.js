@@ -115,34 +115,35 @@ function createBalanceTransaction(userId, orderId, cartAmount, applyCredit) {
   return new Promise((resolve, reject) => {
     if (!applyCredit) {
       resolve(cartAmount);
+    } else {
+      knex('transaction')
+        .sum('amount')
+        .where('user_id', userId)
+        .then(rows => parseFloat(rows[0].sum).toFixed(2))
+        .then((availableBalance) => {
+          // if there is more on the account than the price then pay the whole price
+          const appliedBalance = (availableBalance > cartAmount) ? cartAmount : availableBalance;
+          const date = new Date();
+          knex('transaction')
+            .insert({
+              date: new Date(),
+              amount: -appliedBalance, // convert back to dollars and make negative
+              transaction_type_id: 3, // creating a Used Credit credit type
+              user_id: userId,
+              order_id: orderId,
+              charge_code: null,
+              description: 'Applied balance towards Flex Pass purchase',
+              status: 'applied',
+            })
+            .returning('id')
+            .then((rows) => {
+              if (rows.length > 0) {
+                resolve(cartAmount - appliedBalance);
+              }
+            })
+            .catch(err => reject(Error(`Unable to create charge transaction record: ${err}`)));
+        });
     }
-    knex('transaction')
-      .sum('amount')
-      .where('user_id', userId)
-      .then(rows => parseFloat(rows[0].sum).toFixed(2))
-      .then((availableBalance) => {
-        // if there is more on the account than the price then pay the whole price
-        const appliedBalance = (availableBalance > cartAmount) ? cartAmount : availableBalance;
-        const date = new Date();
-        knex('transaction')
-          .insert({
-            date: new Date(),
-            amount: -appliedBalance, // convert back to dollars and make negative
-            transaction_type_id: 3, // creating a Used Credit credit type
-            user_id: userId,
-            order_id: orderId,
-            charge_code: null,
-            description: 'Applied balance towards Flex Pass purchase',
-            status: 'applied',
-          })
-          .returning('id')
-          .then((rows) => {
-            if (rows.length > 0) {
-              resolve(cartAmount - appliedBalance);
-            }
-          })
-          .catch(err => reject(Error(`Unable to create charge transaction record: ${err}`)));
-      });
   });
 }
 
@@ -189,7 +190,7 @@ router.post('/payment', (req, res, next) => {
               .then(charge => createOrderTransaction(charge, user_id, order_id))
               .then(charge => createChargeTransaction(charge, user_id, order_id))
               .then((transactionRows) => {
-                console.log(transactionRows)
+                console.log(transactionRows);
                 res.json(transactionRows[0]);
               })
               .catch((err) => {
