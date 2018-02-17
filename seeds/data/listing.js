@@ -45,12 +45,12 @@ module.exports = [
     id: 8,
     lister_id: 2,
     gym_id: 1,
-    date: '2-15-18',
+    date: '2-16-18',
   },
   {
     id: 9,
     lister_id: 3,
     gym_id: 1,
-    date: '2-15-18',
+    date: '2-16-18',
   },
 ];
