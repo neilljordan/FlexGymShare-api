@@ -8,16 +8,22 @@ The app is written with NodeJS and Express. It uses a PostgreSQL database for pe
 
 To run the API project on your machine you will need to specify so environment variables including the port you want to run the application on, the database URL, and the hostname of the origin server initiating API calls to the project. This last setting is designed to only allows calls from the UI project to the API server.
 
-                "NODE_ENV": "development",
-                "PORT": "3131",
-                "DATABASE_URL": "postgres://localhost/mwebster",
-                "ORIGIN_HOST": "http://localhost:3000"
+        "NODE_ENV": "development",
+        "PORT": "3131",
+        "DATABASE_URL": "postgres://localhost/my-database",
+        "ORIGIN_HOST": "http://localhost:3000"
 
 The KnexJS library is used for database access. To set up a clean database for development you will need to run the following commands:
 
-knex migrate:rollback; 
-knex migrate:latest; 
-knex seed:run;
+        knex migrate:rollback;
+        knex migrate:latest;
+        knex seed:run;
+
+## Other Best Practices
+
+All code that is being checked in must be linted using eslint. Code with eslint warnings may be committed but no eslint errors are acceptable. The project uses the Airbnb eslint config by default with a few setting changes.
+
+Versioning is done according to semver: https://semver.org/
 
 ## Project Management and Branching
 The sprint planning for this project is done with Waffle:
