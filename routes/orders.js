@@ -101,10 +101,11 @@ router.post('/orders', (req, res, next) => {
   } = req.body;
 
   const cartAmount = parseFloat(amount);
+  let listerId = null;
 
   // link the order to an existing listing (if available)
   knex('listing')
-    .first('listing.id')
+    .first('listing.id', 'listing.lister_id')
     .leftJoin('public.order', 'public.order.listing_id', 'listing.id')
     .where('listing.gym_id', gym_id)
     .andWhere('listing.date', date)
@@ -112,6 +113,7 @@ router.post('/orders', (req, res, next) => {
     .orderBy('listing.created_at')
     .then((listingRows) => {
       console.log(listingRows);
+      listerId = (listingRows !== undefined) ? listingRows.lister_id : null;
       knex('order')
         .insert({
           date,
@@ -128,7 +130,7 @@ router.post('/orders', (req, res, next) => {
           return orderRows[0].id;
         })
         .then((orderId) => {
-          createBalanceCreditTransaction(user_id, orderId, cartAmount);
+          createBalanceCreditTransaction(listerId, orderId, cartAmount);
         })
         .catch(err => next(err));
     })
