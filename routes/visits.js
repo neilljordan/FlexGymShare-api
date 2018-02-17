@@ -37,8 +37,6 @@ router.get('/visits/:id', (req, res, next) => {
     .catch(err => next(err));
 });
 
-// [{"id":4,"renter_id":1,"worker_id":4,"gym_id":null,"pass_id":1,"date":"2018-01-30T07:00:00.000Z","notes":"Rover is a good boy. A very good boy.","created_at":"2018-02-09T18:15:30.701Z","updated_at":"2018-02-09T18:15:30.701Z","facebook_uid":"","email":"test+4@youflex.co","first_name":"Worker","last_name":"User4","profile_image":""}]
-
 // get visits for a particular gym
 router.get('/visits/gym/:gym_id', (req, res, next) => {
   const gymId = req.params.gym_id;
@@ -120,6 +118,5 @@ router.delete('/visits/:id', (req, res, next) => {
         .catch(err => next(err));
     });
 });
-
 
 module.exports = router;

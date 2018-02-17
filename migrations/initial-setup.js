@@ -7,7 +7,7 @@ exports.up = function (knex, Promise) {
       table.string('first_name').notNullable();
       table.string('last_name').notNullable();
       table.string('facebook_uid');
-      table.string('profile_image').comment('URL for FB avatar');
+      table.string('avatar_url').comment('URL for user facebook avatar');
       table.integer('gym_id').references('gym.id').onDelete('CASCADE').index()
         .comment('The home gym of the user');
       table.string('gym_membership_code', 50).comment('Membership indentifier used at the gym');
