@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.get('/passes', (req, res, next) => {
   knex('pass')
-    .select('pass.*', 'pass_type.name as pass_name', 'gym.name as gym_name', 'user.first_name', 'user.last_name', 'user.email', 'user.profile_image')
+    .select('pass.*', 'pass_type.name as pass_name', 'gym.name as gym_name', 'user.first_name', 'user.last_name', 'user.email', 'user.avatar_url')
     .innerJoin('pass_type', 'pass_type.id', 'pass.pass_type_id')
     .innerJoin('user', 'pass.user_id', 'user.id')
     .innerJoin('gym', 'pass.gym_id', 'gym.id')
@@ -21,7 +21,7 @@ router.get('/passes', (req, res, next) => {
 router.get('/passes/user/:id', (req, res, next) => {
   const renterId = req.params.id;
   knex('pass')
-    .select('pass.*', 'pass_type.name as pass_name', 'gym.name as gym_name', 'user.first_name', 'user.last_name', 'user.email', 'user.profile_image')
+    .select('pass.*', 'pass_type.name as pass_name', 'gym.name as gym_name', 'user.first_name', 'user.last_name', 'user.email', 'user.avatar_url')
     .innerJoin('pass_type', 'pass_type.id', 'pass.pass_type_id')
     .innerJoin('user', 'pass.user_id', 'user.id')
     .innerJoin('gym', 'pass.gym_id', 'gym.id')
@@ -37,7 +37,7 @@ router.get('/passes/user/:id', (req, res, next) => {
 router.get('/passes/gym/:id', (req, res, next) => {
   const gymId = req.params.id;
   knex('pass')
-    .select('pass.*', 'pass_type.name as pass_name', 'gym.name as gym_name', 'user.first_name', 'user.last_name', 'user.email', 'user.profile_image')
+    .select('pass.*', 'pass_type.name as pass_name', 'gym.name as gym_name', 'user.first_name', 'user.last_name', 'user.email', 'user.avatar_url')
     .innerJoin('pass_type', 'pass_type.id', 'pass.pass_type_id')
     .innerJoin('user', 'pass.user_id', 'user.id')
     .innerJoin('gym', 'pass.gym_id', 'gym.id')
@@ -54,7 +54,7 @@ router.get('/passes/gym/:id', (req, res, next) => {
 router.get('/passes/:id', (req, res, next) => {
   const passId = req.params.id;
   knex('pass')
-    .select('pass.*', 'pass_type.name as pass_name', 'gym.name as gym_name', 'user.first_name', 'user.last_name', 'user.email', 'user.profile_image')
+    .select('pass.*', 'pass_type.name as pass_name', 'gym.name as gym_name', 'user.first_name', 'user.last_name', 'user.email', 'user.avatar_url')
     .innerJoin('pass_type', 'pass_type.id', 'pass.pass_type_id')
     .innerJoin('user', 'pass.user_id', 'user.id')
     .innerJoin('gym', 'pass.gym_id', 'gym.id')
