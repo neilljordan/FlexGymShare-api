@@ -1,6 +1,6 @@
 const express = require('express');
 const knex = require('../knex');
-const crypto = require('crypto');
+const crypto = require('crypto'); // for generating unique random pass codes
 
 const router = express.Router();
 

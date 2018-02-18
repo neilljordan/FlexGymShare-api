@@ -1,7 +1,7 @@
 const express = require('express');
 const knex = require('../knex');
-const drip = require('../utilities/dripClient');
-const crypto = require('crypto');
+const drip = require('../utilities/dripClient'); // for sending emails
+const crypto = require('crypto'); // for generating unique invite codes
 
 const router = express.Router();
 

@@ -1,5 +1,5 @@
-const dripToken = 'f09fa8614a60e8608344142e80c2ac63';
-const dripAccount = 5370499;
+const dripAccount = process.env.DRIP_ACCOUNT;
+const dripToken = process.env.DRIP_TOKEN;
 const client = require('drip-nodejs')({ token: dripToken, accountId: dripAccount });
 
 exports.createSubscriber = (subscriberInfo) => {
