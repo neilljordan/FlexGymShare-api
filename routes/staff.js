@@ -1,6 +1,5 @@
 const express = require('express');
 const knex = require('../knex');
-const qr = require('qr-image');
 
 const router = express.Router();
 
@@ -18,7 +17,7 @@ router.get('/staff', (req, res, next) => {
 router.get('/staff/gym/:gym_id', (req, res) => {
   const gymId = req.params.gym_id;
   knex('gym_staff')
-    .select('gym_staff.id', 'role.name', 'user.email', 'user.first_name', 'user.last_name', 'user.profile_image', 'gym_staff.updated_at')
+    .select('gym_staff.id', 'role.name', 'user.email', 'user.first_name', 'user.last_name', 'user.avatar_url', 'gym_staff.updated_at')
     .innerJoin('user', 'gym_staff.user_id', 'user.id')
     .innerJoin('role', 'gym_staff.role_id', 'role.id')
     .where('gym_staff.gym_id', gymId)

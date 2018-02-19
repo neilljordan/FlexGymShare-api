@@ -3,7 +3,7 @@ const knex = require('../knex');
 
 const router = express.Router();
 
-const stripeSecretKey = 'sk_test_lfGo8iTH6oP0IErEDPTPWKtX';
+const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
 const stripeClient = require('stripe')(stripeSecretKey);
 
 // update customer payment
@@ -38,35 +38,13 @@ function updateCustomerPayment(token_id, user_id, card_info) {
 }
 
 // create a customer record in the DB and return the customer object
-function createCustomerRecord(customer, userId, savePayment) {
-  let cardZip = null;
-  let cardLast4 = null;
-  let cardExpMonth = null;
-  let cardExpYear = null;
-  let cardCode = null;
-  let cardBrand = null;
-
-  if (savePayment !== false) {
-    cardZip = customer.sources.data[0].address_zip;
-    cardLast4 = customer.sources.data[0].last4;
-    cardExpMonth = customer.sources.data[0].exp_month;
-    cardExpYear = customer.sources.data[0].exp_year;
-    cardCode = customer.default_source;
-    cardBrand = customer.sources.data[0].brand;
-  }
-
+function createCustomerRecord(customer, userId) {
   return new Promise((resolve, reject) => {
     knex('customer')
       .insert({
         user_id: userId,
         customer_code: customer.id,
         customer_email: customer.email,
-        card_code: cardCode,
-        card_brand: cardBrand,
-        card_zip_code: cardZip,
-        card_last4: cardLast4,
-        card_exp_month: cardExpMonth,
-        card_exp_year: cardExpYear,
       })
       .returning('id')
       .then((rows) => {
@@ -82,14 +60,10 @@ function createCustomerRecord(customer, userId, savePayment) {
 function createOrderTransaction(charge, userId, orderId) {
   return new Promise((resolve, reject) => {
     // stripe returns a UNIX epoch...convert to local date
-    console.log(charge)
     const chargeDate = new Date(0);
-    console.log(chargeDate)
     chargeDate.setUTCSeconds(charge.created);
-    console.log(chargeDate)
     knex('transaction')
       .insert({
-        date: chargeDate,
         amount: -(charge.amount / 100), // convert back to dollars and make negative
         transaction_type_id: 1, // creating a Bought a Pass
         user_id: userId,
@@ -112,14 +86,10 @@ function createOrderTransaction(charge, userId, orderId) {
 function createChargeTransaction(charge, userId, orderId) {
   return new Promise((resolve, reject) => {
     // stripe returns a UNIX epoch...convert to local date
-    console.log(charge)
     const chargeDate = new Date(0);
-    console.log(chargeDate)
     chargeDate.setUTCSeconds(charge.created);
-    console.log(chargeDate)
     knex('transaction')
       .insert({
-        date: chargeDate,
         amount: (charge.amount / 100), // convert back to dollars and make negative
         transaction_type_id: 2, // creating a Used a Card credit type
         user_id: userId,
@@ -143,35 +113,34 @@ function createBalanceTransaction(userId, orderId, cartAmount, applyCredit) {
   return new Promise((resolve, reject) => {
     if (!applyCredit) {
       resolve(cartAmount);
+    } else {
+      knex('transaction')
+        .sum('amount')
+        .where('user_id', userId)
+        .then(rows => parseFloat(rows[0].sum).toFixed(2))
+        .then((availableBalance) => {
+          // if there is more on the account than the price then pay the whole price
+          const appliedBalance = (availableBalance > cartAmount) ? cartAmount : availableBalance;
+          const date = new Date();
+          knex('transaction')
+            .insert({
+              amount: -appliedBalance, // convert back to dollars and make negative
+              transaction_type_id: 3, // creating a Used Credit credit type
+              user_id: userId,
+              order_id: orderId,
+              charge_code: null,
+              description: 'Applied balance towards Flex Pass purchase',
+              status: 'applied',
+            })
+            .returning('id')
+            .then((rows) => {
+              if (rows.length > 0) {
+                resolve(cartAmount - appliedBalance);
+              }
+            })
+            .catch(err => reject(Error(`Unable to create charge transaction record: ${err}`)));
+        });
     }
-    knex('transaction')
-      .sum('amount')
-      .where('user_id', userId)
-      .then(rows => parseFloat(rows[0].sum).toFixed(2))
-      .then((availableBalance) => {
-        // if there is more on the account than the price then pay the whole price
-        const appliedBalance = (availableBalance > cartAmount) ? cartAmount : availableBalance;
-        const date = new Date()
-        console.log(date)
-        knex('transaction')
-          .insert({
-            date: new Date(),
-            amount: -appliedBalance, // convert back to dollars and make negative
-            transaction_type_id: 3, // creating a Used Credit credit type
-            user_id: userId,
-            order_id: orderId,
-            charge_code: null,
-            description: 'Applied balance towards Flex Pass purchase',
-            status: 'applied',
-          })
-          .returning('id')
-          .then((rows) => {
-            if (rows.length > 0) {
-              resolve(cartAmount - appliedBalance);
-            }
-          })
-          .catch(err => reject(Error(`Unable to create charge transaction record: ${err}`)));
-      });
   });
 }
 
@@ -189,12 +158,9 @@ router.post('/payment', (req, res, next) => {
     cart_amount,
     order_id,
     apply_credit,
-    save_payment,
-    card_info,
   } = req.body;
 
   const cartAmount = parseFloat(cart_amount);
-
   // see if there is already a customer record for the user
   knex('user')
     .select('customer.customer_code')
@@ -221,7 +187,7 @@ router.post('/payment', (req, res, next) => {
               .then(charge => createOrderTransaction(charge, user_id, order_id))
               .then(charge => createChargeTransaction(charge, user_id, order_id))
               .then((transactionRows) => {
-                console.log(transactionRows)
+                console.log(transactionRows);
                 res.json(transactionRows[0]);
               })
               .catch((err) => {
@@ -255,6 +221,64 @@ router.post('/payment', (req, res, next) => {
               });
           });
       }
+    });
+});
+
+// New API route
+// /payment/method
+// GET (/payment/method/:user_id
+// card_brand
+// card_last4
+// card_exp_month
+// card_exp_year
+
+router.get('/payment/get/:user_id', (req, res, next) => {
+  const { user_id } = req.params;
+  knex('customer')
+    .select('card_brand', 'card_last4', 'card_exp_month', 'card_exp_year')
+    .where('user_id', user_id)
+    .then((customer) => {
+      console.log(customer);
+      res.json(customer);
+    });
+});
+
+// POST (/payment/method)
+// user_id (to match the customer record)
+// card_code
+// card_brand
+// card_zip_code
+// card_last4
+// card_exp_month
+// card_exp_year
+
+router.post('/payment/post/:user_id', (req, res, next) => {
+  const { user_id } = req.params;
+  const {
+    card_code,
+    card_brand,
+    card_zip_code,
+    card_last4,
+    card_exp_month,
+    card_exp_year,
+  } = req.body;
+
+  const customerPatch = {
+    card_code,
+    card_brand,
+    card_zip_code,
+    card_last4,
+    card_exp_month,
+    card_exp_year,
+  };
+
+  knex('customer')
+    .update(customerPatch)
+    .where('user_id', user_id)
+    .returning('*')
+    .then((updatedCustomer) => {
+      console.log(updatedCustomer);
+      res.send(updatedCustomer);
     });
 });
 

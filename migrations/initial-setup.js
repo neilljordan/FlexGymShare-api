@@ -6,17 +6,15 @@ exports.up = function (knex, Promise) {
       table.string('email').notNullable().unique();
       table.string('first_name').notNullable();
       table.string('last_name').notNullable();
-      table.string('facebook_uid').defaultTo('');
-      table.string('profile_image').defaultTo('').comment('URL for FB avatar');
-      table.varchar('gym_membership_code').defaultTo('')
+      table.string('facebook_uid');
+      table.string('avatar_url').comment('URL for user facebook avatar');
       table.integer('gym_id').references('gym.id').onDelete('CASCADE').index()
-        .defaultTo(null)
         .comment('The home gym of the user');
-      // table.uuid('uuid').defaultTo(knex.raw('uuid_generate_v4()'));
+      table.string('gym_membership_code', 50).comment('Membership indentifier used at the gym');
       table.timestamps(true, true);
     }),
     knex.schema.createTable('customer', (table) => {
-      table.comment('Users who have completed a transaction and have a payment ID');
+      table.comment('Users who have completed a financial transaction and have a payment ID');
       table.increments('id').primary();
       table.integer('user_id').references('user.id').onDelete('CASCADE');
       table.string('customer_code').notNullable().unique();
@@ -127,7 +125,7 @@ exports.up = function (knex, Promise) {
         .comment('The date the pass is listed for');
       table.timestamps(true, true);
     }),
-    knex.schema.createTable('daypass', (table) => {
+    knex.schema.createTable('pass', (table) => {
       table.comment('A pass that allows a user to visit a gym');
       table.increments('id').primary();
       table.integer('user_id').references('user.id')
@@ -147,12 +145,12 @@ exports.up = function (knex, Promise) {
       table.integer('order_id').references('order.id')
         .onDelete('CASCADE')
         .comment('A link to the order where the pass was created');
-      table.string('code')
-        .notNullable()
-        .comment('The code to be used to redeem the pass');
       table.date('date')
         .notNullable()
         .comment('The date for which the pass is valid');
+      table.string('code')
+        .notNullable()
+        .comment('The code to be used to redeem the pass');
       table.timestamps(true, true);
     }),
     knex.schema.createTable('visit', (table) => {
@@ -166,8 +164,8 @@ exports.up = function (knex, Promise) {
         .comment('The employee who checked in the user and authorized the visit');
       table.integer('gym_id').notNullable().references('gym.id').onDelete('CASCADE')
         .index();
-      table.integer('daypass_id').notNullable().references('daypass.id').onDelete('CASCADE')
-        .comment('The daypass that was used for the visit');
+      table.integer('pass_id').notNullable().references('pass.id').onDelete('CASCADE')
+        .comment('The pass that was used for the visit');
       table.date('date').notNullable()
         .comment('The date the visit took place');
       table.text('notes');
@@ -180,19 +178,21 @@ exports.up = function (knex, Promise) {
       table.timestamps(true, true);
     }),
     knex.schema.createTable('order', (table) => {
-      table.comment('A record of all orders in the system');
+      table.comment('A record of all orders between parties in the system');
       table.increments('id').primary();
-      table.date('date').notNullable();
       table.decimal('amount', 8, 2).notNullable();
       table.integer('user_id').notNullable().references('user.id').onDelete('CASCADE')
-        .index();
-      table.integer('gym_id').references('gym.id').onDelete('CASCADE').index();
+        .index()
+        .comment('The person ordering the pass');
+      table.integer('gym_id').references('gym.id').onDelete('CASCADE').index()
+        .comment('The gym where the pass can be used. Also the selling gym in the case where there is no listing');
       table.integer('pass_type_id').notNullable().references('pass_type.id').onDelete('CASCADE')
         .defaultTo(1);
+      table.date('pass_date').notNullable().comment('The date the ordered pass is for');
       table.integer('order_type_id').references('order_type.id').onDelete('CASCADE').defaultTo(1);
       table.integer('listing_id').references('listing.id')
         .onDelete('CASCADE')
-        .comment('The order that purchased the listing (null until it was bought)');
+        .comment('The previously listed pass that is being ordered (null if bought from a gym)');
       table.string('comment');
       table.timestamps(true, true);
     }),
@@ -206,10 +206,10 @@ exports.up = function (knex, Promise) {
     knex.schema.createTable('transaction', (table) => {
       table.comment('A ledger of all financial credits and debits in the system');
       table.increments('id').primary();
-      table.date('date').notNullable();
       table.decimal('amount', 8, 2).notNullable();
       table.integer('transaction_type_id').notNullable().references('transaction_type.id').onDelete('CASCADE')
-        .index().defaultTo(1);
+        .index()
+        .defaultTo(1);
       table.integer('user_id').notNullable().references('user.id').onDelete('CASCADE')
         .index();
       table.integer('order_id').references('order.id').onDelete('CASCADE').index()
@@ -238,7 +238,7 @@ exports.down = function (knex, Promise) {
     knex.schema.dropTableIfExists('role'),
     knex.schema.dropTableIfExists('transaction'),
     knex.schema.dropTableIfExists('transaction_type'),
-    knex.schema.dropTableIfExists('daypass'),
+    knex.schema.dropTableIfExists('pass'),
     knex.schema.dropTableIfExists('customer'),
     knex.schema.dropTableIfExists('order'),
     knex.schema.dropTableIfExists('order_type'),

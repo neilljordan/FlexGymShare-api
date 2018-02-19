@@ -10,12 +10,16 @@ module.exports = [
     first_name: 'Lister',
     last_name: 'User2',
     email: 'test+2@youflex.co',
+    gym_id: 1,
+    gym_membership_code: 'IU2Y4234234',
   },
   {
     id: 3,
     first_name: 'Lister/Renter',
     last_name: 'User3',
     email: 'test+3@youflex.co',
+    gym_id: 2,
+    gym_membership_code: '92836501',
   },
   {
     id: 4,

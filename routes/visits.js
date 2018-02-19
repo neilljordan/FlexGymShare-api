@@ -14,10 +14,10 @@ router.get('/visits', (req, res, next) => {
     });
 });
 
-router.get('/visits/daypass/:daypass_id', (req, res, next) => {
-  const daypassId = req.params.daypass_id;
+router.get('/visits/pass/:pass_id', (req, res, next) => {
+  const passId = req.params.pass_id;
   knex('visit')
-    .where('daypass_id', daypassId)
+    .where('pass_id', passId)
     .then((visit) => {
       if (visit) {
         res.json(visit);
@@ -37,13 +37,11 @@ router.get('/visits/:id', (req, res, next) => {
     .catch(err => next(err));
 });
 
-// [{"id":4,"renter_id":1,"worker_id":4,"gym_id":null,"daypass_id":1,"date":"2018-01-30T07:00:00.000Z","notes":"Rover is a good boy. A very good boy.","created_at":"2018-02-09T18:15:30.701Z","updated_at":"2018-02-09T18:15:30.701Z","facebook_uid":"","email":"test+4@youflex.co","first_name":"Worker","last_name":"User4","profile_image":""}]
-
 // get visits for a particular gym
 router.get('/visits/gym/:gym_id', (req, res, next) => {
   const gymId = req.params.gym_id;
   knex('visit')
-    .select('visit.id', 'visit.date', 'visit.notes', 'renter_table.first_name', 'renter_table.last_name', 'renter_table.email', 'worker_table.first_name as worker_first_name', 'worker_table.last_name as worker_last_name', 'worker_table.email as worker_email')
+    .select('visit.id', 'visit.created_at', 'visit.date', 'visit.notes', 'renter_table.first_name', 'renter_table.last_name', 'renter_table.email', 'worker_table.first_name as worker_first_name', 'worker_table.last_name as worker_last_name', 'worker_table.email as worker_email')
     .innerJoin('user as worker_table', 'worker_id', 'worker_table.id')
     .innerJoin('user as renter_table', 'renter_id', 'renter_table.id')
     .where('visit.gym_id', gymId)
@@ -55,7 +53,7 @@ router.get('/visits/gym/:gym_id', (req, res, next) => {
 
 router.post('/visits', (req, res, next) => {
   const {
-    daypass_id,
+    pass_id,
     renter_id,
     worker_id,
     gym_id,
@@ -65,7 +63,7 @@ router.post('/visits', (req, res, next) => {
 
   knex('visit')
     .insert({
-      daypass_id,
+      pass_id,
       renter_id,
       worker_id,
       gym_id,
@@ -120,6 +118,5 @@ router.delete('/visits/:id', (req, res, next) => {
         .catch(err => next(err));
     });
 });
-
 
 module.exports = router;

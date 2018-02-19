@@ -1,17 +1,19 @@
 {
-  "name": "flex",
-  "version": "1.0.0",
-  "description": "",
+  "name": "flex-api",
+  "version": "0.3.0-alpha",
+  "description": "The Flex REST API intended for use only by the Flex UI website",
+  "author": "Flex Membership Share, Inc.",
+  "license": "",
+  "private": true,
   "main": "server.js",
   "scripts": {
+    "pretest": "eslint --ignore-path .gitignore .",
     "eslint": "eslint",
     "lint": "eslint .",
     "knex": "knex",
     "start": "nodemon server.js",
     "heroku-postbuild": "knex migrate:rollback; knex migrate:latest; knex seed:run;"
   },
-  "author": "",
-  "license": "ISC",
   "dependencies": {
     "bcrypt": "^1.0.3",
     "body-parser": "^1.18.2",

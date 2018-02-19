@@ -108,7 +108,7 @@ router.get('/users/roles/:gym_id/:user_id', (req, res, next) => {
 // create a new user
 router.post('/users', (req, res, next) => {
   const {
-    first_name, last_name, email, profile_image, facebook_uid,
+    first_name, last_name, email, avatar_url, facebook_uid,
   } = req.body;
 
   knex('user')
@@ -117,7 +117,7 @@ router.post('/users', (req, res, next) => {
       last_name,
       email,
       facebook_uid,
-      profile_image,
+      avatar_url,
     })
     .returning('*')
     .then((users) => {
@@ -132,7 +132,7 @@ router.patch('/users/:id', (req, res, next) => {
   const {
     first_name, last_name, email, gymId, membershipCode
   } = req.body;
-  
+
   let patchUser = {};
 
   if (first_name) {
