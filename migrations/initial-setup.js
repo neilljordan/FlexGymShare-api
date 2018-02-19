@@ -8,7 +8,7 @@ exports.up = function (knex, Promise) {
       table.string('last_name').notNullable();
       table.string('facebook_uid').defaultTo('');
       table.string('profile_image').defaultTo('').comment('URL for FB avatar');
-      table.varchar('membership_id').defaultTo('')
+      table.varchar('gym_membership_code').defaultTo('')
       table.integer('gym_id').references('gym.id').onDelete('CASCADE').index()
         .defaultTo(null)
         .comment('The home gym of the user');
