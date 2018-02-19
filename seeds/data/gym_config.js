@@ -62,7 +62,7 @@ module.exports = [
   {
     gym_id: 3,
     name: 'description',
-    value: 'We are proud to offer our Members the absolute best in fitness and wellness programs, including everything from Pilates, Indoor Cycling, and cutting-edge Group Exercise classes, to Small Group Training with certified fitness professionals. At Colorado Athletic Club-Boulder, we ensure that every Member feels comfortable and has the knowledge to participate. We are happy to offer every new Member two complimentary Personal Coaching Sessions. This is an invaluable opportunity to get advice from an expert, plus learn the correct way to use each piece of equipment. This session is tailored to meet the needs of each individual so please contact our Personal Training Manager to find out more and book your first appointment today. Come in, be inspired.'
+    value: 'We are proud to offer our Members the absolute best in fitness and wellness programs, including everything from Pilates, Indoor Cycling, and cutting-edge Group Exercise classes, to Small Group Training with certified fitness professionals. At Colorado Athletic Club-Boulder, we ensure that every Member feels comfortable and has the knowledge to participate. We are happy to offer every new Member two complimentary Personal Coaching Sessions. This is an invaluable opportunity to get advice from an expert, plus learn the correct way to use each piece of equipment. This session is tailored to meet the needs of each individual so please contact our Personal Training Manager to find out more and book your first appointment today. Come in, be inspired.',
   },
   {
     gym_id: 4,

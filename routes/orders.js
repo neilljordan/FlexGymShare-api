@@ -93,33 +93,33 @@ router.get('/orders/:id', (req, res, next) => {
 
 router.post('/orders', (req, res, next) => {
   const {
-    date,
     amount,
     user_id,
     gym_id,
     pass_type_id,
+    pass_date,
   } = req.body;
 
-  const cartAmount = parseFloat(amount);
-  let listerId = null;
+  const cartAmount = parseFloat(amount); // make sure to convert from string to float
+  let listerId = null; // the ID of the person who listed the pass
 
   // link the order to an existing listing (if available)
   knex('listing')
     .first('listing.id', 'listing.lister_id')
     .leftJoin('public.order', 'public.order.listing_id', 'listing.id')
     .where('listing.gym_id', gym_id)
-    .andWhere('listing.date', date)
+    .andWhere('listing.date', pass_date)
     .whereNull('public.order.id')
     .orderBy('listing.created_at')
     .then((listingRows) => {
       listerId = (listingRows !== undefined) ? listingRows.lister_id : null;
       knex('order')
         .insert({
-          date,
           amount: cartAmount,
           user_id,
           gym_id,
           pass_type_id,
+          pass_date,
           order_type_id: 1, // buy a pass
           listing_id: (listingRows !== undefined) ? listingRows.id : null, // use the listing if available
         })
@@ -129,13 +129,17 @@ router.post('/orders', (req, res, next) => {
           return orderRows[0].id;
         })
         .then((orderId) => {
-          createBalanceCreditTransaction(listerId, orderId, cartAmount);
+          // give the listing user credit for the sale (if applicable)
+          if (listerId) {
+            createBalanceCreditTransaction(listerId, orderId, cartAmount);
+          }
         })
         .catch(err => next(err));
     })
     .catch(err => next(err));
 });
 
+// let orders that aren't purchased be deleted. transaction credits are also deleted via CASCADE
 router.delete('/orders/:id', (req, res, next) => {
   const orderId = req.params.id;
   knex('order')

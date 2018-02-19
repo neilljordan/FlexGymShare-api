@@ -108,7 +108,7 @@ router.get('/users/roles/:gym_id/:user_id', (req, res, next) => {
 // create a new user
 router.post('/users', (req, res, next) => {
   const {
-    first_name, last_name, email, profile_image, facebook_uid,
+    first_name, last_name, email, avatar_url, facebook_uid,
   } = req.body;
 
   knex('user')
@@ -117,7 +117,7 @@ router.post('/users', (req, res, next) => {
       last_name,
       email,
       facebook_uid,
-      profile_image,
+      avatar_url,
     })
     .returning('*')
     .then((users) => {
@@ -130,9 +130,9 @@ router.post('/users', (req, res, next) => {
 router.patch('/users/:id', (req, res, next) => {
   const userId = req.params.id;
   const {
-    first_name, last_name, email, gymId, membershipId
+    first_name, last_name, email, gymId, membershipId,
   } = req.body;
-  
+
   let patchUser = {};
 
   if (first_name) {
@@ -148,7 +148,7 @@ router.patch('/users/:id', (req, res, next) => {
     patchUser.gym_id = gymId;
   }
   if (membershipId) {
-    patchUser.membership_id = membershipId;
+    patchUser.gym_membership_code = membershipId;
   }
 
   knex('user')
@@ -165,7 +165,7 @@ router.patch('/users/:id', (req, res, next) => {
             last_name: rows[0].last_name,
             email: rows[0].email,
             gymId: rows[0].gym_id,
-            membershipId: rows[0].membership_id
+            membershipId: rows[0].gym_membership_code,
           };
           res.json(patchUser);
         })

@@ -64,7 +64,6 @@ function createOrderTransaction(charge, userId, orderId) {
     chargeDate.setUTCSeconds(charge.created);
     knex('transaction')
       .insert({
-        date: chargeDate,
         amount: -(charge.amount / 100), // convert back to dollars and make negative
         transaction_type_id: 1, // creating a Bought a Pass
         user_id: userId,
@@ -91,7 +90,6 @@ function createChargeTransaction(charge, userId, orderId) {
     chargeDate.setUTCSeconds(charge.created);
     knex('transaction')
       .insert({
-        date: chargeDate,
         amount: (charge.amount / 100), // convert back to dollars and make negative
         transaction_type_id: 2, // creating a Used a Card credit type
         user_id: userId,
@@ -126,7 +124,6 @@ function createBalanceTransaction(userId, orderId, cartAmount, applyCredit) {
           const date = new Date();
           knex('transaction')
             .insert({
-              date: new Date(),
               amount: -appliedBalance, // convert back to dollars and make negative
               transaction_type_id: 3, // creating a Used Credit credit type
               user_id: userId,
