@@ -120,6 +120,7 @@ router.post('/orders', (req, res, next) => {
           gym_id,
           pass_type_id,
           pass_date,
+          description: (listingRows !== undefined) ? 'Bought pass from user' : 'Bought pass directly from gym',
           order_type_id: 1, // buy a pass
           listing_id: (listingRows !== undefined) ? listingRows.id : null, // use the listing if available
         })
