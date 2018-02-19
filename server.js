@@ -1,9 +1,11 @@
 const express = require('express');
-const bodyParser = require('body-parser');
-const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
 const cors = require('cors');
 const path = require('path');
+const cookieSession = require('cookie-session');
+const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
+
 const users = require('./routes/users');
 const gyms = require('./routes/gyms');
 const staff = require('./routes/staff');
@@ -19,14 +21,12 @@ const roles = require('./routes/roles');
 const payment = require('./routes/payment');
 
 const opbeat = require('opbeat').start({
-  appId: 'a7b22c4b09',
-  organizationId: '8e92995e0b274928af1aebf18e10357c',
-  secretToken: 'a31263fb85fab9c8155cca0807914c0c884f4b04',
+  appId: process.env.OPBEAT_APP_ID,
+  organizationId: process.env.OPBEAT_ORG_ID,
+  secretToken: process.env.OPBEAT_SECRET_TOKEN,
 });
 
 const app = express();
-const cookieSession = require('cookie-session');
-
 const port = process.env.PORT || 3131; // for deployment
 
 // set up some basic security stuff...only calls from ORIGIN HOST are allowed

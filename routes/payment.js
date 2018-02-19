@@ -3,7 +3,7 @@ const knex = require('../knex');
 
 const router = express.Router();
 
-const stripeSecretKey = 'sk_test_lfGo8iTH6oP0IErEDPTPWKtX';
+const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
 const stripeClient = require('stripe')(stripeSecretKey);
 
 // update customer payment

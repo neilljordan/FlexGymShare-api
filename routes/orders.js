@@ -3,7 +3,7 @@ const knex = require('../knex');
 
 const router = express.Router();
 
-const sellerPercentage = 0.2; // the percentage the seller gets of the order total
+const sellerPercentage = parseFloat(process.env.FLEX_SELLER_PCT) || 0.2; // the percentage the seller gets of the order total
 
 // create an account balance (credit) transaction record in the DB and return the result
 function createBalanceCreditTransaction(userId, orderId, orderAmount) {
