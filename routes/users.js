@@ -130,7 +130,7 @@ router.post('/users', (req, res, next) => {
 router.patch('/users/:id', (req, res, next) => {
   const userId = req.params.id;
   const {
-    first_name, last_name, email, gymId, membershipCode
+    first_name, last_name, email, gymId, membershipCode,
   } = req.body;
 
   let patchUser = {};

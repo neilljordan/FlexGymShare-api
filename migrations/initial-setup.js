@@ -193,7 +193,7 @@ exports.up = function (knex, Promise) {
       table.integer('listing_id').references('listing.id')
         .onDelete('CASCADE')
         .comment('The previously listed pass that is being ordered (null if bought from a gym)');
-      table.string('comment');
+      table.string('description').comment('Human-readable description of the order');
       table.timestamps(true, true);
     }),
     knex.schema.createTable('transaction_type', (table) => {
@@ -216,7 +216,7 @@ exports.up = function (knex, Promise) {
         .comment('Link to the order that was placed');
       table.string('charge_code')
         .comment('The external system code representing the transaction (only for Stripe)');
-      table.string('description').comment('');
+      table.string('description').comment('Human-readable description of the transaction');
       table.string('status');
       table.timestamps(true, true);
     }),
