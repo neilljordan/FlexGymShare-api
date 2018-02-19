@@ -2,8 +2,8 @@ const express = require('express');
 const morgan = require('morgan');
 const cors = require('cors');
 const path = require('path');
-const cookieSession = require('cookie-session');
 const bodyParser = require('body-parser');
+const cookieSession = require('cookie-session');
 const cookieParser = require('cookie-parser');
 
 const users = require('./routes/users');
@@ -20,6 +20,7 @@ const visits = require('./routes/visits');
 const roles = require('./routes/roles');
 const payment = require('./routes/payment');
 
+// configure application performance, release, error monitoring tool
 const opbeat = require('opbeat').start({
   appId: process.env.OPBEAT_APP_ID,
   organizationId: process.env.OPBEAT_ORG_ID,
@@ -28,23 +29,23 @@ const opbeat = require('opbeat').start({
 
 const app = express();
 const port = process.env.PORT || 3131; // for deployment
-
-// set up some basic security stuff...only calls from ORIGIN HOST are allowed
 const headerOrigin = process.env.ORIGIN_HOST || 'https://test.flexgymshare.com'; // for deployment
 
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', headerOrigin); // for running locally
-  res.header('Access-Control-Allow-Credentials', 'true');
-  res.header('Access-Control-Allow-Methods', 'GET,POST,DELETE,PATCH,PUT');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Accept');
-  next();
-});
+// set the CORS configuration
+const corsOptions = {
+  allowedHeaders: 'Content-Type, Accept, Authorization',
+  credentials: true,
+  methods: 'GET,POST,DELETE,PATCH,PUT',
+  origin: (origin, callback) =>
+    ((headerOrigin.indexOf(origin) !== -1)
+      ? callback(null, true)
+      : callback(new Error('Not allowed by CORS'))),
+};
 
-app.use(cookieSession({ secret: 'keyboard cat' }));
-
+app.use(cors(corsOptions));
 app.use(bodyParser.json()); // keep before routes
-// app.use(cors());
 app.use(morgan('dev'));
+app.use(cookieSession({ secret: 'keyboard cat' }));
 app.use(cookieParser());
 
 app.use('/', users);
