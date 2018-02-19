@@ -5,7 +5,6 @@ module.exports = {
   },
   production: {
     client: 'pg',
-    connection: `${process.env.DATABASE_URL}?ssl=true`,
-    ssl: true,
+    connection: `${process.env.DATABASE_URL}?ssl=true`, // force the use of SSL connections via query string
   },
 };
