@@ -128,12 +128,10 @@ router.post('/users', (req, res, next) => {
 
 // partial update of a user
 router.patch('/users/:id', (req, res, next) => {
-  console.log('patchUser hit')
   const userId = req.params.id;
   const {
     first_name, last_name, email, gymId, gymMembershipId
   } = req.body;
-  console.log(req.body)
 
   let patchUser = {};
 
@@ -150,12 +148,8 @@ router.patch('/users/:id', (req, res, next) => {
     patchUser.gym_id = gymId;
   }
   if (gymMembershipId) {
-    console.log('gymMembershipId')
     patchUser.gym_membership_code = gymMembershipId;
   }
-
-  console.log(req.body)
-
 
   knex('user')
     .where('id', userId)
@@ -172,7 +166,6 @@ router.patch('/users/:id', (req, res, next) => {
             gymId: rows[0].gym_id,
             gymMembershipId: rows[0].gym_membership_code,
           };
-          console.log(patchUser)
           res.json(patchUser);
 
         })
