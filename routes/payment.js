@@ -224,36 +224,19 @@ router.post('/payment', (req, res, next) => {
     });
 });
 
-// New API route
-// /payment/method
-// GET (/payment/method/:user_id
-// card_brand
-// card_last4
-// card_exp_month
-// card_exp_year
-
-router.get('/payment/get/:user_id', (req, res, next) => {
+// get the saved payment method for the user
+router.get('/payment/method/:user_id', (req, res, next) => {
   const { user_id } = req.params;
   knex('customer')
     .select('card_brand', 'card_last4', 'card_exp_month', 'card_exp_year')
     .where('user_id', user_id)
-    .then((customer) => {
-      console.log(customer);
-      res.json(customer);
+    .then((rows) => {
+      res.json(rows);
     });
 });
 
-// POST (/payment/method)
-// user_id (to match the customer record)
-// card_code
-// card_brand
-// card_zip_code
-// card_last4
-// card_exp_month
-// card_exp_year
-
-router.post('/payment/post/:user_id', (req, res, next) => {
-  const { user_id } = req.params;
+// add/update stored payment method for the user
+router.post('/payment/method/', (req, res, next) => {
   const {
     card_code,
     card_brand,
@@ -261,6 +244,7 @@ router.post('/payment/post/:user_id', (req, res, next) => {
     card_last4,
     card_exp_month,
     card_exp_year,
+    user_id,
   } = req.body;
 
   const customerPatch = {
@@ -270,15 +254,15 @@ router.post('/payment/post/:user_id', (req, res, next) => {
     card_last4,
     card_exp_month,
     card_exp_year,
+    user_id,
   };
 
   knex('customer')
     .update(customerPatch)
     .where('user_id', user_id)
     .returning('*')
-    .then((updatedCustomer) => {
-      console.log(updatedCustomer);
-      res.send(updatedCustomer);
+    .then((rows) => {
+      res.send(rows);
     });
 });
 
